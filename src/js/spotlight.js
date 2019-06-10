@@ -1,7 +1,6 @@
 import "./config.js";
 import { addClass, getNode, getNodes, hasClass, removeClass, setStyle } from "./dom.js";
 import images_base64 from "../../tmp/images.js";
-import html from "../../tmp/html.js";
 import stylesheet from "../../tmp/style.js";
 import template from "./template.js";
 
@@ -14,6 +13,7 @@ const image_close = BUILD_BUNDLE ? images_base64["close"] : "img/close.svg";
 const image_zoom_in = BUILD_BUNDLE ? images_base64["zoomin"] : "img/zoom-in.svg";
 const image_zoom_out = BUILD_BUNDLE ? images_base64["zoomout"] : "img/zoom-out.svg";
 const image_original = BUILD_BUNDLE ? images_base64["original"] : "img/original.svg";
+const image_contrast = BUILD_BUNDLE ? images_base64["contrast"] : "img/contrast.svg";
 
 if(BUILD_BUNDLE){
 
@@ -171,21 +171,14 @@ add_listener(document, "DOMContentLoaded", function(){
     target = document.createElement("div");
     target.id = "spotlight";
     target.style.backgroundImage = "url(" + image_preloader + ")";
-    target.innerHTML = (
-
-        BUILD_BUNDLE ?
-
-            html
-        :
-            template
-
-    ).replace("{image_maximize}", image_maximize)
-     .replace("{image_original}", image_original)
-     .replace("{image_zoom_out}", image_zoom_out)
-     .replace("{image_zoom_in}", image_zoom_in)
-     .replace("{image_close}", image_close)
-     .replace("{image_arrow}", image_arrow)
-     .replace("{image_arrow}", image_arrow);
+    target.innerHTML = template.replace("{image_maximize}", image_maximize)
+                               .replace("{image_original}", image_original)
+                               .replace("{image_zoom_out}", image_zoom_out)
+                               .replace("{image_zoom_in}", image_zoom_in)
+                               .replace("{image_close}", image_close)
+                               .replace("{image_arrow}", image_arrow)
+                               .replace("{image_arrow}", image_arrow)
+                               .replace("{image_contrast}", image_contrast);
 
     document.body.appendChild(target);
 
@@ -208,6 +201,7 @@ add_listener(document, "DOMContentLoaded", function(){
     add_listener(getNode(".close-gallery", target),"", close_gallery);
     add_listener(getNode(".arrow-left", target), "", arrow_left);
     add_listener(getNode(".arrow-right", target), "", arrow_right);
+    add_listener(getNode(".toggle-contrast", target), "", toggle_contrast);
 });
 
 add_listener(window, "", function(event){
@@ -421,7 +415,7 @@ function request(){
 
 /** @this {Element} */
 
-export function toggle_fullscreen(){
+function toggle_fullscreen(){
 
     if(toggle_fullscreen_mode()){
 
@@ -433,7 +427,7 @@ export function toggle_fullscreen(){
     }
 }
 
-export function toggle_zoom(){
+function toggle_zoom(){
 
     //const body = document.body;
     //const image = getNode("#spotlight .scene img");
@@ -454,14 +448,14 @@ export function toggle_zoom(){
     zoom = 1;
 }
 
-export function zoom_in(){
+function zoom_in(){
 
     image_style.transform = "translate(-50%, -50%) scale(" + (zoom /= 0.65) + ")";
 
     autohide();
 }
 
-export function zoom_out(){
+function zoom_out(){
 
     if(zoom > 1){
 
@@ -489,14 +483,14 @@ export function zoom_out(){
     autohide();
 }
 
-export function show_gallery(){
+function show_gallery(){
 
     addClass(target,"show");
 
     autohide();
 }
 
-export function close_gallery(){
+function close_gallery(){
 
     removeClass(target,"show");
 
@@ -514,7 +508,7 @@ export function close_gallery(){
     image_style = null;
 }
 
-export function arrow_left(){
+function arrow_left(){
 
     autohide();
 
@@ -527,7 +521,7 @@ export function arrow_left(){
     }
 }
 
-export function arrow_right(){
+function arrow_right(){
 
     autohide();
 
@@ -537,6 +531,22 @@ export function arrow_right(){
         paginate();
 
         return true;
+    }
+}
+
+let contrast = false;
+
+function toggle_contrast(){
+
+    autohide();
+
+    if((contrast = !contrast)){
+
+        addClass(target, "white");
+    }
+    else{
+
+        removeClass(target, "white");
     }
 }
 

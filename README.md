@@ -1,6 +1,8 @@
 # Spotlight.js
 
-Super-lightweight image gallery plugin, without dependencies, bundled into one Javascript file:
+<a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#controls">Controls</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a>
+
+Super-lightweight image gallery library without dependencies. Bundled into one Javascript file:
 
 - No additional Javascript coding needed
 - No additional HTML snippets needed
@@ -10,6 +12,9 @@ Super-lightweight image gallery plugin, without dependencies, bundled into one J
 
 __Demo:__ https://nextapps-de.github.io/spotlight/
 
+Alternatively you can use the non-bundled version of this library (classically contains css files, image files, js files) and also the source files for the ES6 module system as described below.
+
+<a name="started" id="started"></a>
 ## Getting Started
 
 __Get Latest (Bundle):__
@@ -66,6 +71,7 @@ __2. and add the class ___spotlight___ properly to an anchor element, e.g.:__
 
 > This also works with dynamically loaded content. There is no need to inject listeners on new elements. Instead Spotlight make use of global event capturing.
 
+<a name="groups" id="groups"></a>
 ## Gallery-Groups
 
 Give one of the outer wrapping element the class ___spotlight-group___, e.g.:
@@ -95,6 +101,7 @@ Give one of the outer wrapping element the class ___spotlight-group___, e.g.:
 </div>
 ```
 
+<a name="styling" id="styling"></a>
 ## Custom Styling
 
 To add custom styling just override CSS classes accordingly: 
@@ -128,6 +135,10 @@ To add custom styling just override CSS classes accordingly:
     /* button zoom in */
 }
 
+#spotlight .toggle-contrast{
+    /* button contrast */
+}
+
 #spotlight .close-gallery{
     /* button close gallery */
 }
@@ -141,21 +152,39 @@ To add custom styling just override CSS classes accordingly:
 }
 ```
 
-## Customize Gallery
+<a name="controls" id="controls"></a>
+## Controls
 
 You can either apply the following data-attributes to the ___spotlight-group___ wrapper element or apply them separately to each ___spotlight___ anchor element (also overrides group definitions).
 
 <table>
     <tr></tr>
     <tr>
-        <td>Data&nbsp;Atttribute&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>Data&nbsp;Atttribute&nbsp;&nbsp;&nbsp;</td>
         <td>Values</td>
         <td>Description</td>
     </tr>
     <tr>
+        <td>data-animation</td>
+        <td>
+            "fade"<br>
+            "slide"<br>
+            "scale"
+        </td>
+        <td>
+            define animation (use built-ins or custom keyframe name).<br><br>
+            <b>Note:</b> could also combined as comma-separated list, e.g: <code>data-animation="slide,fade"</code> (this is the default animation). 
+        </td>
+    </tr>
+    <tr></tr>
+    <tr>
         <td>data-controls</td>
-        <td>string</td>
-        <td>show/hide control elements explicitly through a comma-separated list</td>
+        <td>
+            string
+        </td>
+        <td>
+            show/hide control elements as "whitelisted" through a comma-separated list, e.g. <code>data-controls="reset,page,fullscreen"</code>
+        </td>
     </tr>
     <tr></tr>
     <tr>
@@ -183,6 +212,12 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     </tr>
     <tr></tr>
     <tr>
+        <td>data-contrast</td>
+        <td>true / false</td>
+        <td>show/hide contrast button</td>
+    </tr>
+    <tr></tr>
+    <tr>
         <td>data-page</td>
         <td>true / false</td>
         <td>show/hide page</td>
@@ -201,17 +236,19 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     </tr>
 </table>
 
-##### Example:
+<a name="example" id="example"></a>
+##### Full Example:
 
 ```html
-<div class="spotlight-group" data-title="Untitled" data-fullscreen="false" data-maximize="false" data-minimize="false" data-reset="false">
-    <a class="spotlight" href="cat1.jpg" data-title="This is a title." data-description="This is a description.">
+<div class="spotlight-group" data-title="Untitled" data-animation="fade"
+     data-fullscreen="false" data-maximize="false" data-minimize="false">
+    <a class="spotlight" href="cat1.jpg" data-title="This is a title.">
         <img src="cat1-thumb.jpg">
     </a>
     <a class="spotlight" href="cat2.jpg" data-description="This is a description.">
         <img src="cat2-thumb.jpg" alt="This is a title.">
     </a>
-    <a class="spotlight" href="cat3.jpg">
+    <a class="spotlight" href="cat3.jpg" data-description="This is a description.">
         <img src="cat3-thumb.jpg">
     </a>
 </div>
@@ -219,17 +256,40 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
 
 __Hint:__ The last image gets the title "Untitled" from the group attributes.
 
-The control elements could also be set __explicitly__ as a comma-separated list, e.g.:
+Control elements could also __whitelisted__ as a comma-separated list, e.g.:
 
 ```html
-<div class="spotlight-group" data-controls="fullscreen,reset">
+<div class="spotlight-group" data-controls="fullscreen,reset,contrast">
 ```
 
-would be the same as:
+> Use a whitelist to enable controls gets priority over other ambiguous options.
+
+The same from above as __explicitly__:
 
 ```html
-<div class="spotlight-group" data-fullscreen="true" data-maximize="false" data-minimize="false" data-reset="true">
+<div class="spotlight-group" data-fullscreen="true" data-contrast="true"
+     data-maximize="false"data-minimize="false" data-reset="true">
 ```
+
+> When control attributes are not specified they are automatically enabled by default.
+
+Therefore the example above could be shortened to:
+
+```html
+<div class="spotlight-group" data-maximize="false" data-minimize="false">
+```
+
+<a name="builds" id="builds"></a>
+## Custom Builds
+
+> __Note:__ You can modify all source files e.g. stylesheets, template and also the images files located in _/src/img/_. Providing a more handy way to pass custom images is coming soon.
+
+Perform a full build:
+```bash
+npm run build
+```
+
+The destination folder of the build is: _/dist/_
 
 ---
 

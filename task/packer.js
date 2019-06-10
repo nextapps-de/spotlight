@@ -15,7 +15,8 @@ const { writeFileSync, readFileSync } = require('fs');
         minimize: base64Sync('src/img/minimize.svg'),
         original: base64Sync('src/img/original.svg'),
         zoomin: base64Sync('src/img/zoom-in.svg'),
-        zoomout: base64Sync('src/img/zoom-out.svg')
+        zoomout: base64Sync('src/img/zoom-out.svg'),
+        contrast: base64Sync('src/img/contrast.svg')
     };
 
     let tmp = "";

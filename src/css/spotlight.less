@@ -1,3 +1,5 @@
+/*@import "animation.less";*/
+
 #spotlight {
   & {
     position: fixed;
@@ -151,6 +153,17 @@
   .arrow-right:hover {
     transform: translateX(0px);
   }
+  &.white {
+    color: #fff;
+    background-color: #fff;
+  }
+  &.white {
+    .arrow-left,
+    .arrow-right,
+    .header{
+      filter: invert(1);
+    }
+  }
 }
 .spotlight{
   display: inline-block;
@@ -158,16 +171,3 @@
 .spotlight *{
   pointer-events: none;
 }
-
-/*
-@keyframes zoom-in {
-  0%{
-    opacity:0;
-    transform: translate(-50%, -50%) scale(0);
-  }
-  100%{
-    opacity:1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
- */
