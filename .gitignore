@@ -1,0 +1,11 @@
+.idea
+.nyc_output
+.db
+coverage
+perf
+node_modules
+server
+!*.keep
+tmp
+log
+package-lock.json
