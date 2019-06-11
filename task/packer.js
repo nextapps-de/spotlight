@@ -5,9 +5,9 @@ const { writeFileSync, readFileSync } = require('fs');
 
     // TODO provide custom filenames
 
-    let compressed = {
+    const compressed = {
 
-        preloader: base64Sync('src/img/preloader.gif'),
+        preloader: base64Sync('src/img/preloader.svg'),
         pixel: base64Sync('src/img/pixel.gif'),
         arrow: base64Sync('src/img/arrow.svg'),
         close: base64Sync('src/img/close.svg'),
@@ -25,15 +25,15 @@ const { writeFileSync, readFileSync } = require('fs');
 
         if(compressed.hasOwnProperty(key)){
 
-            tmp += ("\"" + key + "\": \"" + compressed[key] + "\",\n");
+            tmp += ("    " + key + ": \"" + compressed[key] + "\",\n");
         }
     }
 
-    writeFileSync("tmp/images.js", "export default {" + tmp.substring(0, tmp.length - 2) + "}");
+    writeFileSync("tmp/images.js", "export default {\n" + tmp.substring(0, tmp.length - 2) + "\n}");
 
     // ----------------------
 
-    writeFileSync("tmp/html.js", "export default \"" + eval(readFileSync("src/js/template.js", "utf8").replace("export default(", "").replace(")", "")) + "\"");
+    writeFileSync("tmp/template.js", readFileSync("src/js/template.js", "utf8").replace("../../tmp/images.js", "./images.js").replace(/>\s+</g, "><"));
 
     // ----------------------
 

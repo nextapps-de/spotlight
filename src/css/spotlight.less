@@ -18,7 +18,7 @@
     user-select: none;
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: 24px 24px;
+    background-size: 0 0;
     transition: visibility 0.25s ease,
                 opacity 0.25s ease;
     font-size: 16px;
@@ -29,6 +29,9 @@
     visibility: visible;
     pointer-events: auto;
     transition: none;
+  }
+  &.loading{
+    background-size: 42px 42px;
   }
   .scene {
     position: absolute;
@@ -113,7 +116,7 @@
     background-color: rgba(0, 0, 0, 0.45);
     border-radius: 100%;
     cursor: pointer;
-    margin-top: -10px;
+    margin-top: -25px;
     padding: 10px;
     transform: translateX(-100px);
     transition: transform 0.35s cubic-bezier(0, 0, 0.25, 1);

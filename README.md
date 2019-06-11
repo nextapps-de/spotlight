@@ -4,11 +4,12 @@
 
 Super-lightweight image gallery library without dependencies. Bundled into one Javascript file:
 
-- No additional Javascript coding needed
-- No additional HTML snippets needed
-- No additional CSS resources needed
-- No additional images/assets needed
-- No additional handling of event listener needed
+- No additional Javascript coding
+- No additional HTML snippets
+- No additional CSS resources
+- No additional images/assets
+- No additional handling of event listener
+- All in all just 5kb gzip
 
 __Demo:__ https://nextapps-de.github.io/spotlight/
 
@@ -17,7 +18,7 @@ Alternatively you can use the non-bundled version of this library (classically c
 <a name="started" id="started"></a>
 ## Getting Started
 
-__Get Latest (Bundle):__
+__Get Latest (Bundle, 5kb gzip):__
 
 <table>
     <tr></tr>
@@ -55,7 +56,7 @@ __1. Just insert the script resource tag somewhere in your document:__
 </head>
 ```
 
-__2. and add the class ___spotlight___ properly to an anchor element, e.g.:__
+__2. and add the class ___spotlight___ to an anchor element properly, e.g.:__
 
 ```html
 <a class="spotlight" href="img1.jpg">
