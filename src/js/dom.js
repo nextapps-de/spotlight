@@ -1,70 +1,166 @@
+import "./config.js";
+
 const node_cache = {};
 const nodes_cache = {};
 
+function createClassCache(node){
+
+    const current_classes = node.className.split(" ");
+    const cache = {};
+
+    for(let a = 0; a < current_classes.length; a++){
+
+        cache[current_classes[a]] = 1;
+    }
+
+    node._class = cache;
+}
+
 /**
  * @param selector
  * @param class_name
- * @param {string|Element=} context
  */
 
-export function addClass(selector, class_name, context){
+export function addClass(selector, class_name){
 
-    const nodes = getNodes(selector, context);
+    const nodes = getNodes(selector);
 
-    for(let i = 0; i < nodes.length; i++){
+    if(typeof class_name === "string"){
 
-        nodes[i].classList.add(class_name);
+        class_name = [class_name];
+    }
+
+    for(let a = 0; a < class_name.length; a++){
+
+        const current_class = class_name[a];
+
+        for(let i = 0; i < nodes.length; i++){
+
+            const node = nodes[i];
+
+            if(ENABLE_CLASS_CACHE){
+
+                node._class || createClassCache(node);
+
+                if(node._class[current_class]){
+
+                    continue;
+                }
+
+                node._class[current_class] = 1;
+            }
+
+            node.classList.add(current_class);
+        }
     }
 }
 
 /**
  * @param selector
  * @param class_name
- * @param {string|Element=} context
  */
 
-export function removeClass(selector, class_name, context){
+export function removeClass(selector, class_name){
 
-    const nodes = getNodes(selector, context);
+    const nodes = getNodes(selector);
 
-    for(let i = 0; i < nodes.length; i++){
+    if(typeof class_name === "string"){
 
-        nodes[i].classList.remove(class_name);
+        class_name = [class_name];
+    }
+
+    for(let a = 0; a < class_name.length; a++){
+
+        const current_class = class_name[a];
+
+        for(let i = 0; i < nodes.length; i++){
+
+            const node = nodes[i];
+
+            if(ENABLE_CLASS_CACHE){
+
+                node._class || createClassCache(node);
+
+                if(!node._class[current_class]){
+
+                    continue;
+                }
+
+                node._class[current_class] = 0;
+            }
+
+            node.classList.remove(current_class);
+        }
     }
 }
 
 /**
  * @param selector
  * @param class_name
- * @param {string|Element=} context
  */
 
-export function toggleClass(selector, class_name, context){
+export function toggleClass(selector, class_name){
 
-    const nodes = getNodes(selector, context);
+    const nodes = getNodes(selector);
 
-    for(let i = 0; i < nodes.length; i++){
+    if(typeof class_name === "string"){
 
-        nodes[i].classList.toggle(class_name);
+        class_name = [class_name];
+    }
+
+    for(let a = 0; a < class_name.length; a++){
+
+        const current_class = class_name[a];
+
+        for(let i = 0; i < nodes.length; i++){
+
+            const node = nodes[i];
+
+            if(ENABLE_CLASS_CACHE){
+
+                node._class || createClassCache(node);
+                node._class[current_class] = !node._class[current_class];
+            }
+
+            node.classList.toggle(current_class);
+        }
     }
 }
 
 /**
  * @param selector
  * @param class_name
- * @param {string|Element=} context
  * @returns {boolean}
  */
 
-export function hasClass(selector, class_name, context){
+export function hasClass(selector, class_name){
 
-    const nodes = getNodes(selector, context);
+    const nodes = getNodes(selector);
 
-    for(let i = 0; i < nodes.length; i++){
+    if(typeof class_name === "string"){
 
-        if(nodes[i].classList.contains(class_name)){
+        class_name = [class_name];
+    }
 
-            return true;
+    for(let a = 0; a < class_name.length; a++){
+
+        const current_class = class_name[a];
+
+        for(let i = 0; i < nodes.length; i++){
+
+            const node = nodes[i];
+
+            if(ENABLE_CLASS_CACHE){
+
+                node._class || createClassCache(node);
+
+                return !!node._class[current_class];
+            }
+
+            if(node.classList.contains(current_class)){
+
+                return true;
+            }
         }
     }
 
@@ -72,8 +168,8 @@ export function hasClass(selector, class_name, context){
 }
 
 /**
- * @param {string|Element|Array} selector
- * @param {string|Object} styles
+ * @param {string|Node|Element|Array} selector
+ * @param {string|!Object} styles
  * @param {string|number=} value
  * @param {boolean=} force
  */
@@ -86,27 +182,76 @@ export function setStyle(selector, styles, value, force){
 
         for(let i = 0; i < nodes.length; i++){
 
-            nodes[i].style.setProperty(styles, value);
+            const node = nodes[i];
+
+            if(ENABLE_STYLE_CACHE){
+
+                let node_style = node._style;
+
+                node_style || (node._style = node_style = {});
+
+                if(node_style[styles] === value){
+
+                    continue;
+                }
+
+                node_style[styles] = value;
+            }
+
+            node.style.setProperty(styles, value, force);
         }
     }
     else{
 
-        for(let style in styles){
+        const keys = Object.keys(styles);
 
-            if(styles.hasOwnProperty(style)){
+        for(let a = 0; a < keys.length; a++){
 
-                for(let i = 0; i < nodes.length; i++){
+            const style = keys[a];
 
-                    nodes[i].style.setProperty(style, styles[style]);
-                }
+            value = styles[style];
+
+            for(let i = 0; i < nodes.length; i++){
+
+                setStyle(nodes[i], style, value, force);
             }
         }
     }
 }
 
 /**
- * @param {string|Element} selector
- * @param {string|Element=} context
+ * @param {string|Node|Element} selector
+ * @param {string} style
+ */
+
+export function getStyle(selector, style){
+
+    const node = getNode(selector);
+
+    let node_style = node._style;
+
+    if(!ENABLE_STYLE_CACHE || !node_style || !node_style[style]){
+
+        const css = node._css || (node._css = getComputedStyle(node, null));
+        const value = css[style];
+
+        if(ENABLE_STYLE_CACHE){
+
+            node._style = node_style = {};
+            node_style[style] = value;
+        }
+
+        return value;
+    }
+    else if(ENABLE_STYLE_CACHE){
+
+        return node_style[style];
+    }
+}
+
+/**
+ * @param {string|Node|Element} selector
+ * @param {string|Node|Element=} context
  */
 
 export function getNode(selector, context){
@@ -128,8 +273,8 @@ export function getNode(selector, context){
 }
 
 /**
- * @param {string|Element|Array} selector
- * @param {string|Element=} context
+ * @param {string|Node|Element|Array} selector
+ * @param {string|Node|Element=} context
  */
 
 export function getNodes(selector, context){

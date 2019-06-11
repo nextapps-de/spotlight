@@ -1,10 +1,20 @@
+/**!
+ * @preserve Spotlight.js v0.0.3
+ * Copyright 2019 Nextapps GmbH
+ * Author: Thomas Wilkerling
+ * Released under the Apache 2.0 Licence
+ * https://github.com/nextapps-de/spotlight
+ */
+
 import "./config.js";
-import { addClass, getNode, getNodes, hasClass, removeClass, setStyle } from "./dom.js";
+import { addClass, getNode, getNodes, hasClass, removeClass, getStyle, setStyle } from "./dom.js";
 import images_base64 from "../../tmp/images.js";
 import stylesheet from "../../tmp/style.js";
 import template from "../../tmp/template.js";
 
 (function(){
+
+    "use strict";
 
     const transparent_pixel = BUILD_BUNDLE ? images_base64.pixel : "img/pixel.gif";
     const image_preloader = BUILD_BUNDLE ? images_base64.preloader : "img/preloader.svg";
@@ -18,11 +28,24 @@ import template from "../../tmp/template.js";
         getNode("head").appendChild(style);
     }
 
+    const controls = [
+
+        "contrast",
+        "fullscreen",
+        "reset",
+        "minimize",
+        "maximize",
+        "page",
+        "title",
+        "description"
+    ];
+
     let timer = null;
     let is_down = false;
     let changed = false;
     let toggle = false;
     let swipe = false;
+    let dragged = false;
     let bodyW;
     let bodyH;
     let startX;
@@ -38,17 +61,20 @@ import template from "../../tmp/template.js";
     let maxHeight;
     let slider;
     let panel;
-    let panel_style;
     let image;
-    let image_style;
     let target;
     let current_slide;
     let slide_count;
+    let options;
 
     window["dispatch_spotlight"] = /** @this {Element} */ function(event){
 
         const context = this.closest(".spotlight-group");
         const anchors = getNodes(".spotlight", context);
+
+        apply_options(context, this);
+
+        // determine index
 
         for(let i = 0; i < anchors.length; i++){
 
@@ -62,12 +88,58 @@ import template from "../../tmp/template.js";
         return clear(event);
     };
 
+    function apply_options(group, anchor){
+
+        options = group ? group.dataset : {};
+
+        object_assign(options, anchor.dataset);
+
+        if(options["controls"]){
+
+            const whitelist = options["controls"].split(",");
+
+            for(let i = 0; i < controls.length; i++){
+
+                options[controls[i]] = "false";
+            }
+
+            for(let i = 0; i < whitelist.length; i++){
+
+                options[whitelist[i]] = "true";
+            }
+        }
+
+        setup_controls();
+    }
+
+    function object_assign(target, source){
+
+        const keys = Object.keys(source);
+
+        for(let i = 0; i < keys.length; i++){
+
+            const key = keys[i];
+
+            target[key] = source[key];
+        }
+
+        return target;
+    }
+
+    function setup_controls(){
+
+        for(let i = 0; i < controls.length; i++){
+
+            const option = controls[i];
+
+            setStyle("#spotlight ." + option, "display", options[option] === "false" ? "none" : "table-cell");
+        }
+    }
+
     function init_slide(index){
 
         panel = getNodes(".pane", slider)[index - 1];
-        panel_style = panel.style;
         image = /** @type {Image} */ (panel.firstElementChild);
-        image_style = image.style;
         current_slide = index;
 
         if(!image.loaded){
@@ -85,6 +157,12 @@ import template from "../../tmp/template.js";
                     image.src = buffer.src;
 
                     removeClass(target, "loading");
+
+                    setStyle(image, {
+
+                        "opacity": 1,
+                        "transform": "translate(-50%, -50%) scale(1)"
+                    });
 
                     buffer.onload = null;
                     buffer = null;
@@ -104,12 +182,14 @@ import template from "../../tmp/template.js";
 
             image.loaded = true;
         }
+        else{
 
-        setStyle(image, {
+            setStyle(image, {
 
-            "opacity": 1,
-            "transform": "translate(-50%, -50%) scale(1)"
-        });
+                "opacity": 1,
+                "transform": "translate(-50%, -50%) scale(1)"
+            });
+        }
     }
 
     function show_slide(context, index){
@@ -125,14 +205,13 @@ import template from "../../tmp/template.js";
 
             for(let i = 0; i < slide_count; i++){
 
-                let image, image_style;
+                let image;
 
                 if(i < length){
 
                     image = refs[i].firstElementChild;
                     image.dataset["src"] = anchors[i].href;
                     image.loaded = false;
-                    image_style = image.style;
                 }
                 else{
 
@@ -141,29 +220,12 @@ import template from "../../tmp/template.js";
                     image = clone.firstElementChild;
                     image.dataset["src"] = anchors[i].href;
                     image.loaded = false;
-                    clone.style.left = (i * 100) + "%";
+                    setStyle(clone, "left", (i * 100) + "%");
                     refs[0].parentNode.appendChild(clone);
-                    image_style = image.style;
                 }
-
-                image_style.transition = "none";
-                image_style.opacity = 0;
-                image_style.transform = "translate(-50%, -50%) scale(0.8)";
-                image_style.maxHeight = "100%";
-                image_style.maxWidth = "100%";
-
-                setTimeout(function(){
-
-                    image_style.transition = "transform 1s cubic-bezier(0.1, 1, 0.1, 1), opacity 1s cubic-bezier(0.1, 1, 0.1, 1)";
-                });
             }
 
-            slider.style.transition = "none";
-            slider.style.transform = "translateX(-" + (((index || 1) - 1) * 100) + "%)";
-
-            setTimeout(function(){
-
-                slider.style.transition = "transform 1s cubic-bezier(0.1, 1, 0.1, 1)";
+            prepare_animated_style(slider, "transform", "translateX(-" + (((index || 1) - 1) * 100) + "%)", function(){
 
                 init_slide(index || 1);
                 paginate();
@@ -183,18 +245,17 @@ import template from "../../tmp/template.js";
 
         document["cancelFullScreen"] || (document["cancelFullScreen"] = (
 
-            document["cancelFullScreen"] ||
             document["exitFullscreen"] ||
             document["webkitCancelFullScreen"] ||
             document["webkitExitFullscreen"] ||
             document["mozCancelFullScreen"] ||
-            setStyle('#spotlight .toggle-fullscreen', 'display', 'none') ||
+            setStyle("#spotlight .fullscreen", "display", "none") ||
             function(){}
         ));
 
         slider = getNode(".scene", target);
 
-        add_listener(slider, "", click);
+        //add_listener(slider, "", click);
         add_listener(slider, "mousedown", start);
         add_listener(slider, "mouseleave", end);
         add_listener(slider, "mouseup", end);
@@ -205,14 +266,14 @@ import template from "../../tmp/template.js";
         add_listener(slider, "touchend", end);
         add_listener(slider, "touchmove", move, {"passive": true});
 
-        add_listener(getNode(".toggle-fullscreen", target),"", toggle_fullscreen);
-        add_listener(getNode(".toggle-zoom", target),"", toggle_zoom);
-        add_listener(getNode(".zoom-in", target),"", zoom_in);
-        add_listener(getNode(".zoom-out", target),"", zoom_out);
-        add_listener(getNode(".close-gallery", target),"", close_gallery);
+        add_listener(getNode(".fullscreen", target),"", toggle_fullscreen);
+        add_listener(getNode(".reset", target),"", zoom_reset);
+        add_listener(getNode(".maximize", target),"", zoom_in);
+        add_listener(getNode(".minimize", target),"", zoom_out);
+        add_listener(getNode(".close", target),"", close_gallery);
         add_listener(getNode(".arrow-left", target), "", arrow_left);
         add_listener(getNode(".arrow-right", target), "", arrow_right);
-        add_listener(getNode(".toggle-contrast", target), "", toggle_contrast);
+        add_listener(getNode(".contrast", target), "", toggle_contrast);
     });
 
     add_listener(window, "", function(event){
@@ -237,6 +298,27 @@ import template from "../../tmp/template.js";
     function add_listener(node, event, fn, mode){
 
         node.addEventListener(event || "click", fn, typeof mode === "undefined" ? true : mode);
+    }
+
+    let tmp = 0;
+
+    function prepare_animated_style(selector, style, value, callback){
+
+        const node = getNode(selector);
+
+        addClass(node, "no-transition");
+        setStyle(node, style, value);
+
+        // force styles (quick-fix for closure compiler):
+        tmp || (tmp = node.clientTop && 0);
+
+        removeClass(node, "no-transition");
+
+        if(callback){
+
+            callback();
+            callback = null;
+        }
     }
 
     function autohide(){
@@ -283,6 +365,7 @@ import template from "../../tmp/template.js";
         imageH = image.height * zoom;
         swipe = imageW <= bodyW;
         is_down = true;
+        dragged = false;
         startX = touch.x;
         startY = touch.y;
 
@@ -291,14 +374,15 @@ import template from "../../tmp/template.js";
 
     function end(e){
 
-        if(swipe){
+        if(!dragged){
 
-            setStyle("#spotlight .scene", "transition", "none");
-            setStyle("#spotlight .scene", "transform", "translateX(" + (-((current_slide - 1) * 100 - (100 / bodyW * x))) + "%)");
+            return click(e);
+        }
+        else if(swipe){
 
-            setTimeout(function(){
+            setStyle("#spotlight .scene", "transition", "transform 1s cubic-bezier(0.1, 1, 0.1, 1)");
 
-                setStyle("#spotlight .scene", "transition", "transform 1s cubic-bezier(0.1, 1, 0.1, 1)");
+            prepare_animated_style("#spotlight .scene", "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)", function(){
 
                 if((x < -(bodyH / 5)) && arrow_right()){
 
@@ -315,7 +399,11 @@ import template from "../../tmp/template.js";
 
                 x = 0;
                 swipe = false;
-                panel_style.transform = "";
+            });
+
+            requestAnimationFrame(function(){
+
+                setStyle(panel, "transform", "");
             });
         }
 
@@ -327,6 +415,8 @@ import template from "../../tmp/template.js";
     function move(e){
 
         if(is_down){
+
+            dragged = true;
 
             const touch = pointer(e);
 
@@ -387,7 +477,6 @@ import template from "../../tmp/template.js";
         return false; //clear(e);
     }
 
-
     function pointer(event){
 
         let touches = event.touches;
@@ -415,7 +504,7 @@ import template from "../../tmp/template.js";
 
             if((lastX !== curX) || (lastY !== curY)){
 
-                panel_style.setProperty("transform", "translate(" + (lastX = curX) + "px, " + (lastY = curY) + "px)");
+                setStyle(panel, "transform", "translate(" + (lastX = curX) + "px, " + (lastY = curY) + "px)");
             }
         }
         else{
@@ -428,7 +517,7 @@ import template from "../../tmp/template.js";
 
     function request(){
 
-        timer = window.requestAnimationFrame(update);
+        timer = requestAnimationFrame(update);
     }
 
     /** @this {Element} */
@@ -445,7 +534,7 @@ import template from "../../tmp/template.js";
         }
     }
 
-    function toggle_zoom(){
+    function zoom_reset(){
 
         //const body = document.body;
         //const image = getNode("#spotlight .scene img");
@@ -458,17 +547,21 @@ import template from "../../tmp/template.js";
 
         toggle = (zoom === 1) && !toggle;
 
-        image_style.maxHeight = maxHeight = toggle ? "none" : "100%";
-        image_style.maxWidth = toggle ? "none" : "100%";
-        image_style.transform = "translate(-50%, -50%) scale(1)";
-        //panel_style.transform = toggle ? "translate(" + ((x + 0.5) | 0) + "px, " + ((y + 0.5) | 0) + "px)" : "";
+        setStyle(image, {
+
+            "maxHeight": maxHeight = toggle ? "none" : "100%",
+            "maxWidth": toggle ? "none" : "100%",
+            "transform": "translate(-50%, -50%) scale(1)"
+        });
+
+        //panel.style.transform = toggle ? "translate(" + ((x + 0.5) | 0) + "px, " + ((y + 0.5) | 0) + "px)" : "";
 
         zoom = 1;
     }
 
     function zoom_in(){
 
-        image_style.transform = "translate(-50%, -50%) scale(" + (zoom /= 0.65) + ")";
+        setStyle(image, "transform", "translate(-50%, -50%) scale(" + (zoom /= 0.65) + ")");
 
         autohide();
     }
@@ -494,7 +587,7 @@ import template from "../../tmp/template.js";
                 y = 0;
             }
 
-            image_style.transform = "translate(-50%, -50%) scale(" + zoom + ")";
+            setStyle(image, "transform", "translate(-50%, -50%) scale(" + zoom + ")");
             //getNode("#spotlight .scene div").style.transform = "translate(" + x + "px, " + y + "px)";
         }
 
@@ -521,9 +614,7 @@ import template from "../../tmp/template.js";
         }
 
         panel = null;
-        panel_style = null;
         image = null;
-        image_style = null;
     }
 
     function arrow_left(){
@@ -575,16 +666,29 @@ import template from "../../tmp/template.js";
         zoom = 1;
 
         setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
-
-        panel_style.transform = "";
-        image_style.opacity = 0;
-        image_style.transform = "translate(-50%, -50%) scale(1)";
+        setStyle(panel, "transform", "");
+        setStyle(image, {
+            "opacity": 0,
+            "transform": "translate(-50%, -50%) scale(1)"
+        });
 
         init_slide(current_slide);
 
-        panel_style.transform = "";
-        image_style.opacity = 1;
-        image_style.transform = "translate(-50%, -50%) scale(1)";
+        prepare_animated_style(image, {
+
+            "opacity": 0,
+            "transform": "translate(-50%, -50%) scale(0.8)",
+            "maxHeight": "100%",
+            "maxWidth": "100%"
+
+        }, null, function(){
+
+            setStyle(panel, "transform", "");
+            setStyle(image, {
+                "opacity": 1,
+                "transform": "translate(-50%, -50%) scale(1)"
+            });
+        });
 
         setStyle("#spotlight .arrow-left", "visibility", current_slide === 1 ? "hidden" : "");
         setStyle("#spotlight .arrow-right", "visibility", current_slide === slide_count ? "hidden" : "");
@@ -621,7 +725,6 @@ import template from "../../tmp/template.js";
 
         target["requestFullScreen"] || (target["requestFullScreen"] = (
 
-            target["requestFullScreen"] ||
             target["webkitRequestFullScreen"] ||
             target["msRequestFullScreen"] ||
             target["mozRequestFullScreen"] ||

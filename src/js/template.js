@@ -20,18 +20,17 @@ export default (
     <table class=header>
         <tr>
             <td class=page>
-            <td class=title>
-            <td class=toggle-fullscreen>
+            <td class=fullscreen>
                 <img src='${image_maximize}'>
-            <td class=toggle-zoom>
+            <td class=reset>
                 <img src='${image_original}'>
-            <td class=zoom-out>
+            <td class=minimize>
                 <img src='${image_zoom_out}'>
-            <td class=zoom-in>
+            <td class=maximize>
                 <img src='${image_zoom_in}'>
-            <td class=toggle-contrast>
+            <td class=contrast>
                 <img src='${image_contrast}'>
-            <td class=close-gallery>
+            <td class=close>
                 <img src='${image_close}'>
     </table>
     <div class=arrow-left>
@@ -39,5 +38,9 @@ export default (
     </div>
     <div class=arrow-right>
         <img src='${image_arrow}'>
+    </div>
+    <div class=footer>
+        <b class=title></b>
+        <p class=description></p>
     </div>`
 );
