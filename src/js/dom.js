@@ -308,6 +308,84 @@ export function getNodes(selector, context){
     }
 }
 
+export function getById(id){
+
+    return document.getElementById(id);
+}
+
+/**
+ * @param {string} classname
+ * @param {Node|Element=} context
+ * @returns {HTMLCollection}
+ */
+
+export function getByClass(classname, context){
+
+    return (context || document).getElementsByClassName(classname);
+}
+
+/**
+ * @param {string} tag
+ * @param {Node|Element=} context
+ * @returns {HTMLCollection}
+ */
+
+export function getByTag(tag, context){
+
+    return (context || document).getElementsByTagName(tag);
+}
+
+export function getByIdCache(id){
+
+    const key = "$#" + id;
+    let item = node_cache[key];
+
+    if(!item){
+
+        node_cache[key] = item = getById(id);
+    }
+
+    return item;
+}
+
+/**
+ * @param {string} classname
+ * @param {Node|Element=} context
+ * @returns {HTMLCollection}
+ */
+
+export function getByClassCache(classname, context){
+
+    const key = (context || "$") + "." + classname;
+    let items = nodes_cache[key];
+
+    if(!items){
+
+        nodes_cache[key] = items = getByClass(classname, context);
+    }
+
+    return items;
+}
+
+/**
+ * @param {string} tag
+ * @param {Node|Element=} context
+ * @returns {HTMLCollection}
+ */
+
+export function getByTagCache(tag, context){
+
+    const key = (context || "$") + tag;
+    let items = nodes_cache[key];
+
+    if(!items){
+
+        nodes_cache[key] = items = getByTag(tag, context);
+    }
+
+    return items;
+}
+
 /**
  * @param {string} selector
  * @param {string=} context

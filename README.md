@@ -170,11 +170,12 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
         <td>
             "fade"<br>
             "slide"<br>
-            "scale"
+            "scale"<br>
+            "rotate"
         </td>
         <td>
             define animation (use built-ins or custom keyframe name).<br><br>
-            <b>Note:</b> could also combined as comma-separated list, e.g: <code>data-animation="slide,fade"</code> (this is the default animation). 
+            <b>Note:</b> could also combined as comma-separated list, e.g: <code>data-animation="slide,fade,scale"</code> (this is the default animation). 
         </td>
     </tr>
     <tr></tr>

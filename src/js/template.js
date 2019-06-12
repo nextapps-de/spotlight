@@ -1,5 +1,6 @@
 import images_base64 from "../../tmp/images.js";
 
+const image_preloader = BUILD_BUNDLE ? images_base64.preloader : "img/preloader.svg";
 const image_maximize = BUILD_BUNDLE ? images_base64.maximize : "img/maximize.svg";
 const image_arrow = BUILD_BUNDLE ? images_base64.arrow : "img/arrow.svg";
 const image_close = BUILD_BUNDLE ? images_base64.close : "img/close.svg";
@@ -12,7 +13,8 @@ const image_contrast = BUILD_BUNDLE ? images_base64.contrast : "img/contrast.svg
 
 export default (
 
-    `<div class=scene>
+   `<div class=preloader style="background-image: url(${image_preloader});"></div>
+    <div class=scene>
         <div class=pane>
             <img src>
         </div>
@@ -33,10 +35,10 @@ export default (
             <td class=close>
                 <img src='${image_close}'>
     </table>
-    <div class=arrow-left>
+    <div class="arrow arrow-left">
         <img src='${image_arrow}'>
     </div>
-    <div class=arrow-right>
+    <div class="arrow arrow-right">
         <img src='${image_arrow}'>
     </div>
     <div class=footer>

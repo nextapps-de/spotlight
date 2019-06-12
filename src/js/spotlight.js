@@ -1,336 +1,339 @@
 /**!
- * @preserve Spotlight.js v0.0.3
+ * @preserve Spotlight.js v0.0.5
  * Copyright 2019 Nextapps GmbH
  * Author: Thomas Wilkerling
  * Released under the Apache 2.0 Licence
  * https://github.com/nextapps-de/spotlight
  */
 
+"use strict";
+
 import "./config.js";
-import { addClass, getNode, getNodes, hasClass, removeClass, getStyle, setStyle } from "./dom.js";
+import { addClass, removeClass, setStyle, getByClass, getByTag } from "./dom.js";
 import images_base64 from "../../tmp/images.js";
 import stylesheet from "../../tmp/style.js";
 import template from "../../tmp/template.js";
 
-(function(){
+const transparent_pixel = BUILD_BUNDLE ? images_base64.pixel : "img/pixel.gif";
+const image_maximize = BUILD_BUNDLE ? images_base64.maximize : "img/maximize.svg";
+const image_minimize = BUILD_BUNDLE ? images_base64.minimize : "img/minimize.svg";
 
-    "use strict";
+if(BUILD_BUNDLE){
 
-    const transparent_pixel = BUILD_BUNDLE ? images_base64.pixel : "img/pixel.gif";
-    const image_preloader = BUILD_BUNDLE ? images_base64.preloader : "img/preloader.svg";
-    const image_maximize = BUILD_BUNDLE ? images_base64.maximize : "img/maximize.svg";
-    const image_minimize = BUILD_BUNDLE ? images_base64.minimize : "img/minimize.svg";
+    const style = document.createElement("style");
+    style.innerHTML = stylesheet;
+    getByTag("head")[0].appendChild(style);
+}
 
-    if(BUILD_BUNDLE){
+const controls = [
 
-        const style = document.createElement("style");
-        style.innerHTML = stylesheet;
-        getNode("head").appendChild(style);
+    "contrast",
+    "fullscreen",
+    "reset",
+    "minimize",
+    "maximize",
+    "page",
+    "title",
+    "description"
+];
+
+let timer = null;
+let is_down = false;
+let changed = false;
+let toggle = false;
+let swipe = false;
+let dragged = false;
+let bodyW;
+let bodyH;
+let startX;
+let startY;
+let imageW;
+let imageH;
+let x = 0;
+let y = 0;
+let zoom = 1;
+let hide = null;
+let maxHeight;
+let slider;
+let panel;
+let panes;
+let image;
+let target;
+let current_slide;
+let slide_count;
+let options;
+
+/**
+ * @this {Element}
+ */
+
+function dispatch(event){
+
+    const self = event.target.closest('.spotlight');
+
+    if(!self){
+
+        return;
     }
 
-    const controls = [
+    const context = self.closest(".spotlight-group");
+    const anchors = getByClass("spotlight", context);
 
-        "contrast",
-        "fullscreen",
-        "reset",
-        "minimize",
-        "maximize",
-        "page",
-        "title",
-        "description"
-    ];
+    apply_options(context, self);
 
-    let timer = null;
-    let is_down = false;
-    let changed = false;
-    let toggle = false;
-    let swipe = false;
-    let dragged = false;
-    let bodyW;
-    let bodyH;
-    let startX;
-    let startY;
-    let imageW;
-    let imageH;
-    let x = 0;
-    let y = 0;
-    let lastX = 0;
-    let lastY = 0;
-    let zoom = 1;
-    let hide = null;
-    let maxHeight;
-    let slider;
-    let panel;
-    let image;
-    let target;
-    let current_slide;
-    let slide_count;
-    let options;
+    // determine index
 
-    window["dispatch_spotlight"] = /** @this {Element} */ function(event){
+    for(let i = 0; i < anchors.length; i++){
 
-        const context = this.closest(".spotlight-group");
-        const anchors = getNodes(".spotlight", context);
+        if(anchors[i] === self){
 
-        apply_options(context, this);
+            slide_count = anchors.length;
 
-        // determine index
+            if(slide_count){
 
-        for(let i = 0; i < anchors.length; i++){
+                panes = getByClass("pane", target);
+                const length = panes.length;
 
-            if(anchors[i] === this){
+                for(let a = 0; a < slide_count; a++){
 
-                show_slide(context, i + 1);
-                break;
+                    let image;
+
+                    if(a < length){
+
+                        image = panes[a].firstElementChild;
+                        image.dataset.src = anchors[a].href;
+                        image.loaded = false;
+                    }
+                    else{
+
+                        const clone = panes[0].cloneNode(true);
+
+                        image = clone.firstElementChild;
+                        image.dataset.src = anchors[a].href;
+                        image.loaded = false;
+                        setStyle(clone, "left", (a * 100) + "%");
+                        panes[0].parentNode.appendChild(clone);
+                    }
+                }
+
+                prepare_animated_style(slider, "transform", "translateX(-" + (((i || 1) - 1) * 100) + "%)");
+
+                init_slide(i || 1);
+                paginate();
             }
+
+            break;
         }
-
-        return clear(event);
-    };
-
-    function apply_options(group, anchor){
-
-        options = group ? group.dataset : {};
-
-        object_assign(options, anchor.dataset);
-
-        if(options["controls"]){
-
-            const whitelist = options["controls"].split(",");
-
-            for(let i = 0; i < controls.length; i++){
-
-                options[controls[i]] = "false";
-            }
-
-            for(let i = 0; i < whitelist.length; i++){
-
-                options[whitelist[i]] = "true";
-            }
-        }
-
-        setup_controls();
     }
 
-    function object_assign(target, source){
+    show_gallery();
 
-        const keys = Object.keys(source);
+    return clear(event);
+}
 
-        for(let i = 0; i < keys.length; i++){
+function apply_options(group, anchor){
 
-            const key = keys[i];
+    options = {};
+    group && object_assign(options, group.dataset);
+    object_assign(options, anchor.dataset);
 
-            target[key] = source[key];
-        }
+    if(options["control"]){
 
-        return target;
-    }
-
-    function setup_controls(){
+        const whitelist = options["control"].split(",");
 
         for(let i = 0; i < controls.length; i++){
 
-            const option = controls[i];
+            options[controls[i]] = "false";
+        }
 
-            setStyle("#spotlight ." + option, "display", options[option] === "false" ? "none" : "table-cell");
+        for(let i = 0; i < whitelist.length; i++){
+
+            options[whitelist[i].trim()] = "true";
         }
     }
 
-    function init_slide(index){
+    setup_controls();
+}
 
-        panel = getNodes(".pane", slider)[index - 1];
-        image = /** @type {Image} */ (panel.firstElementChild);
-        current_slide = index;
+function object_assign(target, source){
 
-        if(!image.loaded){
+    const keys = Object.keys(source);
 
-            addClass(target, "loading");
+    for(let i = 0; i < keys.length; i++){
 
-            (function(image){
+        const key = keys[i];
 
-                let buffer = new Image();
-
-                buffer.onload = /** @this {Image} */ function(){
-
-                    //image.width = buffer.width;
-                    //image.height = buffer.height;
-                    image.src = buffer.src;
-
-                    removeClass(target, "loading");
-
-                    setStyle(image, {
-
-                        "opacity": 1,
-                        "transform": "translate(-50%, -50%) scale(1)"
-                    });
-
-                    buffer.onload = null;
-                    buffer = null;
-                    image = null;
-                };
-
-                buffer.onerror = /** @this {Image} */ function(){
-
-                    buffer = null;
-                    image.loaded = false;
-                    image = null;
-                };
-
-                buffer.src = image.dataset["src"];
-
-            }(image));
-
-            image.loaded = true;
-        }
-        else{
-
-            setStyle(image, {
-
-                "opacity": 1,
-                "transform": "translate(-50%, -50%) scale(1)"
-            });
-        }
+        target[key] = source[key];
     }
 
-    function show_slide(context, index){
+    return target;
+}
 
-        const anchors = getNodes(".spotlight", context);
+function setup_controls(){
 
-        slide_count = anchors.length;
+    for(let i = 0; i < controls.length; i++){
 
-        if(slide_count){
+        const option = controls[i];
 
-            const refs = getNodes("#spotlight .pane");
-            const length = refs.length;
+        setStyle(getByClass(option, target)[0], "display", options[option] === "false" ? "none" : "table-cell");
+    }
+}
 
-            for(let i = 0; i < slide_count; i++){
+function init_slide(index){
 
-                let image;
+    panel = panes[index - 1];
+    image = /** @type {Image} */ (panel.firstElementChild);
+    current_slide = index;
 
-                if(i < length){
+    if(!image.loaded){
 
-                    image = refs[i].firstElementChild;
-                    image.dataset["src"] = anchors[i].href;
-                    image.loaded = false;
-                }
-                else{
+        addClass(target, "loading");
 
-                    const clone = refs[0].cloneNode(true);
+        (function(image){
 
-                    image = clone.firstElementChild;
-                    image.dataset["src"] = anchors[i].href;
-                    image.loaded = false;
-                    setStyle(clone, "left", (i * 100) + "%");
-                    refs[0].parentNode.appendChild(clone);
-                }
-            }
+            let buffer = new Image();
 
-            prepare_animated_style(slider, "transform", "translateX(-" + (((index || 1) - 1) * 100) + "%)", function(){
+            buffer.onload = /** @this {Image} */ function(){
 
-                init_slide(index || 1);
-                paginate();
-                show_gallery();
-            });
-        }
+                //image.width = buffer.width;
+                //image.height = buffer.height;
+                image.src = buffer.src;
+
+                removeClass(target, "loading");
+
+                setStyle(image, {
+
+                    "opacity": 1,
+                    "transform": ""
+                });
+
+                buffer.onload = null;
+                buffer = null;
+                image = null;
+            };
+
+            buffer.onerror = /** @this {Image} */ function(){
+
+                image.loaded = false;
+
+                buffer.onload = null;
+                buffer = null;
+                image = null;
+            };
+
+            buffer.src = image.dataset["src"];
+
+        }(image));
+
+        image.loaded = true;
+    }
+    else{
+
+        image.src = image.dataset["src"];
+
+        setStyle(image, {
+
+            "opacity": 1,
+            "transform": ""
+        });
+    }
+}
+
+add_listener(document, "DOMContentLoaded", function(){
+
+    target = document.createElement("div");
+    target.id = "spotlight";
+    target.innerHTML = template;
+
+    document.body.appendChild(target);
+
+    document["cancelFullScreen"] || (document["cancelFullScreen"] = (
+
+        document["exitFullscreen"] ||
+        document["webkitCancelFullScreen"] ||
+        document["webkitExitFullscreen"] ||
+        document["mozCancelFullScreen"] ||
+        function(){}
+    ));
+
+    const doc = document.documentElement || document.body;
+
+    doc["requestFullScreen"] || (doc["requestFullScreen"] = (
+
+        doc["webkitRequestFullScreen"] ||
+        doc["msRequestFullScreen"] ||
+        doc["mozRequestFullScreen"] ||
+        setStyle("#spotlight .fullscreen", "display", "none") ||
+        function(){}
+    ));
+
+    slider = getByClass("scene", target)[0];
+
+    add_listener(slider, "mousedown", start);
+    add_listener(slider, "mouseleave", end);
+    add_listener(slider, "mouseup", end);
+    add_listener(slider, "mousemove", move);
+
+    add_listener(slider, "touchstart", start, {"passive": true});
+    add_listener(slider, "touchcancel", end);
+    add_listener(slider, "touchend", end);
+    add_listener(slider, "touchmove", move, {"passive": true});
+
+    add_listener(getByClass("fullscreen", target)[0],"", toggle_fullscreen);
+    add_listener(getByClass("reset", target)[0],"", zoom_reset);
+    add_listener(getByClass("maximize", target)[0],"", zoom_in);
+    add_listener(getByClass("minimize", target)[0],"", zoom_out);
+    add_listener(getByClass("close", target)[0],"", close_gallery);
+    add_listener(getByClass("arrow-left", target)[0], "", arrow_left);
+    add_listener(getByClass("arrow-right", target)[0], "", arrow_right);
+    add_listener(getByClass("contrast", target)[0], "", toggle_contrast);
+
+    add_listener(window, "", dispatch);
+});
+
+/**
+ * @param {!Window|Document|Element} node
+ * @param {string} event
+ * @param {Function} fn
+ * @param {!AddEventListenerOptions|boolean=} mode
+ */
+
+function add_listener(node, event, fn, mode){
+
+    node.addEventListener(event || "click", fn, typeof mode === "undefined" ? true : mode);
+}
+
+let tmp = 0;
+
+/**
+ * @param node
+ * @param style
+ * @param {string|number=} value
+ */
+
+function prepare_animated_style(node, style, value){
+
+    setStyle(node, "transition", "none");
+    setStyle(node, style, value);
+
+    // force styles (quick-fix for closure compiler):
+    tmp || (tmp = node.clientTop && 0);
+
+    setStyle(node, "transition", "");
+}
+
+function autohide(){
+
+    if(hide){
+
+        clearTimeout(hide);
+    }
+    else{
+
+        addClass(target, "menu");
     }
 
-    add_listener(document, "DOMContentLoaded", function(){
-
-        target = document.createElement("div");
-        target.id = "spotlight";
-        target.style.backgroundImage = "url(" + image_preloader + ")";
-        target.innerHTML = template;
-
-        document.body.appendChild(target);
-
-        document["cancelFullScreen"] || (document["cancelFullScreen"] = (
-
-            document["exitFullscreen"] ||
-            document["webkitCancelFullScreen"] ||
-            document["webkitExitFullscreen"] ||
-            document["mozCancelFullScreen"] ||
-            setStyle("#spotlight .fullscreen", "display", "none") ||
-            function(){}
-        ));
-
-        slider = getNode(".scene", target);
-
-        //add_listener(slider, "", click);
-        add_listener(slider, "mousedown", start);
-        add_listener(slider, "mouseleave", end);
-        add_listener(slider, "mouseup", end);
-        add_listener(slider, "mousemove", move);
-
-        add_listener(slider, "touchstart", start, {"passive": true});
-        add_listener(slider, "touchcancel", end);
-        add_listener(slider, "touchend", end);
-        add_listener(slider, "touchmove", move, {"passive": true});
-
-        add_listener(getNode(".fullscreen", target),"", toggle_fullscreen);
-        add_listener(getNode(".reset", target),"", zoom_reset);
-        add_listener(getNode(".maximize", target),"", zoom_in);
-        add_listener(getNode(".minimize", target),"", zoom_out);
-        add_listener(getNode(".close", target),"", close_gallery);
-        add_listener(getNode(".arrow-left", target), "", arrow_left);
-        add_listener(getNode(".arrow-right", target), "", arrow_right);
-        add_listener(getNode(".contrast", target), "", toggle_contrast);
-    });
-
-    add_listener(window, "", function(event){
-
-        event || (event = window.event);
-
-        const target = event.target;
-
-        if(target && hasClass(target, "spotlight")){
-
-            return window["dispatch_spotlight"].call(target, event);
-        }
-    });
-
-    /**
-     * @param {!Window|Document|Element} node
-     * @param {string} event
-     * @param {Function} fn
-     * @param {!AddEventListenerOptions|boolean=} mode
-     */
-
-    function add_listener(node, event, fn, mode){
-
-        node.addEventListener(event || "click", fn, typeof mode === "undefined" ? true : mode);
-    }
-
-    let tmp = 0;
-
-    function prepare_animated_style(selector, style, value, callback){
-
-        const node = getNode(selector);
-
-        addClass(node, "no-transition");
-        setStyle(node, style, value);
-
-        // force styles (quick-fix for closure compiler):
-        tmp || (tmp = node.clientTop && 0);
-
-        removeClass(node, "no-transition");
-
-        if(callback){
-
-            callback();
-            callback = null;
-        }
-    }
-
-    function autohide(){
-
-        if(hide){
-
-            clearTimeout(hide);
-        }
-        else{
-
-            addClass(target, "menu");
-        }
+    if(options["autohide"] !== "false") {
 
         hide = setTimeout(function(){
 
@@ -339,400 +342,478 @@ import template from "../../tmp/template.js";
 
         }, 2000);
     }
+    else{
 
-    function click(e){
+        hide = 1;
+    }
+}
 
-        if(hide){
+function click(e){
 
-            hide = clearTimeout(hide);
-            removeClass(target, "menu");
+    if(hide){
+
+        hide = clearTimeout(hide);
+        removeClass(target, "menu");
+    }
+    else{
+
+        autohide();
+    }
+
+    return clear(e);
+}
+
+function start(e){
+
+    const touch = pointer(e);
+
+    bodyW = document.body.clientWidth;
+    bodyH = document.body.clientHeight;
+    imageW = image.width * zoom;
+    imageH = image.height * zoom;
+    swipe = imageW <= bodyW;
+    is_down = true;
+    dragged = false;
+    startX = touch.x;
+    startY = touch.y;
+
+    return clear(e, true);
+}
+
+function end(e){
+
+    is_down = false;
+
+    if(!dragged){
+
+        return click(e);
+    }
+    else if(swipe){
+
+        const scene = getByClass("scene", target)[0];
+
+        prepare_animated_style(scene, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)");
+
+        if((x < -(bodyH / 5)) && arrow_right()){
+
+
+        }
+        else if((x > bodyH / 5) && arrow_left()){
+
+
         }
         else{
 
-            autohide();
+            setStyle(scene, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
         }
 
-        return clear(e);
+        x = 0;
+        swipe = false;
+
+        setStyle(panel, "transform", "");
     }
 
-    function start(e){
+    return clear(e);
+}
+
+function move(e){
+
+    if(is_down){
+
+        timer || request();
 
         const touch = pointer(e);
+        const diff = (imageW - (imageW / zoom)) / 2;
 
-        bodyW = document.body.clientWidth;
-        bodyH = document.body.clientHeight;
-        imageW = image.width * zoom;
-        imageH = image.height * zoom;
+        dragged = true;
         swipe = imageW <= bodyW;
-        is_down = true;
-        dragged = false;
-        startX = touch.x;
-        startY = touch.y;
 
-        return false; //clear(e);
-    }
+        x -= startX - (startX = touch.x);
 
-    function end(e){
+        if(!swipe){
 
-        if(!dragged){
+            if(x > diff){
 
-            return click(e);
-        }
-        else if(swipe){
+                x = diff;
+            }
+            else if((bodyW - x - imageW + diff) > 0){
 
-            setStyle("#spotlight .scene", "transition", "transform 1s cubic-bezier(0.1, 1, 0.1, 1)");
-
-            prepare_animated_style("#spotlight .scene", "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)", function(){
-
-                if((x < -(bodyH / 5)) && arrow_right()){
-
-
-                }
-                else if((x > bodyH / 5) && arrow_left()){
-
-
-                }
-                else{
-
-                    setStyle("#spotlight .scene", "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
-                }
-
-                x = 0;
-                swipe = false;
-            });
-
-            requestAnimationFrame(function(){
-
-                setStyle(panel, "transform", "");
-            });
-        }
-
-        is_down = false;
-
-        return clear(e);
-    }
-
-    function move(e){
-
-        if(is_down){
-
-            dragged = true;
-
-            const touch = pointer(e);
-
-            swipe = imageW <= bodyW;
-
-            const diff = (imageW - (imageW / zoom)) / 2;
-
-            x -= startX - (startX = touch.x);
-
-            if(!swipe){
-
-                if(x > diff){
-
-                    x = diff;
-                }
-                else if((bodyW - x - imageW + diff) > 0){
-
-                    x = bodyW - imageW + diff;
-                }
-                else{
-
-                    changed = true;
-                }
+                x = bodyW - imageW + diff;
             }
             else{
 
                 changed = true;
             }
+        }
+        else{
 
-            if(imageH > bodyH){
+            changed = true;
+        }
 
-                // TODO: solve this by computation
-                const diff = maxHeight === "none" ? (imageH - (imageH / zoom)) / 2 : (imageH - bodyH) / 2;
+        if(imageH > bodyH){
 
-                y -= startY - (startY = touch.y);
+            // TODO: solve this by computation
+            const diff = maxHeight === "none" ? (imageH - (imageH / zoom)) / 2 : (imageH - bodyH) / 2;
 
-                if(y > diff){
+            y -= startY - (startY = touch.y);
 
-                    y = diff;
-                }
-                else if((bodyH - y - imageH + diff) > 0){
+            if(y > diff){
 
-                    y = bodyH - imageH + diff;
-                }
-                else{
-
-                    changed = true;
-                }
+                y = diff;
             }
+            else if((bodyH - y - imageH + diff) > 0){
 
-            timer || request();
-        }
-        else{
-
-            autohide();
-        }
-
-        return false; //clear(e);
-    }
-
-    function pointer(event){
-
-        let touches = event.touches;
-
-        if(touches){
-
-            touches = touches[0];
-        }
-
-        return {
-
-            x: touches ? touches["clientX"] : event["pageX"],
-            y: touches ? touches["clientY"] : event["pageY"]
-        };
-    }
-
-    function update(){
-
-        if(changed){
-
-            request();
-
-            const curX = (x + 0.5) | 0;
-            const curY = (y + 0.5) | 0;
-
-            if((lastX !== curX) || (lastY !== curY)){
-
-                setStyle(panel, "transform", "translate(" + (lastX = curX) + "px, " + (lastY = curY) + "px)");
-            }
-        }
-        else{
-
-            timer = null;
-        }
-
-        changed = false;
-    }
-
-    function request(){
-
-        timer = requestAnimationFrame(update);
-    }
-
-    /** @this {Element} */
-
-    function toggle_fullscreen(){
-
-        if(toggle_fullscreen_mode()){
-
-            this.firstElementChild.src = image_minimize;
-        }
-        else{
-
-            this.firstElementChild.src = image_maximize;
-        }
-    }
-
-    function zoom_reset(){
-
-        //const body = document.body;
-        //const image = getNode("#spotlight .scene img");
-
-        //x = (body.clientWidth - image.naturalWidth) / 2;
-        //y = (body.clientHeight - image.naturalHeight) / 2;
-
-        x = 0;
-        y = 0;
-
-        toggle = (zoom === 1) && !toggle;
-
-        setStyle(image, {
-
-            "maxHeight": maxHeight = toggle ? "none" : "100%",
-            "maxWidth": toggle ? "none" : "100%",
-            "transform": "translate(-50%, -50%) scale(1)"
-        });
-
-        //panel.style.transform = toggle ? "translate(" + ((x + 0.5) | 0) + "px, " + ((y + 0.5) | 0) + "px)" : "";
-
-        zoom = 1;
-    }
-
-    function zoom_in(){
-
-        setStyle(image, "transform", "translate(-50%, -50%) scale(" + (zoom /= 0.65) + ")");
-
-        autohide();
-    }
-
-    function zoom_out(){
-
-        if(zoom > 1){
-
-            //TODO: keep center
-
-            zoom *= 0.65;
-
-            if(maxHeight === "none"){
-
-                const body = document.body;
-
-                x = (body.clientWidth - image.naturalWidth) / 2;
-                y = (body.clientHeight - image.naturalHeight) / 2;
+                y = bodyH - imageH + diff;
             }
             else{
 
-                x = 0;
-                y = 0;
+                changed = true;
             }
-
-            setStyle(image, "transform", "translate(-50%, -50%) scale(" + zoom + ")");
-            //getNode("#spotlight .scene div").style.transform = "translate(" + x + "px, " + y + "px)";
-        }
-
-        autohide();
-    }
-
-    function show_gallery(){
-
-        addClass(target,"show");
-
-        autohide();
-    }
-
-    function close_gallery(){
-
-        removeClass(target,"show");
-
-        const images = getNodes("#spotlight .scene img");
-
-        for(let i = 0; i < images.length; i++){
-
-            images[i].src = transparent_pixel;
-            images[i].loaded = false;
-        }
-
-        panel = null;
-        image = null;
-    }
-
-    function arrow_left(){
-
-        autohide();
-
-        if(current_slide > 1){
-
-            current_slide--;
-            paginate();
-
-            return true;
         }
     }
-
-    function arrow_right(){
+    else{
 
         autohide();
-
-        if(current_slide < slide_count){
-
-            current_slide++;
-            paginate();
-
-            return true;
-        }
     }
 
-    let contrast = false;
+    return clear(e, true);
+}
 
-    function toggle_contrast(){
+function pointer(event){
 
-        autohide();
+    let touches = event.touches;
 
-        if((contrast = !contrast)){
+    if(touches){
 
-            addClass(target, "white");
+        touches = touches[0];
+    }
+
+    return {
+
+        x: touches ? touches["clientX"] : event["pageX"],
+        y: touches ? touches["clientY"] : event["pageY"]
+    };
+}
+
+function update(){
+
+    if(changed){
+
+        request();
+
+        setStyle(panel, "transform", "translate(" + x + "px, " + y + "px)");
+    }
+    else{
+
+        timer = null;
+    }
+
+    changed = false;
+}
+
+function request(){
+
+    timer = requestAnimationFrame(update);
+}
+
+/** @this {Element} */
+
+export function toggle_fullscreen(){
+
+    if(toggle_fullscreen_mode()){
+
+        this.firstElementChild.src = image_minimize;
+    }
+    else{
+
+        this.firstElementChild.src = image_maximize;
+    }
+}
+
+export function zoom_reset(){
+
+    //const body = document.body;
+    //const image = getNode("#spotlight .scene img");
+
+    //x = (body.clientWidth - image.naturalWidth) / 2;
+    //y = (body.clientHeight - image.naturalHeight) / 2;
+
+    x = 0;
+    y = 0;
+
+    toggle = (zoom === 1) && !toggle;
+
+    setStyle(image, {
+
+        "maxHeight": maxHeight = (toggle ? "none" : ""),
+        "maxWidth": toggle ? "none" : "",
+        "transform": ""
+    });
+
+    //panel.style.transform = toggle ? "translate(" + ((x + 0.5) | 0) + "px, " + ((y + 0.5) | 0) + "px)" : "";
+
+    zoom = 1;
+}
+
+export function zoom_in(){
+
+    zoom_to(zoom /= 0.65);
+}
+
+export function zoom_to(factor){
+
+    setStyle(image, "transform", "translate(-50%, -50%) scale(" + factor + ")");
+    autohide();
+}
+
+export function zoom_out(){
+
+    if(zoom > 1){
+
+        //TODO: keep center
+
+        zoom *= 0.65;
+
+        if(maxHeight === "none"){
+
+            const body = document.body;
+
+            x = (body.clientWidth - image.naturalWidth) / 2;
+            y = (body.clientHeight - image.naturalHeight) / 2;
         }
         else{
 
-            removeClass(target, "white");
+            x = 0;
+            y = 0;
+        }
+
+        zoom_to(zoom);
+
+        //getNode("#spotlight .scene div").style.transform = "translate(" + x + "px, " + y + "px)";
+    }
+
+    autohide();
+}
+
+/**
+ * @param {Object=} config
+ */
+
+export function show_gallery(config){
+
+    if(config) apply_options(null, {"dataset": config});
+
+    addClass(target,"show");
+    autohide();
+}
+
+export function close_gallery(){
+
+    removeClass(target,"show");
+
+    const images = getByTag("img", getByClass("scene", target)[0])[0];
+
+    for(let i = 0; i < images.length; i++){
+
+        images[i].src = transparent_pixel;
+        images[i].loaded = false;
+    }
+
+    panel = null;
+    image = null;
+}
+
+export function arrow_left(){
+
+    autohide();
+
+    if(current_slide > 1){
+
+        current_slide--;
+        paginate(false);
+
+        return true;
+    }
+}
+
+export function arrow_right(){
+
+    autohide();
+
+    if(current_slide < slide_count){
+
+        current_slide++;
+        paginate(true);
+
+        return true;
+    }
+}
+
+export function goto_slide(slide){
+
+    if(slide !== current_slide){
+
+        autohide();
+
+        const dir = slide > current_slide;
+
+        current_slide = slide;
+        paginate(dir);
+
+        return true;
+    }
+}
+
+let contrast = false;
+
+export function toggle_contrast(){
+
+    autohide();
+
+    if((contrast = !contrast)){
+
+        addClass(target, "white");
+    }
+    else{
+
+        removeClass(target, "white");
+    }
+}
+
+/**
+ * @param {boolean=} direction
+ */
+
+function paginate(direction){
+
+    x = 0;
+    y = 0;
+    zoom = 1;
+
+    const animation = {};
+    const option = options["animation"];
+
+    let animation_scale = true;
+    let animation_fade = true;
+    let animation_slide = true;
+    let animation_rotate = false;
+
+    if(typeof option !== "undefined"){
+
+        animation_scale = false;
+        animation_fade = false;
+        animation_slide = false;
+        animation_rotate = false;
+
+        const effects = option.split(",");
+
+        for(let i = 0; i < effects.length; i++){
+
+            const effect = effects[i].trim();
+
+                 if(effect === "scale") animation_scale = true;
+            else if(effect === "fade") animation_fade = true;
+            else if(effect === "slide") animation_slide = true;
+            else if(effect === "rotate") animation_rotate = true;
         }
     }
 
-    function paginate(){
+    setStyle(slider, "transition", animation_slide ? "" : "none");
+    setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
+    setStyle(panel, "transform", "");
 
-        x = 0;
-        y = 0;
-        zoom = 1;
+    setStyle(image, {
+        "opacity": animation_fade ? 0 : 1,
+        "transform": ""
+    });
 
-        setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
-        setStyle(panel, "transform", "");
-        setStyle(image, {
-            "opacity": 0,
-            "transform": "translate(-50%, -50%) scale(1)"
-        });
+    setStyle(image, animation);
 
-        init_slide(current_slide);
+    const ref = image;
 
-        prepare_animated_style(image, {
+    setTimeout(function(){
 
-            "opacity": 0,
-            "transform": "translate(-50%, -50%) scale(0.8)",
-            "maxHeight": "100%",
-            "maxWidth": "100%"
+        if(image !== ref){
 
-        }, null, function(){
+            ref.src = transparent_pixel;
+        }
 
-            setStyle(panel, "transform", "");
-            setStyle(image, {
-                "opacity": 1,
-                "transform": "translate(-50%, -50%) scale(1)"
-            });
-        });
+    }, 800);
 
-        setStyle("#spotlight .arrow-left", "visibility", current_slide === 1 ? "hidden" : "");
-        setStyle("#spotlight .arrow-right", "visibility", current_slide === slide_count ? "hidden" : "");
-        getNode("#spotlight .page").textContent = current_slide + " / " + slide_count;
-    }
+    init_slide(current_slide);
 
-    function clear(event){
+    prepare_animated_style(image, {
 
-        event || (event = window.event);
-        event.preventDefault();
+        "opacity": animation_fade ? 0 : 1,
+        "transform": "translate(-50%, -50%)" + (animation_scale ? " scale(0.8)" : "") + (animation_rotate && (typeof direction !== "undefined") ? " rotateY(" + (direction ? "" : "-") + "135deg)" : ""),
+        "maxHeight": "",
+        "maxWidth": ""
+    });
+
+    setStyle(panel, "transform", "");
+    setStyle(image, {
+        "opacity": 1,
+        "transform": ""
+    });
+
+    setStyle(getByClass("arrow-left", target)[0], "visibility", current_slide === 1 ? "hidden" : "");
+    setStyle(getByClass("arrow-right", target)[0], "visibility", current_slide === slide_count ? "hidden" : "");
+    getByClass("page", target)[0].textContent = current_slide + " / " + slide_count;
+}
+
+/**
+ * @param event
+ * @param {boolean=} passive
+ * @returns {boolean}
+ */
+
+function clear(event, passive){
+
+    event || (event = window.event);
+
+    if(event){
+
+        if(!passive) event.preventDefault();
         event.stopImmediatePropagation();
-        event.returnValue = false;
-
-        return false;
+        event.returnValue = false
     }
 
-    /**
-     * Toggle fullscreen function who work with webkit and firefox.
-     * @function toggle_fullscreen
-     * @param {!Object=} target
-     */
+    return false;
+}
 
-    function toggle_fullscreen_mode(target) {
+/**
+ * Toggle fullscreen function who work with webkit and firefox.
+ * @function toggle_fullscreen
+ * @param {!Object=} target
+ */
 
-        target || (target = document.documentElement || document.body);
+function toggle_fullscreen_mode(target) {
 
-        const isFullscreen = (
+    const doc = document.documentElement || document.body;
 
-            document["isFullScreen"] ||
-            document["webkitIsFullScreen"] ||
-            document["mozFullScreen"] ||
-            false
-        );
+    const isFullscreen = (
 
-        target["requestFullScreen"] || (target["requestFullScreen"] = (
+        document["isFullScreen"] ||
+        document["webkitIsFullScreen"] ||
+        document["mozFullScreen"]
+    );
 
-            target["webkitRequestFullScreen"] ||
-            target["msRequestFullScreen"] ||
-            target["mozRequestFullScreen"] ||
-            function(){}
-        ));
+    isFullscreen ? document["cancelFullScreen"]() : doc["requestFullScreen"]();
 
-        isFullscreen ? document["cancelFullScreen"]() : target["requestFullScreen"]();
+    return !isFullscreen;
+}
 
-        return !isFullscreen;
-    }
-}());
+window["spotlight"] = {
+
+    "toggleContrast" : toggle_contrast,
+    "toggleFullscreen": toggle_fullscreen,
+    "next": arrow_right,
+    "prev": arrow_left,
+    "goto": goto_slide,
+    "show": show_gallery,
+    "hide": close_gallery,
+    "zoomTo": zoom_to,
+    "zoomIn": zoom_in,
+    "zoomOut": zoom_out,
+    "zoomReset": zoom_reset
+};
