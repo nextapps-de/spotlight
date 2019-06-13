@@ -249,6 +249,25 @@ export function getStyle(selector, style){
     }
 }
 
+let tmp = 0;
+
+/**
+ * @param node
+ * @param style
+ * @param {string|number=} value
+ */
+
+export function prepareStyle(node, style, value){
+
+    setStyle(node, "transition", "none");
+    setStyle(node, style, value);
+
+    // force styles (quick-fix for closure compiler):
+    tmp || (tmp = node.clientTop && 0);
+
+    setStyle(node, "transition", "");
+}
+
 /**
  * @param {string|Node|Element} selector
  * @param {string|Node|Element=} context

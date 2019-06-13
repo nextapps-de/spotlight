@@ -1,5 +1,5 @@
 /**!
- * @preserve Spotlight.js v0.1.0
+ * @preserve Spotlight.js v0.1.1
  * Copyright 2019 Nextapps GmbH
  * Author: Thomas Wilkerling
  * Released under the Apache 2.0 Licence
@@ -9,10 +9,10 @@
 "use strict";
 
 import "./config.js";
-import { addClass, removeClass, setStyle, getByClass, getByTag } from "./dom.js";
-import images_base64 from "../../tmp/images.js";
+import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag } from "./dom.js";
 import stylesheet from "../../tmp/style.js";
 import template from "../../tmp/template.js";
+import template_module from "./template.js";
 
 if(BUILD_BUNDLE){
 
@@ -20,10 +20,6 @@ if(BUILD_BUNDLE){
     style.innerHTML = stylesheet;
     getByTag("head")[0].appendChild(style);
 }
-
-//const transparent_pixel = BUILD_BUNDLE ? images_base64.pixel : "img/pixel.gif";
-const image_maximize = BUILD_BUNDLE ? images_base64.maximize : "img/maximize.svg";
-const image_minimize = BUILD_BUNDLE ? images_base64.minimize : "img/minimize.svg";
 
 const controls = [
 
@@ -64,9 +60,13 @@ let panel;
 let panes;
 let image;
 let target;
+let footer;
+let title;
+let description;
 
 let timer = null;
 let hide = null;
+let doc;
 
 /**
  * @this {Element}
@@ -84,7 +84,7 @@ function dispatch(event){
     const context = self.closest(".spotlight-group");
     const anchors = getByClass("spotlight", context);
 
-    apply_options(context, self);
+    apply_options(self.dataset, context && context.dataset);
 
     // determine index
 
@@ -110,13 +110,20 @@ function init_gallery(anchors, index){
 
         const length = panes.length;
 
+        const options_title = options["title"];
+        const options_description = options["description"];
+
+        // TODO initialize when sliding on the fly
+
         for(let i = 0; i < slide_count; i++){
 
-            const src = anchors[i].href || anchors[i].src;
+            const anchor = anchors[i];
+
+            let dataset;
 
             if(i < length){
 
-                panes[i].dataset.src = src;
+                dataset = panes[i];
             }
             else{
 
@@ -124,24 +131,58 @@ function init_gallery(anchors, index){
 
                 setStyle(clone, "left", (i * 100) + "%");
                 panes[0].parentNode.appendChild(clone);
-                clone.dataset.src = src;
+                dataset = clone;
+            }
+
+            let tmp;
+
+            dataset = dataset.dataset;
+            dataset.src = anchor.href || anchor.src;
+
+            const anchor_dataset = anchor.dataset;
+
+            if(options_title !== "false"){
+
+                dataset.title = (
+
+                    anchor["title"] ||
+                    (anchor_dataset && anchor_dataset.title) ||
+                    ((tmp = getByTag("img", anchor)).length && tmp[0]["alt"]) ||
+                    options_title ||
+                    ""
+                );
+            }
+
+            if(options_description !== "false"){
+
+                dataset.description = (
+
+                    anchor["description"] ||
+                    (anchor_dataset && anchor_dataset.description) ||
+                    options_description ||
+                    ""
+                );
             }
         }
 
-        prepare_animated_style(slider, "transform", "translateX(-" + (((index || 1) - 1) * 100) + "%)");
-
+        prepareStyle(slider, "transform", "translateX(-" + (((index || 1) - 1) * 100) + "%)");
         init_slide(index || 1);
         paginate();
     }
 }
 
-function apply_options(group, anchor){
+/**
+ * @param {Object} anchor
+ * @param {Object=} group
+ */
+
+function apply_options(anchor, group){
 
     // merge inherited options
 
     options = {};
-    group && object_assign(options, group.dataset);
-    object_assign(options, anchor.dataset);
+    group && object_assign(options, group);
+    object_assign(options, anchor);
 
     // handle shorthand "zoom"
 
@@ -224,12 +265,23 @@ function init_slide(index){
     if(!image){
 
         addClass(target, "loading");
+        setStyle(footer, "visibility", "hidden");
 
         image = new Image();
+
+        const dataset = panel.dataset;
 
         image.onload = /** @this {Image} */ function(){
 
             removeClass(target, "loading");
+
+            if(dataset.title || dataset.description){
+
+                title.textContent = dataset.title;
+                description.textContent = dataset.description;
+
+                setStyle(footer, "visibility", "visible");
+            }
 
             setStyle(image, {
 
@@ -244,11 +296,8 @@ function init_slide(index){
             panel.removeChild(image);
         };
 
-        image.src = panel.dataset.src;
-
-        setStyle(image, "visibility", "hidden");
-
         panel.appendChild(image);
+        image.src = dataset.src;
     }
 }
 
@@ -256,7 +305,7 @@ add_listener(document, "DOMContentLoaded", function(){
 
     target = document.createElement("div");
     target.id = "spotlight";
-    target.innerHTML = template;
+    target.innerHTML = BUILD_BUNDLE ? template : template_module;
 
     document.body.appendChild(target);
 
@@ -269,7 +318,7 @@ add_listener(document, "DOMContentLoaded", function(){
         function(){}
     ));
 
-    const doc = document.documentElement || document.body;
+    doc = document.documentElement || document.body;
 
     doc["requestFullScreen"] || (doc["requestFullScreen"] = (
 
@@ -281,6 +330,9 @@ add_listener(document, "DOMContentLoaded", function(){
     ));
 
     slider = getByClass("scene", target)[0];
+    footer = getByClass("footer", target)[0];
+    title = getByClass("title", footer)[0];
+    description = getByClass("description", footer)[0];
 
     add_listener(slider, "mousedown", start);
     add_listener(slider, "mouseleave", end);
@@ -316,25 +368,6 @@ function add_listener(node, event, fn, mode){
     node.addEventListener(event || "click", fn, typeof mode === "undefined" ? true : mode);
 }
 
-let tmp = 0;
-
-/**
- * @param node
- * @param style
- * @param {string|number=} value
- */
-
-function prepare_animated_style(node, style, value){
-
-    setStyle(node, "transition", "none");
-    setStyle(node, style, value);
-
-    // force styles (quick-fix for closure compiler):
-    tmp || (tmp = node.clientTop && 0);
-
-    setStyle(node, "transition", "");
-}
-
 function autohide(){
 
     if(hide){
@@ -363,6 +396,11 @@ function autohide(){
 
 function click(e){
 
+    if(typeof e === "boolean"){
+
+        hide = e ? hide : 0;
+    }
+
     if(hide){
 
         hide = clearTimeout(hide);
@@ -378,6 +416,9 @@ function click(e){
 
 function start(e){
 
+    is_down = true;
+    dragged = false;
+
     const touch = pointer(e);
 
     bodyW = document.body.clientWidth;
@@ -385,8 +426,6 @@ function start(e){
     imageW = image.width * zoom;
     imageH = image.height * zoom;
     swipe = imageW <= bodyW;
-    is_down = true;
-    dragged = false;
     startX = touch.x;
     startY = touch.y;
 
@@ -403,7 +442,7 @@ function end(e){
     }
     else if(swipe){
 
-        prepare_animated_style(slider, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)");
+        prepareStyle(slider, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)");
 
         if((x < -(bodyH / 5)) && arrow_right()){
 
@@ -527,21 +566,42 @@ function request(){
     timer = requestAnimationFrame(update);
 }
 
-/** @this {Element} */
+/**
+ * @param {boolean=} init
+ */
 
-export function toggle_fullscreen(){
+export function toggle_fullscreen(init){
 
-    if(toggle_fullscreen_mode()){
+    const isFullscreen = (
 
-        this.firstElementChild.src = image_minimize;
-    }
-    else{
+        typeof init === "boolean" ?
 
-        this.firstElementChild.src = image_maximize;
-    }
+            init
+        :
+            document["isFullScreen"] ||
+            document["webkitIsFullScreen"] ||
+            document["mozFullScreen"]
+    );
+
+    isFullscreen ?
+
+        document["cancelFullScreen"]()
+    :
+        doc["requestFullScreen"]();
+
+    return !isFullscreen;
 }
 
-export function toggle_autofit(){
+/**
+ * @param {boolean=} init
+ */
+
+export function toggle_autofit(init){
+
+    if(typeof init === "boolean"){
+
+        toggle = !init;
+    }
 
     //const body = document.body;
     //const image = getNode("#spotlight .scene img");
@@ -571,9 +631,13 @@ export function zoom_in(){
     zoom_to(zoom /= 0.65);
 }
 
+/**
+ * @param {number=} factor
+ */
+
 export function zoom_to(factor){
 
-    setStyle(image, "transform", "translate(-50%, -50%) scale(" + factor + ")");
+    setStyle(image, "transform", "translate(-50%, -50%) scale(" + (factor || 1) + ")");
     autohide();
 }
 
@@ -599,8 +663,6 @@ export function zoom_out(){
         }
 
         zoom_to(zoom);
-
-        //getNode("#spotlight .scene div").style.transform = "translate(" + x + "px, " + y + "px)";
     }
 
     autohide();
@@ -612,12 +674,14 @@ export function zoom_out(){
 
 export function show_gallery(config){
 
-    addClass(target,"show");
+    addClass(doc, "hide-scrollbars");
+    addClass(target, "show");
     autohide();
 }
 
 export function close_gallery(){
 
+    removeClass(doc, "hide-scrollbars");
     removeClass(target, "show");
 
     image.parentNode.removeChild(image);
@@ -668,11 +732,24 @@ export function goto_slide(slide){
 
 let theme = false;
 
-export function toggle_theme(){
+/**
+ * @param {boolean=} init
+ */
+
+export function toggle_theme(init){
 
     autohide();
 
-    if((theme = !theme)){
+    if(typeof init === "boolean"){
+
+        theme = init;
+    }
+    else{
+
+        theme = !theme;
+    }
+
+    if(theme){
 
         addClass(target, "white");
     }
@@ -719,10 +796,11 @@ function paginate(direction){
         }
     }
 
+
+
     setStyle(slider, "transition", animation_slide ? "" : "none");
     setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
     setStyle(panel, "transform", "");
-
     setStyle(image, {
         "opacity": animation_fade ? 0 : 1,
         "transform": ""
@@ -741,7 +819,7 @@ function paginate(direction){
 
     init_slide(current_slide);
 
-    prepare_animated_style(image, {
+    prepareStyle(image, {
 
         "opacity": animation_fade ? 0 : 1,
         "transform": "translate(-50%, -50%)" + (animation_scale ? " scale(0.8)" : "") + (animation_rotate && (typeof direction !== "undefined") ? " rotateY(" + (direction ? "" : "-") + "135deg)" : ""),
@@ -780,40 +858,17 @@ function clear(event, passive){
     return false;
 }
 
-/**
- * Toggle fullscreen function who work with webkit and firefox.
- * @function toggle_fullscreen
- * @param {!Object=} target
- */
-
-function toggle_fullscreen_mode(target) {
-
-    const doc = document.documentElement || document.body;
-
-    const isFullscreen = (
-
-        document["isFullScreen"] ||
-        document["webkitIsFullScreen"] ||
-        document["mozFullScreen"]
-    );
-
-    isFullscreen ? document["cancelFullScreen"]() : doc["requestFullScreen"]();
-
-    return !isFullscreen;
-}
-
 window["Spotlight"] = {
 
-    "toggleTheme" : toggle_theme,
-    "toggleFullscreen": toggle_fullscreen,
-    "toggleAutofit": toggle_autofit,
+    "theme": toggle_theme,
+    "fullscreen": toggle_fullscreen,
+    "autofit": toggle_autofit,
     "next": arrow_right,
     "prev": arrow_left,
     "goto": goto_slide,
     "close": close_gallery,
-    "zoomIn": zoom_in,
-    "zoomOut": zoom_out,
-    "zoomTo": zoom_to,
+    "zoom": zoom_to,
+    "menu": click,
     "show": function(gallery, config){
 
         setTimeout(function(){
@@ -826,7 +881,7 @@ window["Spotlight"] = {
                 }
                 else{
 
-                    apply_options(null, {"dataset": config});
+                    apply_options(config);
                 }
 
                 init_gallery(gallery, config["index"]);

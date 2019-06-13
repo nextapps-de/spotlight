@@ -1,12 +1,12 @@
 /*@import "animation.less";*/
 
 #spotlight {
+  *{
+    -webkit-text-size-adjust: 100%;
+  }
   & {
     position: fixed;
     top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     z-index: 99999;
@@ -19,9 +19,10 @@
     user-select: none;
     transition: visibility 0.25s ease,
                 opacity 0.25s ease;
+    font-family: Helvetica, Arial, sans-serif;
     font-size: 16px;
+    font-weight: 400;
     contain: layout size paint style;
-    -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
   }
   &.show{
@@ -34,9 +35,6 @@
     display: none;
     position: absolute;
     top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     background-position: center center;
@@ -49,14 +47,10 @@
   .scene {
     position: absolute;
     top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     transition: transform 1s cubic-bezier(0.1, 1, 0.1, 1);
     will-change: transform;
-    overflow: visible;
     contain: layout size style;
   }
   .scene img {
@@ -74,24 +68,19 @@
     will-change: transform, opacity;
     pointer-events: none;
     contain: layout paint style;
+    visibility: hidden;
   }
   .pane{
     position: absolute;
     top:0;
-    right:0;
-    bottom:0;
-    left:0;
     width:100%;
     height:100%;
-    overflow: visible;
     will-change: transform;
-    contain: layout size  style;
+    contain: layout size style;
   }
   .header {
     position: absolute;
     top: 0;
-    right: 0;
-    left: 0;
     width: 100%;
     height: 50px;
     table-layout: fixed;
@@ -124,6 +113,21 @@
     padding-left: 20px;
   }
   .footer{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    table-layout: fixed;
+    background-color: rgba(0, 0, 0, 0.45);
+    line-height: 1.35em;
+    padding: 15px 25px;
+    contain: layout size paint style;
+  }
+  .footer .title{
+    font-size: 125%;
+    padding-bottom: 10px;
+  }
+  .fullscreen img:last-child {
     display: none;
   }
   .arrow {
@@ -175,22 +179,37 @@
   &.white {
     .preloader,
     .arrow,
-    .header{
+    .header,
+    .footer{
       filter: invert(1);
     }
   }
 }
 
-/*
-.spotlight{
-  display: inline-block;
+:fullscreen #spotlight .fullscreen{
+  img:first-child {
+    display: none;
+  }
+  img:last-child {
+    display: block;
+  }
 }
-*/
 
-@media (max-width: 500px) {
+.hide-scrollbars{
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+  overflow: -moz-hidden-unscrollable;
+  -ms-overflow-style: none;
+}
+
+@media (max-width: 800px) {
   #spotlight {
     .header td {
       width: 40px;
+    }
+    .footer{
+      font-size: 12px;
     }
     .arrow {
       width: 35px;

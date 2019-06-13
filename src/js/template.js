@@ -2,6 +2,7 @@ import images_base64 from "../../tmp/images.js";
 
 const image_preloader = BUILD_BUNDLE ? images_base64.preloader : "img/preloader.svg";
 const image_maximize = BUILD_BUNDLE ? images_base64.maximize : "img/maximize.svg";
+const image_minimize = BUILD_BUNDLE ? images_base64.minimize : "img/minimize.svg";
 const image_arrow = BUILD_BUNDLE ? images_base64.arrow : "img/arrow.svg";
 const image_close = BUILD_BUNDLE ? images_base64.close : "img/close.svg";
 const image_zoom_in = BUILD_BUNDLE ? images_base64.zoomin : "img/zoom-in.svg";
@@ -23,6 +24,7 @@ export default (
             <td style="width:90%">
             <td class=fullscreen>
                 <img src="${image_maximize}">
+                <img src="${image_minimize}">
             <td class=autofit>
                 <img src="${image_autofit}">
             <td class=zoom-out>
@@ -40,8 +42,10 @@ export default (
     <div class="arrow arrow-right">
         <img src="${image_arrow}">
     </div>
-    <div class=footer>
-        <b class=title></b>
-        <p class=description></p>
-    </div>`
+    <table class=footer>
+        <tr>
+            <td class=title>
+        <tr>
+            <td class=description>
+    </table>`
 );

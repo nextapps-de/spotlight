@@ -17,7 +17,7 @@
 - No additional CSS resources
 - No additional images/assets
 - No additional handling of event listener
-- All in all just 5kb gzip
+- All in all just 6kb gzip
 
 __Demo:__ https://nextapps-de.github.io/spotlight/
 
@@ -26,7 +26,7 @@ Alternatively you can use the non-bundled version of this library (classically c
 <a name="started" id="started"></a>
 ## Getting Started
 
-__Get Latest (Bundle, 5kb gzip):__
+__Get Latest (Bundle, 6kb gzip):__
 
 <table>
     <tr></tr>
@@ -217,7 +217,7 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     <tr>
         <td>data-title</td>
         <td>string / false</td>
-        <td>Set image title or hide it<br><br><b>Note:</b> When using image elements, this attribute will also inherit automatically from <code>&lt;img alt=&quot;...&quot;&gt;</code> as well as from <code>&lt;img title=&quot;...&quot;&gt;</code>. To prevent this behavior you can set <code>data-title=""</code>. This will hide the title regardless of any image attributes.</td>
+        <td>Set image title or hide it<br><br><b>Note:</b> When using image elements, this attribute will also inherit automatically from <code>&lt;img alt=&quot;...&quot;&gt;</code>. To prevent this behavior you can set <code>data-title="false"</code>. This will hide the title regardless of any image alt-attributes.</td>
     </tr>
     <tr></tr>
     <tr>
@@ -299,13 +299,13 @@ var gallery = [{
 }];
 ```
 
-Show gallery:
+Show gallery with default options:
 
 ```js
 Spotlight.show(gallery);
 ```
 
-Customize and show gallery:
+Show gallery with custom options:
 
 ```js
 Spotlight.show(gallery, {
@@ -340,40 +340,70 @@ Goto slide:
 Spotlight.goto(3);
 ```
 
-Zoom in:
-
-```js
-Spotlight.zoomIn();
-```
-
-Zoom out:
-
-```js
-Spotlight.zoomOut();
-```
-
 Zoom to:
 
 ```js
-Spotlight.zoomTo(1.5);
+Spotlight.zoom(1.5);
 ```
 
-Toggle Theme:
+Toggle theme:
 
 ```js
-Spotlight.toggleTheme();
+Spotlight.theme();
 ```
 
-Toggle Fullscreen:
+Set theme:
 
 ```js
-Spotlight.toggleFullscreen();
+Spotlight.theme("white");
+```
+```js
+Spotlight.theme("dark");
 ```
 
-Toggle Autofit:
+Toggle fullscreen:
 
 ```js
-Spotlight.toggleAutofit();
+Spotlight.fullscreen();
+```
+
+Set fullscreen:
+
+```js
+Spotlight.fullscreen(true);
+```
+```js
+Spotlight.fullscreen(false);
+```
+
+Toggle autofit:
+
+```js
+Spotlight.autofit();
+```
+
+Set autofit:
+
+```js
+Spotlight.autofit(true);
+```
+```js
+Spotlight.autofit(false);
+```
+
+Toggle menu:
+
+```js
+Spotlight.menu();
+```
+
+Set menu:
+
+```js
+Spotlight.menu(true);
+```
+```js
+Spotlight.menu(false);
 ```
 
 <a name="styling" id="styling"></a>
