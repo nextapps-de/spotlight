@@ -13,10 +13,10 @@ const { writeFileSync, readFileSync } = require('fs');
         close: base64Sync('src/img/close.svg'),
         maximize: base64Sync('src/img/maximize.svg'),
         minimize: base64Sync('src/img/minimize.svg'),
-        original: base64Sync('src/img/original.svg'),
+        autofit: base64Sync('src/img/autofit.svg'),
         zoomin: base64Sync('src/img/zoom-in.svg'),
         zoomout: base64Sync('src/img/zoom-out.svg'),
-        contrast: base64Sync('src/img/contrast.svg')
+        theme: base64Sync('src/img/theme.svg')
     };
 
     let tmp = "";

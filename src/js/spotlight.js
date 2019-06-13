@@ -1,5 +1,5 @@
 /**!
- * @preserve Spotlight.js v0.0.5
+ * @preserve Spotlight.js v0.1.0
  * Copyright 2019 Nextapps GmbH
  * Author: Thomas Wilkerling
  * Released under the Apache 2.0 Licence
@@ -14,10 +14,6 @@ import images_base64 from "../../tmp/images.js";
 import stylesheet from "../../tmp/style.js";
 import template from "../../tmp/template.js";
 
-const transparent_pixel = BUILD_BUNDLE ? images_base64.pixel : "img/pixel.gif";
-const image_maximize = BUILD_BUNDLE ? images_base64.maximize : "img/maximize.svg";
-const image_minimize = BUILD_BUNDLE ? images_base64.minimize : "img/minimize.svg";
-
 if(BUILD_BUNDLE){
 
     const style = document.createElement("style");
@@ -25,43 +21,52 @@ if(BUILD_BUNDLE){
     getByTag("head")[0].appendChild(style);
 }
 
+//const transparent_pixel = BUILD_BUNDLE ? images_base64.pixel : "img/pixel.gif";
+const image_maximize = BUILD_BUNDLE ? images_base64.maximize : "img/maximize.svg";
+const image_minimize = BUILD_BUNDLE ? images_base64.minimize : "img/minimize.svg";
+
 const controls = [
 
-    "contrast",
+    "theme",
     "fullscreen",
-    "reset",
-    "minimize",
-    "maximize",
+    "autofit",
+    "zoom-in",
+    "zoom-out",
     "page",
     "title",
     "description"
 ];
 
-let timer = null;
-let is_down = false;
-let changed = false;
-let toggle = false;
-let swipe = false;
-let dragged = false;
-let bodyW;
-let bodyH;
+let x;
+let y;
 let startX;
 let startY;
+let bodyW;
+let bodyH;
 let imageW;
 let imageH;
-let x = 0;
-let y = 0;
-let zoom = 1;
-let hide = null;
 let maxHeight;
+let zoom;
+
+let is_down = false;
+let dragged = false;
+let swipe = false;
+let changed = false;
+let toggle = false;
+
+let current_slide;
+let slide_count;
+/** @dict */
+let options;
+
 let slider;
 let panel;
 let panes;
 let image;
 let target;
-let current_slide;
-let slide_count;
-let options;
+
+let timer = null;
+let hide = null;
 
 /**
  * @this {Element}
@@ -87,41 +92,7 @@ function dispatch(event){
 
         if(anchors[i] === self){
 
-            slide_count = anchors.length;
-
-            if(slide_count){
-
-                panes = getByClass("pane", target);
-                const length = panes.length;
-
-                for(let a = 0; a < slide_count; a++){
-
-                    let image;
-
-                    if(a < length){
-
-                        image = panes[a].firstElementChild;
-                        image.dataset.src = anchors[a].href;
-                        image.loaded = false;
-                    }
-                    else{
-
-                        const clone = panes[0].cloneNode(true);
-
-                        image = clone.firstElementChild;
-                        image.dataset.src = anchors[a].href;
-                        image.loaded = false;
-                        setStyle(clone, "left", (a * 100) + "%");
-                        panes[0].parentNode.appendChild(clone);
-                    }
-                }
-
-                prepare_animated_style(slider, "transform", "translateX(-" + (((i || 1) - 1) * 100) + "%)");
-
-                init_slide(i || 1);
-                paginate();
-            }
-
+            init_gallery(anchors, i + 1);
             break;
         }
     }
@@ -131,28 +102,103 @@ function dispatch(event){
     return clear(event);
 }
 
+function init_gallery(anchors, index){
+
+    if((slide_count = anchors.length)){
+
+        panes || (panes = getByClass("pane", target));
+
+        const length = panes.length;
+
+        for(let i = 0; i < slide_count; i++){
+
+            const src = anchors[i].href || anchors[i].src;
+
+            if(i < length){
+
+                panes[i].dataset.src = src;
+            }
+            else{
+
+                const clone = panes[0].cloneNode(true);
+
+                setStyle(clone, "left", (i * 100) + "%");
+                panes[0].parentNode.appendChild(clone);
+                clone.dataset.src = src;
+            }
+        }
+
+        prepare_animated_style(slider, "transform", "translateX(-" + (((index || 1) - 1) * 100) + "%)");
+
+        init_slide(index || 1);
+        paginate();
+    }
+}
+
 function apply_options(group, anchor){
+
+    // merge inherited options
 
     options = {};
     group && object_assign(options, group.dataset);
     object_assign(options, anchor.dataset);
 
-    if(options["control"]){
+    // handle shorthand "zoom"
+
+    if(typeof options["zoom"] !== "undefined"){
+
+        options["zoom-in"] = options["zoom-out"] = options["zoom"];
+        delete options["zoom"];
+    }
+
+    // determine controls
+
+    if(typeof options["control"] !== "undefined"){
 
         const whitelist = options["control"].split(",");
+
+        // prepare to false when using whitelist
 
         for(let i = 0; i < controls.length; i++){
 
             options[controls[i]] = "false";
         }
 
+        // apply whitelist
+
         for(let i = 0; i < whitelist.length; i++){
 
-            options[whitelist[i].trim()] = "true";
+            const option = whitelist[i].trim();
+
+            // handle shorthand "zoom"
+
+            if(option === "zoom"){
+
+                options["zoom-in"] = options["zoom-out"] = "true";
+            }
+            else{
+
+                options[option] = "true";
+            }
         }
     }
 
-    setup_controls();
+    // apply controls
+
+    for(let i = 0; i < controls.length; i++){
+
+        const option = controls[i];
+
+        setStyle(getByClass(option, target)[0], "display", options[option] === "false" ? "none" : "table-cell");
+    }
+
+    // apply theme
+
+    if(options["theme"]){
+
+        theme = (options["theme"] !== "white");
+        toggle_theme();
+    }
 }
 
 function object_assign(target, source){
@@ -163,20 +209,10 @@ function object_assign(target, source){
 
         const key = keys[i];
 
-        target[key] = source[key];
+        target[key] = "" + source[key];
     }
 
     return target;
-}
-
-function setup_controls(){
-
-    for(let i = 0; i < controls.length; i++){
-
-        const option = controls[i];
-
-        setStyle(getByClass(option, target)[0], "display", options[option] === "false" ? "none" : "table-cell");
-    }
 }
 
 function init_slide(index){
@@ -185,57 +221,34 @@ function init_slide(index){
     image = /** @type {Image} */ (panel.firstElementChild);
     current_slide = index;
 
-    if(!image.loaded){
+    if(!image){
 
         addClass(target, "loading");
 
-        (function(image){
+        image = new Image();
 
-            let buffer = new Image();
+        image.onload = /** @this {Image} */ function(){
 
-            buffer.onload = /** @this {Image} */ function(){
+            removeClass(target, "loading");
 
-                //image.width = buffer.width;
-                //image.height = buffer.height;
-                image.src = buffer.src;
+            setStyle(image, {
 
-                removeClass(target, "loading");
+                "visibility": "visible",
+                "opacity": 1,
+                "transform": ""
+            });
+        };
 
-                setStyle(image, {
+        image.onerror = /** @this {Image} */ function(){
 
-                    "opacity": 1,
-                    "transform": ""
-                });
+            panel.removeChild(image);
+        };
 
-                buffer.onload = null;
-                buffer = null;
-                image = null;
-            };
+        image.src = panel.dataset.src;
 
-            buffer.onerror = /** @this {Image} */ function(){
+        setStyle(image, "visibility", "hidden");
 
-                image.loaded = false;
-
-                buffer.onload = null;
-                buffer = null;
-                image = null;
-            };
-
-            buffer.src = image.dataset["src"];
-
-        }(image));
-
-        image.loaded = true;
-    }
-    else{
-
-        image.src = image.dataset["src"];
-
-        setStyle(image, {
-
-            "opacity": 1,
-            "transform": ""
-        });
+        panel.appendChild(image);
     }
 }
 
@@ -280,16 +293,16 @@ add_listener(document, "DOMContentLoaded", function(){
     add_listener(slider, "touchmove", move, {"passive": true});
 
     add_listener(getByClass("fullscreen", target)[0],"", toggle_fullscreen);
-    add_listener(getByClass("reset", target)[0],"", zoom_reset);
-    add_listener(getByClass("maximize", target)[0],"", zoom_in);
-    add_listener(getByClass("minimize", target)[0],"", zoom_out);
+    add_listener(getByClass("autofit", target)[0],"", toggle_autofit);
+    add_listener(getByClass("zoom-in", target)[0],"", zoom_in);
+    add_listener(getByClass("zoom-out", target)[0],"", zoom_out);
     add_listener(getByClass("close", target)[0],"", close_gallery);
     add_listener(getByClass("arrow-left", target)[0], "", arrow_left);
     add_listener(getByClass("arrow-right", target)[0], "", arrow_right);
-    add_listener(getByClass("contrast", target)[0], "", toggle_contrast);
-
-    add_listener(window, "", dispatch);
+    add_listener(getByClass("theme", target)[0], "", toggle_theme);
 });
+
+add_listener(window, "", dispatch);
 
 /**
  * @param {!Window|Document|Element} node
@@ -390,9 +403,7 @@ function end(e){
     }
     else if(swipe){
 
-        const scene = getByClass("scene", target)[0];
-
-        prepare_animated_style(scene, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)");
+        prepare_animated_style(slider, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)");
 
         if((x < -(bodyH / 5)) && arrow_right()){
 
@@ -404,7 +415,7 @@ function end(e){
         }
         else{
 
-            setStyle(scene, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
+            setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
         }
 
         x = 0;
@@ -530,7 +541,7 @@ export function toggle_fullscreen(){
     }
 }
 
-export function zoom_reset(){
+export function toggle_autofit(){
 
     //const body = document.body;
     //const image = getNode("#spotlight .scene img");
@@ -601,24 +612,15 @@ export function zoom_out(){
 
 export function show_gallery(config){
 
-    if(config) apply_options(null, {"dataset": config});
-
     addClass(target,"show");
     autohide();
 }
 
 export function close_gallery(){
 
-    removeClass(target,"show");
+    removeClass(target, "show");
 
-    const images = getByTag("img", getByClass("scene", target)[0])[0];
-
-    for(let i = 0; i < images.length; i++){
-
-        images[i].src = transparent_pixel;
-        images[i].loaded = false;
-    }
-
+    image.parentNode.removeChild(image);
     panel = null;
     image = null;
 }
@@ -664,13 +666,13 @@ export function goto_slide(slide){
     }
 }
 
-let contrast = false;
+let theme = false;
 
-export function toggle_contrast(){
+export function toggle_theme(){
 
     autohide();
 
-    if((contrast = !contrast)){
+    if((theme = !theme)){
 
         addClass(target, "white");
     }
@@ -690,7 +692,6 @@ function paginate(direction){
     y = 0;
     zoom = 1;
 
-    const animation = {};
     const option = options["animation"];
 
     let animation_scale = true;
@@ -727,15 +728,13 @@ function paginate(direction){
         "transform": ""
     });
 
-    setStyle(image, animation);
-
     const ref = image;
 
     setTimeout(function(){
 
-        if(image !== ref){
+        if(ref && (image !== ref) && ref.parentNode){
 
-            ref.src = transparent_pixel;
+            ref.parentNode.removeChild(ref);
         }
 
     }, 800);
@@ -803,17 +802,41 @@ function toggle_fullscreen_mode(target) {
     return !isFullscreen;
 }
 
-window["spotlight"] = {
+window["Spotlight"] = {
 
-    "toggleContrast" : toggle_contrast,
+    "toggleTheme" : toggle_theme,
     "toggleFullscreen": toggle_fullscreen,
+    "toggleAutofit": toggle_autofit,
     "next": arrow_right,
     "prev": arrow_left,
     "goto": goto_slide,
-    "show": show_gallery,
-    "hide": close_gallery,
-    "zoomTo": zoom_to,
+    "close": close_gallery,
     "zoomIn": zoom_in,
     "zoomOut": zoom_out,
-    "zoomReset": zoom_reset
+    "zoomTo": zoom_to,
+    "show": function(gallery, config){
+
+        setTimeout(function(){
+
+            if(gallery){
+
+                if(!config){
+
+                    config = {};
+                }
+                else{
+
+                    apply_options(null, {"dataset": config});
+                }
+
+                init_gallery(gallery, config["index"]);
+            }
+            else{
+
+                options = {};
+            }
+
+            show_gallery();
+        });
+    }
 };

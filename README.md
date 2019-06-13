@@ -1,8 +1,16 @@
-# Spotlight.js
+<p align="center">
+    <br>
+    <img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/doc/spotlight.svg" alt="Spotlight.js" width="50%">
+    <br><br>
+    <a target="_blank" href="https://www.npmjs.com/package/spotlight.js"><img src="https://img.shields.io/npm/v/spotlight.js.svg"></a>
+    <a target="_blank" href="https://github.com/nextapps-de/spotlight/issues"><img src="https://img.shields.io/github/issues/nextapps-de/spotlight.svg"></a>
+    <a target="_blank" href="https://github.com/nextapps-de/spotlight/blob/master/LICENSE.md"><img src="https://img.shields.io/npm/l/spotlight.js.svg"></a>
+</p>
 
-<a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#controls">Controls</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a>
+<h1></h1>
+<h3>Super-lightweight image gallery library without dependencies. Bundled into one Javascript file.</h3>
 
-Super-lightweight image gallery library without dependencies. Bundled into one Javascript file:
+<a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#controls">Controls</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#api">API</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a>
 
 - No additional Javascript coding
 - No additional HTML snippets
@@ -50,13 +58,27 @@ https://github.com/nextapps-de/spotlight/tree/master/src
 
 __1. Just insert the script resource tag somewhere in your document:__
 
+> It is very common to load the library right before the closing body tag of your document. In rare situations it might produce a short flashing/reflow after page load, depending on your stack. Moving the script tag into the head section will solve this issue.
+
 ```html
+<html>
 <head>
-    <script src="spotlight.bundle.js"></script>
+    <title></title>
 </head>
+<body>
+    <!-- 
+    
+    CONTENT 
+    
+    -->
+    <script src="spotlight.bundle.js"></script>
+</body>
+</html>
 ```
 
-__2. and add the class ___spotlight___ to an anchor element properly, e.g.:__
+__2. and add the class ___spotlight___ to an anchor element accordingly, e.g.:__
+
+> This also works with dynamically loaded content. There is no need to inject listeners on new elements. Instead Spotlight make use of global event capturing.
 
 ```html
 <a class="spotlight" href="img1.jpg">
@@ -70,7 +92,7 @@ __2. and add the class ___spotlight___ to an anchor element properly, e.g.:__
 </a>
 ```
 
-> This also works with dynamically loaded content. There is no need to inject listeners on new elements. Instead Spotlight make use of global event capturing.
+Alternatively you can also use the <a href="#api">Spotlight API</a> for programmatically use.
 
 <a name="groups" id="groups"></a>
 ## Gallery-Groups
@@ -102,6 +124,258 @@ Give one of the outer wrapping element the class ___spotlight-group___, e.g.:
 </div>
 ```
 
+<a name="controls" id="controls"></a>
+## Controls
+
+You can either apply the following data-attributes to the ___spotlight-group___ wrapper element or apply them separately to each ___spotlight___ anchor element (also overrides group definitions).
+
+<table>
+    <tr></tr>
+    <tr>
+        <td>Data&nbsp;Atttribute&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>Values</td>
+        <td>Description</td>
+    </tr>
+    <tr>
+        <td>data-animation</td>
+        <td>
+            "fade"<br>
+            "slide"<br>
+            "scale"<br>
+            "rotate"
+        </td>
+        <td>
+            Change animation (use built-ins<!-- or custom keyframe name-->)<br><br>
+            <b>Note:</b> could also combined as comma-separated list, e.g: <code>data-animation="slide,fade,scale"</code> (this is the default animation). 
+        </td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-controls</td>
+        <td>
+            string
+        </td>
+        <td>
+            Show/hide control elements as "whitelisted" through a comma-separated list, e.g. <code>data-controls="reset,page,fullscreen"</code>
+        </td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-autohide</td>
+        <td>true / false</td>
+        <td>Enable/disable automatically hide controls</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-fullscreen</td>
+        <td>true / false</td>
+        <td>Show/hide fullscreen button</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-zoom</td>
+        <td>true / false</td>
+        <td>Show/hide both zoom buttons</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-zoomin</td>
+        <td>true / false</td>
+        <td>Show/hide zoom-in button</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-zoomout</td>
+        <td>true / false</td>
+        <td>Show/hide zoom-out button</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-reset</td>
+        <td>true / false</td>
+        <td>Show/hide reset button</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-theme</td>
+        <td>true / false</td>
+        <td>Show/hide theme button</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-theme</td>
+        <td>"white"<br>"dark"</td>
+        <td>Change the default theme</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-page</td>
+        <td>true / false</td>
+        <td>Show/hide page</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-title</td>
+        <td>string / false</td>
+        <td>Set image title or hide it<br><br><b>Note:</b> When using image elements, this attribute will also inherit automatically from <code>&lt;img alt=&quot;...&quot;&gt;</code> as well as from <code>&lt;img title=&quot;...&quot;&gt;</code>. To prevent this behavior you can set <code>data-title=""</code>. This will hide the title regardless of any image attributes.</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-description</td>
+        <td>string / false</td>
+        <td>Set image description or hide it</td>
+    </tr>
+</table>
+
+<a name="example" id="example"></a>
+##### Example:
+
+```html
+<div class="spotlight-group" data-title="Untitled" data-animation="fade"
+     data-fullscreen="false" data-maximize="false" data-minimize="false">
+    <a class="spotlight" href="cat1.jpg" data-title="This is a title.">
+        <img src="cat1-thumb.jpg">
+    </a>
+    <a class="spotlight" href="cat2.jpg" data-description="This is a description.">
+        <img src="cat2-thumb.jpg">
+    </a>
+    <a class="spotlight" href="cat3.jpg">
+        <img src="cat3-thumb.jpg" alt="This is a title.">
+    </a>
+</div>
+```
+
+__Hint:__ The 2nd image gets the title "Untitled" from the group attributes.
+
+Control elements could also __whitelisted__ as a comma-separated list, e.g.:
+
+```html
+<div class="spotlight-group" data-controls="fullscreen,autofit,theme">
+```
+
+> Use a whitelist to enable controls gets priority over other ambiguous options.
+
+The same from above as __explicitly__:
+
+```html
+<div class="spotlight-group" data-fullscreen="true" data-contrast="true"
+     data-zoomin="false" data-zoomout="false" data-reset="true">
+```
+
+> When control attributes are not specified they are automatically enabled by default.
+
+Therefore the example above could be shortened to:
+
+```html
+<div class="spotlight-group" data-zoomin="false" data-zoomout="false">
+```
+
+Since "zoom" is a shorthand for both zoom buttons, this is the same:
+
+```html
+<div class="spotlight-group" data-zoom="false">
+```
+
+<a name="api" id="api"></a>
+## Spotlight API
+
+Also you can programmatically use Spotlight via the library API. This way does not require any dependant HTML elements (e.g. the classname "spotlight").
+
+Define a gallery group as follows:
+
+```js
+var gallery = [{
+    title: "Image 1",
+    description: "This is a description.",
+    src: "gallery/london-1758181.jpg"
+},{
+    title: "Image 2",
+    description: "This is a description.",
+    src: "gallery/sea-1975403.jpg"
+},{
+    title: "Image 3",
+    description: "This is a description.",
+    src: "gallery/newport-beach-2089906.jpg"
+}];
+```
+
+Show gallery:
+
+```js
+Spotlight.show(gallery);
+```
+
+Customize and show gallery:
+
+```js
+Spotlight.show(gallery, {
+    index: 2,
+    theme: "white",
+    autohide: false,
+    control: "autofit,zoom"
+});
+```
+
+Close gallery:
+
+```js
+Spotlight.close();
+```
+
+Next slide:
+
+```js
+Spotlight.next();
+```
+
+Previous slide:
+
+```js
+Spotlight.prev();
+```
+
+Goto slide:
+
+```js
+Spotlight.goto(3);
+```
+
+Zoom in:
+
+```js
+Spotlight.zoomIn();
+```
+
+Zoom out:
+
+```js
+Spotlight.zoomOut();
+```
+
+Zoom to:
+
+```js
+Spotlight.zoomTo(1.5);
+```
+
+Toggle Theme:
+
+```js
+Spotlight.toggleTheme();
+```
+
+Toggle Fullscreen:
+
+```js
+Spotlight.toggleFullscreen();
+```
+
+Toggle Autofit:
+
+```js
+Spotlight.toggleAutofit();
+```
+
 <a name="styling" id="styling"></a>
 ## Custom Styling
 
@@ -124,8 +398,8 @@ To add custom styling just override CSS classes accordingly:
     /* button fullscreen */
 }
 
-#spotlight .toggle-zoom{
-    /* button zoom goggle */
+#spotlight .autofit{
+    /* button autofit */
 }
 
 #spotlight .zoom-out{
@@ -136,12 +410,12 @@ To add custom styling just override CSS classes accordingly:
     /* button zoom in */
 }
 
-#spotlight .toggle-contrast{
-    /* button contrast */
+#spotlight .toggle-theme{
+    /* button theme */
 }
 
 #spotlight .close-gallery{
-    /* button close gallery */
+    /* button close */
 }
 
 #spotlight .arrow-left{
@@ -151,134 +425,6 @@ To add custom styling just override CSS classes accordingly:
 #spotlight .arrow-right{
     /* button arrow right */
 }
-```
-
-<a name="controls" id="controls"></a>
-## Controls
-
-You can either apply the following data-attributes to the ___spotlight-group___ wrapper element or apply them separately to each ___spotlight___ anchor element (also overrides group definitions).
-
-<table>
-    <tr></tr>
-    <tr>
-        <td>Data&nbsp;Atttribute&nbsp;&nbsp;&nbsp;</td>
-        <td>Values</td>
-        <td>Description</td>
-    </tr>
-    <tr>
-        <td>data-animation</td>
-        <td>
-            "fade"<br>
-            "slide"<br>
-            "scale"<br>
-            "rotate"
-        </td>
-        <td>
-            define animation (use built-ins or custom keyframe name).<br><br>
-            <b>Note:</b> could also combined as comma-separated list, e.g: <code>data-animation="slide,fade,scale"</code> (this is the default animation). 
-        </td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>data-controls</td>
-        <td>
-            string
-        </td>
-        <td>
-            show/hide control elements as "whitelisted" through a comma-separated list, e.g. <code>data-controls="reset,page,fullscreen"</code>
-        </td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>data-fullscreen</td>
-        <td>true / false</td>
-        <td>show/hide fullscreen button</td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>data-maximize</td>
-        <td>true / false</td>
-        <td>show/hide maximize button</td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>data-minimize</td>
-        <td>true / false</td>
-        <td>show/hide minimize button</td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>data-reset</td>
-        <td>true / false</td>
-        <td>show/hide reset button</td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>data-contrast</td>
-        <td>true / false</td>
-        <td>show/hide contrast button</td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>data-page</td>
-        <td>true / false</td>
-        <td>show/hide page</td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>data-title</td>
-        <td>string / false</td>
-        <td>set image title or hide it<br><br><b>Note:</b> When using image elements, this attribute will also inherit automatically from <code>&lt;img alt=&quot;...&quot;&gt;</code> as well as from <code>&lt;img title=&quot;...&quot;&gt;</code>. To prevent this behavior you can set <code>data-title=""</code>. This will hide the title regardless of any image attributes.</td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>data-description</td>
-        <td>string / false</td>
-        <td>set image description or hide it</td>
-    </tr>
-</table>
-
-<a name="example" id="example"></a>
-##### Full Example:
-
-```html
-<div class="spotlight-group" data-title="Untitled" data-animation="fade"
-     data-fullscreen="false" data-maximize="false" data-minimize="false">
-    <a class="spotlight" href="cat1.jpg" data-title="This is a title.">
-        <img src="cat1-thumb.jpg">
-    </a>
-    <a class="spotlight" href="cat2.jpg" data-description="This is a description.">
-        <img src="cat2-thumb.jpg" alt="This is a title.">
-    </a>
-    <a class="spotlight" href="cat3.jpg" data-description="This is a description.">
-        <img src="cat3-thumb.jpg">
-    </a>
-</div>
-```
-
-__Hint:__ The last image gets the title "Untitled" from the group attributes.
-
-Control elements could also __whitelisted__ as a comma-separated list, e.g.:
-
-```html
-<div class="spotlight-group" data-controls="fullscreen,reset,contrast">
-```
-
-> Use a whitelist to enable controls gets priority over other ambiguous options.
-
-The same from above as __explicitly__:
-
-```html
-<div class="spotlight-group" data-fullscreen="true" data-contrast="true"
-     data-maximize="false"data-minimize="false" data-reset="true">
-```
-
-> When control attributes are not specified they are automatically enabled by default.
-
-Therefore the example above could be shortened to:
-
-```html
-<div class="spotlight-group" data-maximize="false" data-minimize="false">
 ```
 
 <a name="builds" id="builds"></a>
