@@ -16,7 +16,9 @@ const { writeFileSync, readFileSync } = require('fs');
         autofit: base64Sync('src/img/autofit.svg'),
         zoomin: base64Sync('src/img/zoom-in.svg'),
         zoomout: base64Sync('src/img/zoom-out.svg'),
-        theme: base64Sync('src/img/theme.svg')
+        theme: base64Sync('src/img/theme.svg'),
+        play: base64Sync('src/img/play.svg'),
+        pause: base64Sync('src/img/pause.svg')
     };
 
     let tmp = "";

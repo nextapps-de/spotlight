@@ -8,7 +8,7 @@ const kebab_cache = {};
 
 function createClassCache(node){
 
-    const current_classes = node.className.split(" ");
+    const current_classes = node.classList;
     const cache = {};
 
     for(let a = 0; a < current_classes.length; a++){
@@ -207,7 +207,7 @@ export function setStyle(selector, styles, value, force){
 
                 kebab_cache[styles] || camel_to_kebab(styles),
                 value,
-                force
+                force || null
             );
         }
     }

@@ -12,6 +12,8 @@ const image_zoom_in = BUILD_BUNDLE ? images_base64.zoomin : filename + "zoom-in.
 const image_zoom_out = BUILD_BUNDLE ? images_base64.zoomout : filename + "zoom-out.svg";
 const image_autofit = BUILD_BUNDLE ? images_base64.autofit : filename + "autofit.svg";
 const image_theme = BUILD_BUNDLE ? images_base64.theme : filename + "theme.svg";
+const image_play = BUILD_BUNDLE ? images_base64.play : filename + "play.svg";
+const image_pause = BUILD_BUNDLE ? images_base64.pause : filename + "pause.svg";
 
 // https://kangax.github.io/html-minifier/
 
@@ -36,6 +38,9 @@ export default (
                 <img src="${image_zoom_in}">
             <td class=theme>
                 <img src="${image_theme}">
+            <td class=player>
+                <img src="${image_play}">
+                <img src="${image_pause}">
             <td class=close>
                 <img src="${image_close}">
     </table>

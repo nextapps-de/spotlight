@@ -68,18 +68,17 @@ const parameter = (function(opt){
     output_manifest: "log/manifest.log",
     output_module_dependencies: "log/module_dependencies.log",
     property_renaming_report: "log/renaming_report.log",
-    //manage_closure_dependencies: true,
-    //dependency_mode: "PRUNE_LEGACY",
-    //entry_point: "./src/js/spotlight.js",
     strict_mode_input: true,
     assume_function_wrapper: true,
 
     transform_amd_modules: true,
     process_common_js_modules: true,
-    //js_module_root: "./",
     module_resolution: "BROWSER",
     dependency_mode: "SORT_ONLY",
+    //js_module_root: "./",
     //entry_point: "./src/js/spotlight",
+    //manage_closure_dependencies: true,
+    //dependency_mode: "PRUNE_LEGACY",
 
     isolation_mode: "IIFE"
     //output_wrapper: "(function(){%output%}());"

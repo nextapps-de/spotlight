@@ -54,7 +54,10 @@
     contain: layout size style;
   }
   .scene img {
+    display: inline-block;
     position: absolute;
+    width: auto;
+    height: auto;
     max-width: 100%;
     max-height: 100%;
     left: 50%;
@@ -119,13 +122,14 @@
     table-layout: fixed;
     background-color: rgba(0, 0, 0, 0.45);
     line-height: 1.35em;
-    padding: 15px 25px;
+    padding: 20px 25px;
     contain: layout size paint style;
   }
   .footer .title{
     font-size: 125%;
     padding-bottom: 10px;
   }
+  .player img:last-child,
   .fullscreen img:last-child {
     display: none;
   }
@@ -183,12 +187,13 @@
       filter: invert(1);
     }
   }
+  .player.on,
   .fullscreen.on{
     img:first-child {
       display: none;
     }
     img:last-child {
-      display: block;
+      display: inline-block;
     }
   }
 }

@@ -2,13 +2,14 @@
     <br>
     <img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/doc/spotlight.svg" alt="Spotlight.js" width="50%">
     <br><br>
-    <a target="_blank" href="https://www.npmjs.com/package/spotlight.js"><img src="https://img.shields.io/npm/v/spotlight.js.svg"></a>
-    <!--<a target="_blank" href="https://github.com/nextapps-de/spotlight/issues"><img src="https://img.shields.io/github/issues/nextapps-de/spotlight.svg"></a>-->
-    <a target="_blank" href="https://github.com/nextapps-de/spotlight/blob/master/LICENSE.md"><img src="https://img.shields.io/npm/l/spotlight.js.svg"></a>
 </p>
 
 <h1></h1>
 <h3>Super-lightweight image gallery library without dependencies. Bundled into one Javascript file.</h3>
+
+<a target="_blank" href="https://www.npmjs.com/package/spotlight.js"><img src="https://img.shields.io/npm/v/spotlight.js.svg"></a>
+<a target="_blank" href="https://github.com/nextapps-de/spotlight/issues"><img src="https://img.shields.io/github/issues/nextapps-de/spotlight.svg"></a>
+<a target="_blank" href="https://github.com/nextapps-de/spotlight/blob/master/LICENSE.md"><img src="https://img.shields.io/npm/l/spotlight.js.svg"></a>
 
 <a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#controls">Controls</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#api">API</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a>
 
@@ -17,7 +18,7 @@
 - No additional CSS resources
 - No additional images/assets
 - No additional handling of event listener
-- All in all just 6kb gzip (js + css + images)
+- All in all just 6kb gzip (js + css + html + images)
 
 __Demo:__ https://nextapps-de.github.io/spotlight/
 
@@ -25,6 +26,42 @@ Alternatively you can use the non-bundled version of this library (classically c
 
 <a name="started" id="started"></a>
 ## Getting Started
+
+__Version Explanation__
+
+<table>
+    <tr></tr>
+    <tr>
+        <td>Version</td>
+        <td>Description</td>
+    </tr>
+    <tr>
+        <td>
+            <b>Bundle Standalone</b>
+        </td>
+        <td>
+            All assets bundled into one file (js + css + html + images).
+        </td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>
+            <b>Bundle CDN</b>
+        </td>
+        <td>
+            Also a bundled file (js + html), but images and css will load from extern CDN.
+        </td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>
+            <b>Non-Bundled</b>
+        </td>
+        <td>
+            Each asset file exists separately.
+        </td>
+    </tr>
+</table>
 
 __Get Latest:__
 
@@ -36,11 +73,9 @@ __Get Latest:__
         <td>CDN</td>
     </tr>
     <tr>
-        <td>
-            <b><u>Bundle Standalone (6kb gzip)</u></b>
+        <td colspan=3">
+            <b><u>Bundle Standalone (6kb gzip):</u></b>
         </td>
-        <td></td>
-        <td></td>
     </tr>
     <tr>
         <td>spotlight.bundle.js</td>
@@ -48,12 +83,9 @@ __Get Latest:__
         <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/spotlight.bundle.js</a></td>
     </tr>
     <tr>
-        <td>
-            <br>
-            <b><u>Bundle CDN (6kb gzip)</u></b>
+        <td colspan=3">
+            <b><u>Bundle CDN (6kb gzip):</u></b>
         </td>
-        <td></td>
-        <td></td>
     </tr>
     <tr>
         <td>spotlight.cdn.js</td>
@@ -61,12 +93,9 @@ __Get Latest:__
         <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/spotlight.cdn.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/spotlight.cdn.js</a></td>
     </tr>
     <tr>
-        <td>
-            <br>
-            <b><u>Non-Bundled (6kb gzip)</u></b>
+        <td colspan=3">
+            <b><u>Non-Bundled (6kb gzip):</u></b>
         </td>
-        <td></td>
-        <td></td>
     </tr>
     <tr>
         <td>spotlight.min.js</td>
@@ -220,8 +249,8 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     <tr></tr>
     <tr>
         <td>data-autohide</td>
-        <td>true / false</td>
-        <td>Enable/disable automatically hide controls</td>
+        <td>true / false / number</td>
+        <td>Enable/disable automatically hide controls when inactive, also set cooldown time</td>
     </tr>
     <tr></tr>
     <tr>
@@ -258,6 +287,18 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
         <td>data-theme</td>
         <td>true / false</td>
         <td>Show/hide theme button</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-player</td>
+        <td>true / false / number</td>
+        <td>Show/hide player button, also set delay between each tick</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>data-infinite</td>
+        <td>true / false</td>
+        <td>Restart from beginning when no slides left</td>
     </tr>
     <tr></tr>
     <tr>
