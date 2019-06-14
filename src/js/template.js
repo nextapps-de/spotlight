@@ -1,14 +1,17 @@
+"use strict";
+
 import images_base64 from "../../tmp/images.js";
 
-const image_preloader = BUILD_BUNDLE ? images_base64.preloader : "img/preloader.svg";
-const image_maximize = BUILD_BUNDLE ? images_base64.maximize : "img/maximize.svg";
-const image_minimize = BUILD_BUNDLE ? images_base64.minimize : "img/minimize.svg";
-const image_arrow = BUILD_BUNDLE ? images_base64.arrow : "img/arrow.svg";
-const image_close = BUILD_BUNDLE ? images_base64.close : "img/close.svg";
-const image_zoom_in = BUILD_BUNDLE ? images_base64.zoomin : "img/zoom-in.svg";
-const image_zoom_out = BUILD_BUNDLE ? images_base64.zoomout : "img/zoom-out.svg";
-const image_autofit = BUILD_BUNDLE ? images_base64.autofit : "img/autofit.svg";
-const image_theme = BUILD_BUNDLE ? images_base64.theme : "img/theme.svg";
+const filename = USE_EXTERNAL_ASSETS ? EXTERNAL_URL + "img/" : "img/";
+const image_preloader = BUILD_BUNDLE ? images_base64.preloader : filename + "preloader.svg";
+const image_maximize = BUILD_BUNDLE ? images_base64.maximize : filename + "maximize.svg";
+const image_minimize = BUILD_BUNDLE ? images_base64.minimize : filename + "minimize.svg";
+const image_arrow = BUILD_BUNDLE ? images_base64.arrow : filename + "arrow.svg";
+const image_close = BUILD_BUNDLE ? images_base64.close : filename + "close.svg";
+const image_zoom_in = BUILD_BUNDLE ? images_base64.zoomin : filename + "zoom-in.svg";
+const image_zoom_out = BUILD_BUNDLE ? images_base64.zoomout : filename + "zoom-out.svg";
+const image_autofit = BUILD_BUNDLE ? images_base64.autofit : filename + "autofit.svg";
+const image_theme = BUILD_BUNDLE ? images_base64.theme : filename + "theme.svg";
 
 // https://kangax.github.io/html-minifier/
 

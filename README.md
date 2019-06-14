@@ -3,7 +3,7 @@
     <img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/doc/spotlight.svg" alt="Spotlight.js" width="50%">
     <br><br>
     <a target="_blank" href="https://www.npmjs.com/package/spotlight.js"><img src="https://img.shields.io/npm/v/spotlight.js.svg"></a>
-    <a target="_blank" href="https://github.com/nextapps-de/spotlight/issues"><img src="https://img.shields.io/github/issues/nextapps-de/spotlight.svg"></a>
+    <!--<a target="_blank" href="https://github.com/nextapps-de/spotlight/issues"><img src="https://img.shields.io/github/issues/nextapps-de/spotlight.svg"></a>-->
     <a target="_blank" href="https://github.com/nextapps-de/spotlight/blob/master/LICENSE.md"><img src="https://img.shields.io/npm/l/spotlight.js.svg"></a>
 </p>
 
@@ -17,7 +17,7 @@
 - No additional CSS resources
 - No additional images/assets
 - No additional handling of event listener
-- All in all just 6kb gzip
+- All in all just 6kb gzip (js + css + images)
 
 __Demo:__ https://nextapps-de.github.io/spotlight/
 
@@ -26,7 +26,7 @@ Alternatively you can use the non-bundled version of this library (classically c
 <a name="started" id="started"></a>
 ## Getting Started
 
-__Get Latest (Bundle, 6kb gzip):__
+__Get Latest:__
 
 <table>
     <tr></tr>
@@ -36,11 +36,60 @@ __Get Latest (Bundle, 6kb gzip):__
         <td>CDN</td>
     </tr>
     <tr>
+        <td>
+            <b><u>Bundle Standalone (6kb gzip)</u></b>
+        </td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
         <td>spotlight.bundle.js</td>
         <td><a href="https://github.com/nextapps-de/spotlight/raw/master/dist/spotlight.bundle.js" target="_blank">Download</a></td>
         <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/spotlight.bundle.js</a></td>
     </tr>
+    <tr>
+        <td>
+            <br>
+            <b><u>Bundle CDN (6kb gzip)</u></b>
+        </td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>spotlight.cdn.js</td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/master/dist/spotlight.cdn.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/spotlight.cdn.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/spotlight.cdn.js</a></td>
+    </tr>
+    <tr>
+        <td>
+            <br>
+            <b><u>Non-Bundled (6kb gzip)</u></b>
+        </td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>spotlight.min.js</td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/master/dist/js/spotlight.min.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/js/spotlight.min.js</a></td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>spotlight.css</td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/master/dist/css/spotlight.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/master/dist/css/spotlight.css</a></td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>img.zip</td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/master/dist/img" target="_blank">Download</a></td>
+        <td></td>
+    </tr>
 </table>
+
+Alternatively when using non-bundled version you can download images from: 
+
+https://github.com/nextapps-de/spotlight/tree/master/dist/img/
 
 __Get Latest (NPM):__
 
@@ -48,13 +97,22 @@ __Get Latest (NPM):__
 npm install spotlight.js
 ```
 
-__Get Latest (Non-Bundle, Github):__
-
-https://github.com/nextapps-de/spotlight/tree/master/dist
-
-__Get Latest (ES6 Modules, Github):__
+__Get Latest (ES6 Modules):__
 
 https://github.com/nextapps-de/spotlight/tree/master/src
+
+Example:
+
+```js
+import Spotlight from "./spotlight.js";
+
+Spotlight.show(
+    [ /* Gallery */ ], 
+    { /* Options */ }
+);
+```
+
+### Setup Spotlight
 
 __1. Just insert the script resource tag somewhere in your document:__
 

@@ -1,8 +1,8 @@
-/**!
- * @preserve Spotlight.js v0.1.1
+/**
+ * Spotlight.js
  * Copyright 2019 Nextapps GmbH
  * Author: Thomas Wilkerling
- * Released under the Apache 2.0 Licence
+ * Licence: Apache-2.0
  * https://github.com/nextapps-de/spotlight
  */
 
@@ -19,6 +19,13 @@ if(BUILD_BUNDLE){
     const style = document.createElement("style");
     style.innerHTML = stylesheet;
     getByTag("head")[0].appendChild(style);
+}
+else if(USE_EXTERNAL_ASSETS){
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = EXTERNAL_URL + "css/spotlight.css";
+    getByTag("head")[0].appendChild(link);
 }
 
 const controls = [
@@ -42,7 +49,7 @@ let bodyH;
 let imageW;
 let imageH;
 let maxHeight;
-let zoom;
+let scale;
 
 let is_down = false;
 let dragged = false;
@@ -63,6 +70,10 @@ let target;
 let footer;
 let title;
 let description;
+let arrow_left;
+let arrow_right;
+let opt_fullscreen;
+let page;
 
 let timer = null;
 let hide = null;
@@ -171,6 +182,14 @@ function init_gallery(anchors, index){
     }
 }
 
+function inherit_global_option(anchor, group, key){
+
+    if(anchor[key]){
+
+        options[key] = group ? group[key] : false;
+    }
+}
+
 /**
  * @param {Object} anchor
  * @param {Object=} group
@@ -183,6 +202,9 @@ function apply_options(anchor, group){
     options = {};
     group && object_assign(options, group);
     object_assign(options, anchor);
+
+    inherit_global_option(anchor, group, "description");
+    inherit_global_option(anchor, group, "title");
 
     // handle shorthand "zoom"
 
@@ -237,8 +259,8 @@ function apply_options(anchor, group){
 
     if(options["theme"]){
 
-        theme = (options["theme"] !== "white");
-        toggle_theme();
+        current_theme = (options["theme"] !== "white");
+        theme();
     }
 }
 
@@ -265,23 +287,12 @@ function init_slide(index){
     if(!image){
 
         addClass(target, "loading");
-        setStyle(footer, "visibility", "hidden");
 
         image = new Image();
-
-        const dataset = panel.dataset;
 
         image.onload = /** @this {Image} */ function(){
 
             removeClass(target, "loading");
-
-            if(dataset.title || dataset.description){
-
-                title.textContent = dataset.title;
-                description.textContent = dataset.description;
-
-                setStyle(footer, "visibility", "visible");
-            }
 
             setStyle(image, {
 
@@ -297,17 +308,36 @@ function init_slide(index){
         };
 
         panel.appendChild(image);
-        image.src = dataset.src;
+        image.src = panel.dataset.src;
+
+        return false;
     }
+
+    return true;
 }
 
 add_listener(document, "DOMContentLoaded", function(){
 
+    // add template
+
     target = document.createElement("div");
     target.id = "spotlight";
-    target.innerHTML = BUILD_BUNDLE ? template : template_module;
+    target.innerHTML = BUILD_BUNDLE ? template : template; //template_module;
 
     document.body.appendChild(target);
+
+    // cache static elements
+
+    slider = getByClass("scene", target)[0];
+    footer = getByClass("footer", target)[0];
+    title = getByClass("title", footer)[0];
+    description = getByClass("description", footer)[0];
+    arrow_left = getByClass("arrow-left", target)[0];
+    arrow_right = getByClass("arrow-right", target)[0];
+    opt_fullscreen = getByClass("fullscreen", target)[0];
+    page = getByClass("page", target)[0];
+
+    // install fullscreen
 
     document["cancelFullScreen"] || (document["cancelFullScreen"] = (
 
@@ -325,14 +355,11 @@ add_listener(document, "DOMContentLoaded", function(){
         doc["webkitRequestFullScreen"] ||
         doc["msRequestFullScreen"] ||
         doc["mozRequestFullScreen"] ||
-        setStyle("#spotlight .fullscreen", "display", "none") ||
+        setStyle(opt_fullscreen, "display", "none") ||
         function(){}
     ));
 
-    slider = getByClass("scene", target)[0];
-    footer = getByClass("footer", target)[0];
-    title = getByClass("title", footer)[0];
-    description = getByClass("description", footer)[0];
+    // apply listener
 
     add_listener(slider, "mousedown", start);
     add_listener(slider, "mouseleave", end);
@@ -344,14 +371,15 @@ add_listener(document, "DOMContentLoaded", function(){
     add_listener(slider, "touchend", end);
     add_listener(slider, "touchmove", move, {"passive": true});
 
-    add_listener(getByClass("fullscreen", target)[0],"", toggle_fullscreen);
-    add_listener(getByClass("autofit", target)[0],"", toggle_autofit);
+    add_listener(opt_fullscreen,"", fullscreen);
+    add_listener(arrow_left, "", prev);
+    add_listener(arrow_right, "", next);
+
+    add_listener(getByClass("autofit", target)[0],"", autofit);
     add_listener(getByClass("zoom-in", target)[0],"", zoom_in);
     add_listener(getByClass("zoom-out", target)[0],"", zoom_out);
-    add_listener(getByClass("close", target)[0],"", close_gallery);
-    add_listener(getByClass("arrow-left", target)[0], "", arrow_left);
-    add_listener(getByClass("arrow-right", target)[0], "", arrow_right);
-    add_listener(getByClass("theme", target)[0], "", toggle_theme);
+    add_listener(getByClass("close", target)[0],"", close);
+    add_listener(getByClass("theme", target)[0], "", theme);
 });
 
 add_listener(window, "", dispatch);
@@ -394,7 +422,7 @@ function autohide(){
     }
 }
 
-function click(e){
+export function menu(e){
 
     if(typeof e === "boolean"){
 
@@ -423,8 +451,8 @@ function start(e){
 
     bodyW = document.body.clientWidth;
     bodyH = document.body.clientHeight;
-    imageW = image.width * zoom;
-    imageH = image.height * zoom;
+    imageW = image.width * scale;
+    imageH = image.height * scale;
     swipe = imageW <= bodyW;
     startX = touch.x;
     startY = touch.y;
@@ -438,17 +466,17 @@ function end(e){
 
     if(!dragged){
 
-        return click(e);
+        return menu(e);
     }
     else if(swipe){
 
         prepareStyle(slider, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)");
 
-        if((x < -(bodyH / 5)) && arrow_right()){
+        if((x < -(bodyH / 5)) && next()){
 
 
         }
-        else if((x > bodyH / 5) && arrow_left()){
+        else if((x > bodyH / 5) && prev()){
 
 
         }
@@ -473,7 +501,7 @@ function move(e){
         timer || request();
 
         const touch = pointer(e);
-        const diff = (imageW - (imageW / zoom)) / 2;
+        const diff = (imageW - bodyW) / 2;
 
         dragged = true;
         swipe = imageW <= bodyW;
@@ -503,7 +531,7 @@ function move(e){
         if(imageH > bodyH){
 
             // TODO: solve this by computation
-            const diff = maxHeight === "none" ? (imageH - (imageH / zoom)) / 2 : (imageH - bodyH) / 2;
+            const diff = maxHeight === "none" ? (imageH - bodyH) / 2 : (imageH - bodyH) / 2;
 
             y -= startY - (startY = touch.y);
 
@@ -545,11 +573,18 @@ function pointer(event){
     };
 }
 
-function update(){
+/**
+ * @param {number=} timestamp
+ */
+
+function update(timestamp){
 
     if(changed){
 
-        request();
+        if(timestamp){
+
+            request();
+        }
 
         setStyle(panel, "transform", "translate(" + x + "px, " + y + "px)");
     }
@@ -570,7 +605,7 @@ function request(){
  * @param {boolean=} init
  */
 
-export function toggle_fullscreen(init){
+export function fullscreen(init){
 
     const isFullscreen = (
 
@@ -583,11 +618,16 @@ export function toggle_fullscreen(init){
             document["mozFullScreen"]
     );
 
-    isFullscreen ?
+    if(isFullscreen){
 
-        document["cancelFullScreen"]()
-    :
+        document["cancelFullScreen"]();
+        removeClass(opt_fullscreen, "on");
+    }
+    else{
+
         doc["requestFullScreen"]();
+        addClass(opt_fullscreen, "on");
+    }
 
     return !isFullscreen;
 }
@@ -596,7 +636,7 @@ export function toggle_fullscreen(init){
  * @param {boolean=} init
  */
 
-export function toggle_autofit(init){
+export function autofit(init){
 
     if(typeof init === "boolean"){
 
@@ -609,10 +649,9 @@ export function toggle_autofit(init){
     //x = (body.clientWidth - image.naturalWidth) / 2;
     //y = (body.clientHeight - image.naturalHeight) / 2;
 
-    x = 0;
-    y = 0;
 
-    toggle = (zoom === 1) && !toggle;
+
+    toggle = (scale === 1) && !toggle;
 
     setStyle(image, {
 
@@ -623,46 +662,40 @@ export function toggle_autofit(init){
 
     //panel.style.transform = toggle ? "translate(" + ((x + 0.5) | 0) + "px, " + ((y + 0.5) | 0) + "px)" : "";
 
-    zoom = 1;
+    scale = 1;
+    x = 0;
+    y = 0;
+    changed = true;
+
+    update();
 }
 
-export function zoom_in(){
+function zoom_in(){
 
-    zoom_to(zoom /= 0.65);
+    zoom(scale /= 0.65);
 }
 
 /**
  * @param {number=} factor
  */
 
-export function zoom_to(factor){
+export function zoom(factor){
 
     setStyle(image, "transform", "translate(-50%, -50%) scale(" + (factor || 1) + ")");
     autohide();
 }
 
-export function zoom_out(){
+function zoom_out(){
 
-    if(zoom > 1){
+    if(scale > 1){
 
-        //TODO: keep center
+        zoom(scale *= 0.65);
 
-        zoom *= 0.65;
+        x = 0;
+        y = 0;
+        changed = true;
 
-        if(maxHeight === "none"){
-
-            const body = document.body;
-
-            x = (body.clientWidth - image.naturalWidth) / 2;
-            y = (body.clientHeight - image.naturalHeight) / 2;
-        }
-        else{
-
-            x = 0;
-            y = 0;
-        }
-
-        zoom_to(zoom);
+        update();
     }
 
     autohide();
@@ -672,14 +705,14 @@ export function zoom_out(){
  * @param {Object=} config
  */
 
-export function show_gallery(config){
+function show_gallery(config){
 
     addClass(doc, "hide-scrollbars");
     addClass(target, "show");
     autohide();
 }
 
-export function close_gallery(){
+export function close(){
 
     removeClass(doc, "hide-scrollbars");
     removeClass(target, "show");
@@ -689,7 +722,7 @@ export function close_gallery(){
     image = null;
 }
 
-export function arrow_left(){
+export function prev(){
 
     autohide();
 
@@ -702,7 +735,7 @@ export function arrow_left(){
     }
 }
 
-export function arrow_right(){
+export function next(){
 
     autohide();
 
@@ -715,7 +748,7 @@ export function arrow_right(){
     }
 }
 
-export function goto_slide(slide){
+export function goto(slide){
 
     if(slide !== current_slide){
 
@@ -730,26 +763,26 @@ export function goto_slide(slide){
     }
 }
 
-let theme = false;
+let current_theme = false;
 
 /**
  * @param {boolean=} init
  */
 
-export function toggle_theme(init){
+export function theme(init){
 
     autohide();
 
     if(typeof init === "boolean"){
 
-        theme = init;
+        current_theme = init;
     }
     else{
 
-        theme = !theme;
+        current_theme = !current_theme;
     }
 
-    if(theme){
+    if(current_theme){
 
         addClass(target, "white");
     }
@@ -767,7 +800,7 @@ function paginate(direction){
 
     x = 0;
     y = 0;
-    zoom = 1;
+    scale = 1;
 
     const option = options["animation"];
 
@@ -796,8 +829,6 @@ function paginate(direction){
         }
     }
 
-
-
     setStyle(slider, "transition", animation_slide ? "" : "none");
     setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
     setStyle(panel, "transform", "");
@@ -817,25 +848,36 @@ function paginate(direction){
 
     }, 800);
 
-    init_slide(current_slide);
+    const image_exist = init_slide(current_slide);
 
     prepareStyle(image, {
-
         "opacity": animation_fade ? 0 : 1,
         "transform": "translate(-50%, -50%)" + (animation_scale ? " scale(0.8)" : "") + (animation_rotate && (typeof direction !== "undefined") ? " rotateY(" + (direction ? "" : "-") + "135deg)" : ""),
         "maxHeight": "",
         "maxWidth": ""
     });
 
-    setStyle(panel, "transform", "");
-    setStyle(image, {
+    if(image_exist) setStyle(image, {
         "opacity": 1,
         "transform": ""
     });
 
-    setStyle(getByClass("arrow-left", target)[0], "visibility", current_slide === 1 ? "hidden" : "");
-    setStyle(getByClass("arrow-right", target)[0], "visibility", current_slide === slide_count ? "hidden" : "");
-    getByClass("page", target)[0].textContent = current_slide + " / " + slide_count;
+    setStyle(panel, "transform", "");
+    setStyle(arrow_left, "visibility", current_slide === 1 ? "hidden" : "");
+    setStyle(arrow_right, "visibility", current_slide === slide_count ? "hidden" : "");
+
+    const dataset = panel.dataset;
+    const has_content = dataset.title || dataset.description;
+
+    if(has_content){
+
+        title.textContent = dataset.title || "";
+        description.textContent = dataset.description || "";
+    }
+
+    setStyle(footer, "visibility", has_content ? "visible" : "hidden");
+
+    page.textContent = current_slide + " / " + slide_count;
 }
 
 /**
@@ -858,40 +900,42 @@ function clear(event, passive){
     return false;
 }
 
-window["Spotlight"] = {
+export function show(payload, config){
 
-    "theme": toggle_theme,
-    "fullscreen": toggle_fullscreen,
-    "autofit": toggle_autofit,
-    "next": arrow_right,
-    "prev": arrow_left,
-    "goto": goto_slide,
-    "close": close_gallery,
-    "zoom": zoom_to,
-    "menu": click,
-    "show": function(gallery, config){
+    setTimeout(function(){
 
-        setTimeout(function(){
+        if(payload){
 
-            if(gallery){
+            if(!config){
 
-                if(!config){
-
-                    config = {};
-                }
-                else{
-
-                    apply_options(config);
-                }
-
-                init_gallery(gallery, config["index"]);
+                config = {};
             }
             else{
 
-                options = {};
+                apply_options(config);
             }
 
-            show_gallery();
-        });
-    }
+            init_gallery(payload, config["index"]);
+        }
+        else{
+
+            options = {};
+        }
+
+        show_gallery();
+    });
+}
+
+window["Spotlight"] = {
+
+    "theme": theme,
+    "fullscreen": fullscreen,
+    "autofit": autofit,
+    "next": next,
+    "prev": prev,
+    "goto": goto,
+    "close": close,
+    "zoom": zoom,
+    "menu": menu,
+    "show": show
 };
