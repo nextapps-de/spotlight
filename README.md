@@ -5,7 +5,7 @@
 </p>
 
 <h1></h1>
-<h3>Super-lightweight image gallery library without dependencies. Bundled into one Javascript file.</h3>
+<h3>Web's most easy to integrate gallery library. No dependencies.</h3>
 
 <a target="_blank" href="https://www.npmjs.com/package/spotlight.js"><img src="https://img.shields.io/npm/v/spotlight.js.svg"></a>
 <a target="_blank" href="https://github.com/nextapps-de/spotlight/issues"><img src="https://img.shields.io/github/issues/nextapps-de/spotlight.svg"></a>
@@ -13,16 +13,55 @@
 
 <a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#controls">Controls</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#api">API</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a>
 
+Spotlight.js runs out of the box:
+
 - No additional Javascript coding
 - No additional HTML snippets
 - No additional CSS resources
 - No additional images/assets
-- No additional handling of event listener
-- All in all just 6kb gzip (js + css + html + images)
+- No additional handling of dynamic content and event listener
 
 __Demo:__ https://nextapps-de.github.io/spotlight/
 
 Alternatively you can use the non-bundled version of this library (classically contains css files, image files, js files) and also the source files for the ES6 module system as described below.
+
+<a name="features" id="features"></a>
+## Features
+
+- Gallery groups (group images to specific galleries)
+- Gallery Tools:
+  - Fullscreen
+  - Zoom in/out
+  - Toggle resize
+  - Switch theme
+  - Autoplay
+  - Pager
+  - Title (inherits from image "alt"-attribute)
+  - Description
+- Preloader
+- Simply customize via markup (data-attributes)
+- Customizable animations
+- Controls:
+  - Keyboard
+  - Touch
+  - Mousemove
+  - Mousewheel
+- Browser history detection
+- Back-Button (Android)
+- Global API for programmatic usage
+
+Technical properties:
+
+- Maximum performance
+- Maximum memory optimizations, no leaks, tiny footprint
+- Event capturing (just one single global event listener)
+- Bind event listener for components dynamically:
+  - install when gallery opens
+  - fully cleanup when gallery was closed
+- No dependencies, no jQuery
+- Responsive
+- Super-lightweight, all in all just 6kb gzip (js + css + html + images)
+- Support for ES6 module system
 
 <a name="started" id="started"></a>
 ## Getting Started
@@ -40,7 +79,7 @@ __Version Explanation__
             <b>Bundle Standalone</b>
         </td>
         <td>
-            All assets bundled into one file (js + css + html + images).
+            All assets bundled into one single file (js + css + html + images).
         </td>
     </tr>
     <tr></tr>
@@ -58,7 +97,7 @@ __Version Explanation__
             <b>Non-Bundled</b>
         </td>
         <td>
-            Each asset file exists separately.
+            Each asset file exists separately. Recommended when extended customization is needed.
         </td>
     </tr>
 </table>
@@ -113,6 +152,16 @@ __Get Latest:__
         <td>img.zip</td>
         <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/master/dist/img" target="_blank">Download</a></td>
         <td></td>
+    </tr>
+    <tr>
+        <td colspan=3">
+            <b><u>ES6 Modules:</u></b>
+        </td>
+    </tr>
+    <tr>
+        <td>src.zip</td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/master/src" target="_blank">Download</a></td>
+        <td>The folder <i>"src"</i> of this Github repository.</td>
     </tr>
 </table>
 
