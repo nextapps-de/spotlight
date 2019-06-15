@@ -6,8 +6,6 @@
  * https://github.com/nextapps-de/spotlight
  */
 
-"use strict";
-
 import "./config.js";
 import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag } from "./dom.js";
 import stylesheet from "../../tmp/style.js";
