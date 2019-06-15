@@ -8,6 +8,7 @@
 
 import "./config.js";
 import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag } from "./dom.js";
+import { addListener, removeListener, clearEvent } from "./event.js";
 import stylesheet from "../../tmp/style.js";
 import template from "../../tmp/template.js";
 import template_module from "./template.js";
@@ -83,7 +84,7 @@ let timer = null;
 let hide = null;
 let doc;
 
-let skip_history_event = true;
+let event_definitions;
 
 function init_gallery(anchors, index){
 
@@ -182,17 +183,29 @@ function apply_options(anchor, group){
 
     // handle shorthand "zoom"
 
-    if(typeof options["zoom"] !== "undefined"){
+    const zoom = options["zoom"];
 
-        options["zoom-in"] = options["zoom-out"] = options["zoom"];
+    if(zoom || (zoom === "")){
+
+        options["zoom-in"] = options["zoom-out"] = zoom;
+
         delete options["zoom"];
     }
 
+    const control = options["control"];
+
     // determine controls
 
-    if(typeof options["control"] !== "undefined"){
+    if(control || (control === "")){
 
-        const whitelist = options["control"].split(",");
+        const whitelist = (
+
+            typeof control === "string" ?
+
+                control.split(",")
+            :
+                control
+        );
 
         // prepare to false when using whitelist
 
@@ -226,19 +239,14 @@ function apply_options(anchor, group){
 
         const option = controls[i];
 
-        setStyle(getByClass(option, target)[0], "display", options[option] === "false" ? "none" : "table-cell");
+        setStyle(getByClass(option, target)[0], "display", (options[option] === "false") ? "none" : "table-cell");
     }
 
     // apply theme
 
-    if(typeof current_theme === "undefined"){
+    if((current_theme = options["theme"]) === "white"){
 
-        current_theme = options["theme"];
-
-        if(current_theme === "white"){
-
-            theme();
-        }
+        theme();
     }
 }
 
@@ -301,6 +309,7 @@ function init_slide(index){
 const keycodes = {
 
     "BACKSPACE": 8,
+    "ESCAPE": 27,
     "SPACEBAR": 32,
     "LEFT": 37,
     "RIGHT": 39,
@@ -312,13 +321,15 @@ const keycodes = {
     "MINUS": 189
 };
 
-add_listener(document, "DOMContentLoaded", function(){
+addListener(document, "DOMContentLoaded", function(){
 
     // add template
 
     target = document.createElement("div");
     target.id = "spotlight";
     target.innerHTML = BUILD_BUNDLE ? template : template; //template_module;
+
+    setStyle(target, "transition", "none");
 
     document.body.appendChild(target);
 
@@ -333,6 +344,7 @@ add_listener(document, "DOMContentLoaded", function(){
     maximize = getByClass("fullscreen", target)[0];
     page = getByClass("page", target)[0];
     player = getByClass("player", target)[0];
+    doc = document.documentElement || document.body;
 
     // install fullscreen
 
@@ -345,8 +357,6 @@ add_listener(document, "DOMContentLoaded", function(){
         function(){}
     ));
 
-    doc = document.documentElement || document.body;
-
     doc["requestFullScreen"] || (doc["requestFullScreen"] = (
 
         doc["webkitRequestFullScreen"] ||
@@ -356,31 +366,59 @@ add_listener(document, "DOMContentLoaded", function(){
         function(){}
     ));
 
-    // apply listener
+    event_definitions = [
 
-    add_listener(slider, "mousedown", start);
-    add_listener(slider, "mouseleave", end);
-    add_listener(slider, "mouseup", end);
-    add_listener(slider, "mousemove", move);
+        [window, "keydown", key_listener],
+        [window, "wheel", wheel_listener],
+        [window, "hashchange", history_listener],
+        [slider, "mousedown", start],
+        [slider, "mouseleave", end],
+        [slider, "mouseup", end],
+        [slider, "mousemove", move],
 
-    add_listener(slider, "touchstart", start, {"passive": true});
-    add_listener(slider, "touchcancel", end);
-    add_listener(slider, "touchend", end);
-    add_listener(slider, "touchmove", move, {"passive": true});
+        [slider, "touchstart", start, {"passive": true}],
+        [slider, "touchcancel", end],
+        [slider, "touchend", end],
+        [slider, "touchmove", move, {"passive": true}],
 
-    add_listener(maximize,"", fullscreen);
-    add_listener(arrow_left, "", prev);
-    add_listener(arrow_right, "", next);
-    add_listener(player, "", play);
+        [maximize,"", fullscreen],
+        [arrow_left, "", prev],
+        [arrow_right, "", next],
+        [player, "", play],
 
-    add_listener(getByClass("autofit", target)[0],"", autofit);
-    add_listener(getByClass("zoom-in", target)[0],"", zoom_in);
-    add_listener(getByClass("zoom-out", target)[0],"", zoom_out);
-    add_listener(getByClass("close", target)[0],"", close);
-    add_listener(getByClass("theme", target)[0], "", theme);
-});
+        [getByClass("autofit", target)[0],"", autofit],
+        [getByClass("zoom-in", target)[0],"", zoom_in],
+        [getByClass("zoom-out", target)[0],"", zoom_out],
+        [getByClass("close", target)[0],"", close],
+        [getByClass("theme", target)[0], "", theme]
+    ];
 
-add_listener(window, "", /** @this {Element} */ function dispatch(event){
+    addListener(window, "", dispatch);
+
+},{ once: true });
+
+/**
+ * @param {boolean=} uninstall
+ */
+
+function install_listener(uninstall){
+
+    for(let i = 0; i < event_definitions.length; i++){
+
+        const def = event_definitions[i];
+
+        (uninstall ? removeListener : addListener)(
+
+            def[0], def[1], def[2], def[3]
+        );
+    }
+}
+
+/**
+ * @this {Element}
+ */
+
+function dispatch(event){
 
     const self = closest.call(event.target, ".spotlight");
 
@@ -407,10 +445,10 @@ add_listener(window, "", /** @this {Element} */ function dispatch(event){
 
     show_gallery();
 
-    return clear(event);
-});
+    return clearEvent(event);
+}
 
-add_listener(window, "keydown", function(event){
+function key_listener(event){
 
     if(panel){
 
@@ -418,6 +456,10 @@ add_listener(window, "keydown", function(event){
 
             case keycodes.BACKSPACE:
                 autofit();
+                break;
+
+            case keycodes.ESCAPE:
+                close();
                 break;
 
             case keycodes.SPACEBAR:
@@ -445,9 +487,9 @@ add_listener(window, "keydown", function(event){
                 break;
         }
     }
-});
+}
 
-add_listener(window, "wheel", function(event){
+function wheel_listener(event){
 
     if(panel){
 
@@ -463,26 +505,14 @@ add_listener(window, "wheel", function(event){
             zoom_in();
         }
     }
-});
+}
 
-add_listener(window, "hashchange", function(){
+function history_listener(){
 
-    if(panel && !skip_history_event && (location.hash === "#spotlight")){
+    if(panel && (location.hash === "#spotlight")){
 
         close(true);
     }
-});
-
-/**
- * @param {!Window|Document|Element} node
- * @param {string} event
- * @param {Function} fn
- * @param {!AddEventListenerOptions|boolean=} mode
- */
-
-function add_listener(node, event, fn, mode){
-
-    node.addEventListener(event || "click", fn, typeof mode === "undefined" ? true : mode);
 }
 
 /**
@@ -558,7 +588,7 @@ export function menu(e){
         autohide();
     }
 
-    return clear(e);
+    return clearEvent(e);
 }
 
 function start(e){
@@ -576,24 +606,26 @@ function start(e){
     startX = touch.x;
     startY = touch.y;
 
-    return clear(e, true);
+    return clearEvent(e, true);
 }
 
 function end(e){
 
     if(is_down && !dragged){
 
+        is_down = false;
+
         return menu(e);
     }
-    else if(swipe){
+    else if(swipe && dragged){
 
         prepareStyle(slider, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)");
 
-        if((x < -(bodyH / 5)) && next()){
+        if((x < -(bodyH / 10)) && next()){
 
 
         }
-        else if((x > bodyH / 5) && prev()){
+        else if((x > bodyH / 10) && prev()){
 
 
         }
@@ -610,7 +642,7 @@ function end(e){
 
     is_down = false;
 
-    return clear(e);
+    return clearEvent(e);
 }
 
 function move(e){
@@ -673,7 +705,7 @@ function move(e){
         autohide();
     }
 
-    return clear(e, true);
+    return clearEvent(e, true);
 }
 
 function pointer(event){
@@ -836,11 +868,9 @@ function show_gallery(config){
     location.hash = "spotlight";
     location.hash = "show";
 
-    setTimeout(function(){
+    install_listener();
 
-        skip_history_event = false;
-    });
-
+    setStyle(target, "transition", "");
     addClass(doc, "hide-scrollbars");
     addClass(target, "show");
     autohide();
@@ -848,7 +878,7 @@ function show_gallery(config){
 
 export function close(hashchange){
 
-    skip_history_event = true;
+    install_listener(true);
 
     history.go(hashchange === true ? -1 : -2);
 
@@ -958,7 +988,7 @@ function paginate(direction){
     let animation_slide = true;
     let animation_rotate = false;
 
-    if(typeof option !== "undefined"){
+    if(option || (option === "")){
 
         animation_scale = false;
         animation_fade = false;
@@ -1027,26 +1057,6 @@ function paginate(direction){
     setStyle(footer, "visibility", has_content ? "visible" : "hidden");
 
     page.textContent = current_slide + " / " + slide_count;
-}
-
-/**
- * @param event
- * @param {boolean=} passive
- * @returns {boolean}
- */
-
-function clear(event, passive){
-
-    event || (event = window.event);
-
-    if(event){
-
-        passive || event.preventDefault();
-        event.stopImmediatePropagation();
-        event.returnValue = false
-    }
-
-    return false;
 }
 
 export function show(payload, config){

@@ -10,7 +10,7 @@
 
     "use strict";
 
-    var EXTERNAL_URL = "https://rawcdn.githack.com/nextapps-de/spotlight/master/release/0.4.0/";
+    var EXTERNAL_URL = "https://rawcdn.githack.com/nextapps-de/spotlight/0.4.0/dist/";
 
     var kebab_cache = {};
 

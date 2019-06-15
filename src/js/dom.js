@@ -72,13 +72,13 @@ export function removeClass(selector, class_name){
         class_name = [class_name];
     }
 
-    for(let a = 0; a < class_name.length; a++){
+    for(let i = 0; i < nodes.length; i++){
 
-        const current_class = class_name[a];
+        const node = nodes[i];
 
-        for(let i = 0; i < nodes.length; i++){
+        for(let a = 0; a < class_name.length; a++){
 
-            const node = nodes[i];
+            const current_class = class_name[a];
 
             if(ENABLE_CLASS_CACHE){
 
@@ -100,9 +100,24 @@ export function removeClass(selector, class_name){
 /**
  * @param selector
  * @param class_name
+ * @param {boolean=} toggle_state
  */
 
-export function toggleClass(selector, class_name){
+export function toggleClass(selector, class_name, toggle_state){
+
+    if(typeof toggle_state !== "undefined"){
+
+        if(toggle_state){
+
+            addClass(selector, class_name);
+        }
+        else{
+
+            removeClass(selector, class_name);
+        }
+
+        return;
+    }
 
     const nodes = getNodes(selector);
 
@@ -111,13 +126,13 @@ export function toggleClass(selector, class_name){
         class_name = [class_name];
     }
 
-    for(let a = 0; a < class_name.length; a++){
+    for(let i = 0; i < nodes.length; i++){
 
-        const current_class = class_name[a];
+        const node = nodes[i];
 
-        for(let i = 0; i < nodes.length; i++){
+        for(let a = 0; a < class_name.length; a++){
 
-            const node = nodes[i];
+            const current_class = class_name[a];
 
             if(ENABLE_CLASS_CACHE){
 
