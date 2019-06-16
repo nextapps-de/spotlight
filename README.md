@@ -5,13 +5,13 @@
 </p>
 
 <h1></h1>
-<h3>Web's most easy to integrate gallery library. No dependencies.</h3>
+<h3>Web's most easy to integrate lightbox gallery library. Super-lightweight, no dependencies.</h3>
 
 <a target="_blank" href="https://www.npmjs.com/package/spotlight.js"><img src="https://img.shields.io/npm/v/spotlight.js.svg"></a>
 <a target="_blank" href="https://github.com/nextapps-de/spotlight/issues"><img src="https://img.shields.io/github/issues/nextapps-de/spotlight.svg"></a>
 <a target="_blank" href="https://github.com/nextapps-de/spotlight/blob/master/LICENSE.md"><img src="https://img.shields.io/npm/l/spotlight.js.svg"></a>
 
-<a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#controls">Controls</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#api">API</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a>
+<a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#options">Options</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#api">API</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a>
 
 Spotlight runs out of the box:
 
@@ -21,9 +21,12 @@ Spotlight runs out of the box:
 - No additional images/assets
 - No additional handling of dynamic content and event listener
 
-__Demo:__ https://nextapps-de.github.io/spotlight/
+__Demo: https://nextapps-de.github.io/spotlight/__
 
-Alternatively you can use the non-bundled version of this library (classically contains css files, image files, js files) and also the source files for the ES6 module system as described below.
+Alternatively you can:
+
+1. use the non-bundled version of this library (classically contains css files, image files, js files)
+2. use the source files (compatible for the ES6 module system)
 
 <a name="features" id="features"></a>
 ## Features
@@ -39,6 +42,8 @@ Alternatively you can use the non-bundled version of this library (classically c
   - Title (inherits from image "alt"-attribute)
   - Description
 - Preloader
+- Prefetch next image (background task)
+- Custom options
 - Simply customize via markup (data-attributes)
 - Customizable animations
 - Controls:
@@ -52,8 +57,8 @@ Alternatively you can use the non-bundled version of this library (classically c
 
 __Technical properties:__
 
-- Maximum performance
-- Maximum memory optimizations, no leaks, tiny footprint, full cleanup
+- Outstanding performance
+- Memory optimized, tiny footprint, fully cleans up
 - Event capturing (just one single global event listener)
 - Bind event listener for components dynamically:
   - install when gallery opens
@@ -214,8 +219,6 @@ __1. Just insert the script resource tag somewhere in your document:__
 
 __2. and add the class ___spotlight___ to an anchor element accordingly, e.g.:__
 
-> This also works with dynamically loaded content. There is no need to inject listeners on new elements. Instead Spotlight make use of global event capturing.
-
 ```html
 <a class="spotlight" href="img1.jpg">
     <img src="thumb1.jpg">
@@ -227,6 +230,8 @@ __2. and add the class ___spotlight___ to an anchor element accordingly, e.g.:__
     <img src="thumb3.jpg">
 </a>
 ```
+
+This also works with dynamically loaded content. There is no need to inject listeners on new elements. Instead Spotlight make use of global event capturing.
 
 Alternatively you can also use the <a href="#api">Spotlight API</a> for programmatically use.
 
@@ -260,20 +265,24 @@ Give one of the outer wrapping element the class ___spotlight-group___, e.g.:
 </div>
 ```
 
-<a name="controls" id="controls"></a>
-## Controls
+<a name="options" id="options"></a>
+## Options
 
-You can either apply the following data-attributes to the ___spotlight-group___ wrapper element or apply them separately to each ___spotlight___ anchor element (also overrides group definitions).
+Pass options as declarative via data-attributes in the HTML markup or use the <a href="#api">Spotlight API</a>.
+
+> When using markup follow these style: `data-option="value"` (change _option_ and _value_ accordingly), e.g.: `<a class="spotlight" data-preftech="false"></a>`.
+
+You can either apply the following data-attributes to the ___spotlight-group___ wrapper element or apply them separately to each ___spotlight___ anchor element (that also overrides group definitions).
 
 <table>
     <tr></tr>
     <tr>
-        <td>Data&nbsp;Atttribute&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td>Values</td>
         <td>Description</td>
     </tr>
     <tr>
-        <td>data-animation</td>
+        <td>animation</td>
         <td>
             "fade"<br>
             "slide"<br>
@@ -287,91 +296,103 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     </tr>
     <tr></tr>
     <tr>
-        <td>data-controls</td>
+        <td>control</td>
         <td>
             string
         </td>
         <td>
-            Show/hide control elements as "whitelisted" through a comma-separated list, e.g. <code>data-controls="reset,page,fullscreen"</code>
+            Show/hide control elements as "whitelisted" through a comma-separated list, e.g. <code>data-control="reset,page,fullscreen"</code>
         </td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-autohide</td>
+        <td>autohide</td>
         <td>true / false / number</td>
         <td>Enable/disable automatically hide controls when inactive, also set cooldown time</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-fullscreen</td>
+        <td>fullscreen</td>
         <td>true / false</td>
         <td>Show/hide fullscreen button</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-zoom</td>
+        <td>zoom</td>
         <td>true / false</td>
         <td>Show/hide both zoom buttons</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-zoomin</td>
+        <td>zoomin</td>
         <td>true / false</td>
         <td>Show/hide zoom-in button</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-zoomout</td>
+        <td>zoomout</td>
         <td>true / false</td>
         <td>Show/hide zoom-out button</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-reset</td>
+        <td>reset</td>
         <td>true / false</td>
         <td>Show/hide reset button</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-theme</td>
+        <td>theme</td>
         <td>true / false</td>
         <td>Show/hide theme button</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-player</td>
+        <td>player</td>
         <td>true / false / number</td>
         <td>Show/hide player button, also set delay between each tick</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-infinite</td>
+        <td>infinite</td>
         <td>true / false</td>
         <td>Restart from beginning when no slides left</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-theme</td>
+        <td>theme</td>
         <td>"white"<br>"dark"</td>
         <td>Change the default theme</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-page</td>
+        <td>page</td>
         <td>true / false</td>
         <td>Show/hide page</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-title</td>
+        <td>title</td>
         <td>string / false</td>
         <td>Set image title or hide it<br><br><b>Note:</b> When using image elements, this attribute will also inherit automatically from <code>&lt;img alt=&quot;...&quot;&gt;</code>. To prevent this behavior you can set <code>data-title="false"</code>. This will hide the title regardless of any image alt-attributes.</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>data-description</td>
+        <td>description</td>
         <td>string / false</td>
         <td>Set image description or hide it</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>preloader</td>
+        <td>true / false</td>
+        <td>Enable/disable preloading of the current image (also hides spinner)</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>prefetch</td>
+        <td>true / false</td>
+        <td>Enable/disable preloading of the next image</td>
     </tr>
 </table>
 
@@ -398,7 +419,7 @@ __Hint:__ The 2nd image gets the title "Untitled" from the group attributes.
 Control elements could also __whitelisted__ as a comma-separated list, e.g.:
 
 ```html
-<div class="spotlight-group" data-controls="fullscreen,autofit,theme">
+<div class="spotlight-group" data-control="fullscreen,autofit,theme">
 ```
 
 > Use a whitelist to enable controls gets priority over other ambiguous options.
@@ -460,7 +481,7 @@ Spotlight.show(gallery, {
     index: 2,
     theme: "white",
     autohide: false,
-    control: "autofit,zoom"
+    control: ["autofit", "zoom"]
 });
 ```
 
@@ -563,43 +584,62 @@ To add custom styling just override CSS classes accordingly:
 #spotlight {
     /* font styles, background */
 }
-
+```
+```css
 #spotlight .title{
     /* image title */
 }
+```
+```css
+#spotlight .description{
+    /* image description */
+}
 
 #spotlight .page{
-    /* page */
+    /* current page */
 }
-
-#spotlight .toggle-fullscreen{
+```
+```css
+#spotlight .fullscreen{
     /* button fullscreen */
 }
-
+```
+```css
 #spotlight .autofit{
     /* button autofit */
 }
-
+```
+```css
 #spotlight .zoom-out{
     /* button zoom out */
 }
-
+```
+```css
 #spotlight .zoom-in{
     /* button zoom in */
 }
-
-#spotlight .toggle-theme{
+```
+```css
+#spotlight .theme{
     /* button theme */
 }
-
-#spotlight .close-gallery{
+```
+```css
+#spotlight .player{
+    /* button autoplay */
+}
+```
+```css
+#spotlight .close{
     /* button close */
 }
-
+```
+```css
 #spotlight .arrow-left{
     /* button arrow left */
 }
-
+```
+```css
 #spotlight .arrow-right{
     /* button arrow right */
 }
