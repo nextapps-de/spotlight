@@ -13,7 +13,7 @@
 
 <a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#controls">Controls</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#api">API</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a>
 
-Spotlight.js runs out of the box:
+Spotlight runs out of the box:
 
 - No additional Javascript coding
 - No additional HTML snippets
@@ -35,7 +35,7 @@ Alternatively you can use the non-bundled version of this library (classically c
   - Toggle resize
   - Switch theme
   - Autoplay
-  - Pager
+  - Page
   - Title (inherits from image "alt"-attribute)
   - Description
 - Preloader
@@ -50,10 +50,10 @@ Alternatively you can use the non-bundled version of this library (classically c
 - Back-Button (Android)
 - Global API for programmatic usage
 
-Technical properties:
+__Technical properties:__
 
 - Maximum performance
-- Maximum memory optimizations, no leaks, tiny footprint
+- Maximum memory optimizations, no leaks, tiny footprint, full cleanup
 - Event capturing (just one single global event listener)
 - Bind event listener for components dynamically:
   - install when gallery opens

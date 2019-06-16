@@ -62,7 +62,6 @@ let current_slide;
 let slide_count;
 /** @dict */
 let options;
-
 let options_infinite;
 
 let slider;
@@ -118,12 +117,11 @@ function init_gallery(anchors, index){
                 dataset = clone;
             }
 
+            const anchor_dataset = anchor.dataset;
             let tmp;
 
             dataset = dataset.dataset;
-            dataset.src = anchor.href || anchor.src;
-
-            const anchor_dataset = anchor.dataset;
+            dataset.src = anchor.href || anchor.src || anchor_dataset.src || anchor_dataset.href;
 
             if(options_title !== "false"){
 
@@ -149,17 +147,24 @@ function init_gallery(anchors, index){
             }
         }
 
-        prepareStyle(slider, "transform", "translateX(-" + (((index || 1) - 1) * 100) + "%)");
-        init_slide(index || 1);
+        current_slide = index || 1;
+        prepareStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
         paginate();
     }
 }
 
-function inherit_global_option(anchor, group, key){
+/**
+ * @param anchor
+ * @param group
+ * @param key
+ * @param {boolean=} value
+ */
 
-    if(anchor[key]){
+function inherit_global_option(anchor, group, key, value){
 
-        options[key] = group ? group[key] : false;
+    if(value || anchor[key]){
+
+        options[key] = (group && group[key]) || value;
     }
 }
 
@@ -178,6 +183,8 @@ function apply_options(anchor, group){
 
     inherit_global_option(anchor, group, "description");
     inherit_global_option(anchor, group, "title");
+    inherit_global_option(anchor, group, "prefetch", true);
+    inherit_global_option(anchor, group, "preloader", true);
 
     options_infinite = options["infinite"];
 
@@ -239,7 +246,7 @@ function apply_options(anchor, group){
 
         const option = controls[i];
 
-        setStyle(getByClass(option, target)[0], "display", (options[option] === "false") ? "none" : "table-cell");
+        setStyle(getByClass(option, target)[0], "display", (options[option] === "false") ? "none" : "");
     }
 
     // apply theme
@@ -272,13 +279,16 @@ function init_slide(index){
 
     if(!image){
 
-        addClass(target, "loading");
+        const show_preloader = (options["preloader"] !== "false");
 
         image = new Image();
 
         image.onload = /** @this {Image} */ function(){
 
-            removeClass(target, "loading");
+            if(show_preloader){
+
+                removeClass(target, "loading");
+            }
 
             setStyle(this, {
 
@@ -286,17 +296,27 @@ function init_slide(index){
                 "opacity": 1,
                 "transform": ""
             });
+
+            if((options["prefetch"] !== "false") && (index < slide_count)){
+
+                (new Image()).src = panes[index].dataset.src;
+            }
         };
 
         image.onerror = /** @this {Image} */ function(){
 
-            panel.removeChild(image);
+            panel.removeChild(this);
         };
 
         panel.appendChild(image);
         image.src = panel.dataset.src;
 
-        return false;
+        if(show_preloader){
+
+            addClass(target, "loading");
+        }
+
+        return !show_preloader;
     }
 
     return true;
@@ -393,21 +413,21 @@ addListener(document, "DOMContentLoaded", function(){
         [getByClass("theme", target)[0], "", theme]
     ];
 
-    addListener(window, "", dispatch);
+    addListener(document, "", dispatch);
 
 },{ once: true });
 
 /**
- * @param {boolean=} uninstall
+ * @param {boolean=} install
  */
 
-function install_listener(uninstall){
+function install_listener(install){
 
     for(let i = 0; i < event_definitions.length; i++){
 
         const def = event_definitions[i];
 
-        (uninstall ? removeListener : addListener)(
+        (install ? addListener : removeListener)(
 
             def[0], def[1], def[2], def[3]
         );
@@ -868,7 +888,7 @@ function show_gallery(config){
     location.hash = "spotlight";
     location.hash = "show";
 
-    install_listener();
+    install_listener(true);
 
     setStyle(target, "transition", "");
     addClass(doc, "hide-scrollbars");
@@ -876,9 +896,13 @@ function show_gallery(config){
     autohide();
 }
 
+/**
+ * @param {boolean=} hashchange
+ */
+
 export function close(hashchange){
 
-    install_listener(true);
+    install_listener(false);
 
     history.go(hashchange === true ? -1 : -2);
 
@@ -1010,33 +1034,42 @@ function paginate(direction){
 
     setStyle(slider, "transition", animation_slide ? "" : "none");
     setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
-    setStyle(panel, "transform", "");
-    setStyle(image, {
-        "opacity": animation_fade ? 0 : 1,
-        "transform": ""
-    });
 
-    const ref = image;
+    if(panel){
 
-    setTimeout(function(){
+        setStyle(panel, "transform", "");
+    }
 
-        if(ref && (image !== ref) && ref.parentNode){
+    if(image){
 
-            ref.parentNode.removeChild(ref);
-        }
+        setStyle(image, {
+            "opacity": animation_fade ? 0 : 1,
+            "transform": ""
+        });
 
-    }, 800);
+        const ref = image;
+
+        setTimeout(function(){
+
+            if(ref && (image !== ref) && ref.parentNode){
+
+                ref.parentNode.removeChild(ref);
+            }
+
+        }, 800);
+    }
 
     const image_exist = init_slide(current_slide);
 
     prepareStyle(image, {
         "opacity": animation_fade ? 0 : 1,
-        "transform": "translate(-50%, -50%)" + (animation_scale ? " scale(0.8)" : "") + (animation_rotate && (typeof direction !== "undefined") ? " rotateY(" + (direction ? "" : "-") + "135deg)" : ""),
+        "transform": "translate(-50%, -50%)" + (animation_scale ? " scale(0.8)" : "") + (animation_rotate && (typeof direction !== "undefined") ? " rotateY(" + (direction ? "" : "-") + "90deg)" : ""),
         "maxHeight": "",
         "maxWidth": ""
     });
 
     if(image_exist) setStyle(image, {
+        "visibility": "visible",
         "opacity": 1,
         "transform": ""
     });
@@ -1100,7 +1133,7 @@ const closest = Element.prototype.closest || function(classname){
             return /** @type {Element|null} */ (node);
         }
 
-        node = node.parentNode;
+        node = node.parentElement || node.parentNode;
     }
 };
 

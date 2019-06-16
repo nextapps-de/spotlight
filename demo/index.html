@@ -11,21 +11,48 @@
             margin: 0;
             padding: 0;
             border: 0;
+            font-family: Aral, Helvetica, sans-serif;
+            text-align:center
         }
         a{
             display: inline-block;
         }
-        .spotlight img{
+        b{
+            display: block;
+            padding: 10px;
+            text-align: center;
+        }
+        button{
+            padding: 5px 10px;
+        }
+        img,
+        .image{
             width: 30vw;
             max-width: 300px;
             margin: 1vh 1vw;
         }
+        .image{
+            display: inline-block;
+            height: 20vw;
+            max-height: 200px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            text-align: center;
+        }
+        .spotlight.image{
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+    <b>
+        <img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/doc/spotlight.svg" alt="Spotlight.js"><hr>
+    </b>
+    <b>Anchors &amp; Images:</b>
     <div class="spotlight-group">
-        <a class="spotlight" href="gallery/brooklyn-bridge-1791001.jpg">
-            <img src="gallery/brooklyn-bridge-1791001-thumb.jpg">
+        <a class="spotlight" href="gallery/brooklyn-bridge-1791001.jpg" data-description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">
+            <img src="gallery/brooklyn-bridge-1791001-thumb.jpg" alt="Lorem ipsum dolor sit amet">
         </a>
         <a class="spotlight" href="gallery/california-1751455.jpg">
             <img src="gallery/california-1751455-thumb.jpg">
@@ -34,30 +61,54 @@
             <img src="gallery/canada-2340312-thumb.jpg">
         </a>
     </div>
-    <hr>
+    <b>Custom Elements:</b>
     <div class="spotlight-group">
-        <a class="spotlight" href="gallery/godafoss-1840758.jpg">
-            <img src="gallery/godafoss-1840758-thumb.jpg">
-        </a>
-        <a class="spotlight" href="gallery/seljalandsfoss-1751463.jpg">
-            <img src="gallery/seljalandsfoss-1751463-thumb.jpg">
-        </a>
-        <a class="spotlight" href="gallery/montana-1829251.jpg">
-            <img src="gallery/montana-1829251-thumb.jpg">
-        </a>
+        <div class="spotlight image" data-src="gallery/godafoss-1840758.jpg" style="background-image:url(gallery/godafoss-1840758-thumb.jpg)"></div>
+        <div class="spotlight image" data-src="gallery/seljalandsfoss-1751463.jpg" style="background-image:url(gallery/seljalandsfoss-1751463-thumb.jpg)"></div>
+        <div class="spotlight image" data-src="gallery/montana-1829251.jpg" style="background-image:url(gallery/montana-1829251-thumb.jpg)"></div>
     </div>
-    <hr>
-    <div class="spotlight-group">
-        <a class="spotlight" href="gallery/london-1758181.jpg">
-            <img src="gallery/london-1758181-thumb.jpg">
-        </a>
-        <a class="spotlight" href="gallery/sea-1975403.jpg">
-            <img src="gallery/sea-1975403-thumb.jpg">
-        </a>
-        <a class="spotlight" href="gallery/newport-beach-2089906.jpg">
-            <img src="gallery/newport-beach-2089906-thumb.jpg">
-        </a>
+    <b>API Call:</b>
+    <div>
+        <div class="image" style="background-image:url(gallery/london-1758181-thumb.jpg)"></div>
+        <div class="image" style="background-image:url(gallery/sea-1975403-thumb.jpg)"></div>
+        <div class="image" style="background-image:url(gallery/newport-beach-2089906-thumb.jpg)"></div>
     </div>
+    <div class="image" style="height: auto">
+        <button onclick="showGallery(1)">Show</button>
+    </div>
+    <div class="image" style="height: auto">
+        <button onclick="showGallery(2)">Show</button>
+    </div>
+    <div class="image" style="height: auto">
+        <button onclick="showGallery(3)">Show</button>
+    </div>
+    <script>
+
+        const gallery = [{
+
+            title: "Image 1",
+            description: "This is a description.",
+            src: "gallery/london-1758181.jpg"
+        },{
+            title: "Image 2",
+            description: "This is a description.",
+            src: "gallery/sea-1975403.jpg"
+        },{
+            title: "Image 3",
+            description: "This is a description.",
+            src: "gallery/newport-beach-2089906.jpg"
+        }];
+
+        window.showGallery = function(index){
+
+            Spotlight.show(gallery, {
+
+                index: index,
+                theme: "dark"
+            });
+        };
+
+    </script>
     <script src="spotlight.bundle.js"></script>
 </body>
 </html>

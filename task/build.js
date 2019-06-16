@@ -94,7 +94,7 @@ exec("java -jar node_modules/google-closure-compiler-java/compiler.jar" + parame
     const package_json = require("../package.json");
 
     preserve = preserve.replace("* Spotlight.js", "* Spotlight.js v" + package_json.version + (bundle ? " (Bundle)" : extern ? " (CDN)" : ""));
-    build = preserve.substring(0, preserve.indexOf('*/') + 3) + build;
+    build = preserve.substring(0, preserve.indexOf('*/') + 2) + "\n" + build;
     fs.writeFileSync((bundle ? "dist/spotlight.bundle.js" : extern ? "dist/spotlight.cdn.js" : "dist/js/spotlight.min.js"), build);
 
     console.log("Build Complete.");

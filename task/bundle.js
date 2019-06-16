@@ -27,18 +27,18 @@ const { writeFileSync, readFileSync } = require('fs');
 
         if(compressed.hasOwnProperty(key)){
 
-            tmp += ("    " + key + ": \"" + compressed[key] + "\",\n");
+            tmp += ("@" + key + ": \"" + compressed[key] + "\";\n");
         }
     }
 
-    writeFileSync("tmp/images.js", "export default {\n" + tmp.substring(0, tmp.length - 2) + "\n}");
+    writeFileSync("tmp/images.less", tmp);
 
     // ----------------------
 
-    writeFileSync("tmp/template.js", readFileSync("src/js/template.js", "utf8").replace("../../tmp/images.js", "./images.js").replace(/>\s+</g, "><"));
+    writeFileSync("tmp/template.js", readFileSync("src/js/template.js", "utf8").replace(/>\s+</g, "><"));
 
     // ----------------------
 
-    writeFileSync("tmp/style.js", "export default '" + readFileSync("src/css/spotlight.css", "utf8") + "'");
+    writeFileSync("tmp/style.js", "export default '" + readFileSync("tmp/spotlight.css", "utf8") + "'");
 
 })();

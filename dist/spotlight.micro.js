@@ -57,7 +57,6 @@
                 }
 
                 node._class[current_class] = 1;
-
                 node.classList.add(current_class);
             }
         }
@@ -77,13 +76,13 @@
             class_name = [class_name];
         }
 
-        for(var a = 0; a < class_name.length; a++){
+        for(var i = 0; i < nodes.length; i++){
 
-            var current_class = class_name[a];
+            var node = nodes[i];
 
-            for(var i = 0; i < nodes.length; i++){
+            for(var a = 0; a < class_name.length; a++){
 
-                var node = nodes[i];
+                var current_class = class_name[a];
 
                 node._class || createClassCache(node);
 
@@ -93,7 +92,6 @@
                 }
 
                 node._class[current_class] = 0;
-
                 node.classList.remove(current_class);
             }
         }
@@ -115,7 +113,6 @@
             for(var i = 0; i < nodes.length; i++){
 
                 var node = nodes[i];
-
                 var node_style = node._style;
 
                 node_style || (node._style = node_style = {});
@@ -126,7 +123,6 @@
                 }
 
                 node_style[styles] = value;
-
                 node.style.setProperty(
 
                     kebab_cache[styles] || camel_to_kebab(styles),
@@ -318,23 +314,6 @@
         return false;
     }
 
-    var filename = EXTERNAL_URL + "img/";
-    var image_preloader = filename + "preloader.svg";
-    var image_maximize = filename + "maximize.svg";
-    var image_minimize = filename + "minimize.svg";
-    var image_arrow = filename + "arrow.svg";
-    var image_close = filename + "close.svg";
-    var image_zoom_in = filename + "zoom-in.svg";
-    var image_zoom_out = filename + "zoom-out.svg";
-    var image_autofit = filename + "autofit.svg";
-    var image_theme = filename + "theme.svg";
-    var image_play = filename + "play.svg";
-    var image_pause = filename + "pause.svg";
-
-    // https://kangax.github.io/html-minifier/
-
-    var template = '<div class=preloader style="background-image:url(' + image_preloader + ')"></div><div class=scene><div class=pane></div></div><table class=header><tr><td class=page><td style="width:90%"><td class=fullscreen><img src="' + image_maximize + '"><img src="' + image_minimize + '"><td class=autofit><img src="' + image_autofit + '"><td class=zoom-out><img src="' + image_zoom_out + '"><td class=zoom-in><img src="' + image_zoom_in + '"><td class=theme><img src="' + image_theme + '"><td class=player><img src="' + image_play + '"><img src="' + image_pause + '"><td class=close><img src="' + image_close + '"></table><div class="arrow arrow-left"><img src="' + image_arrow + '"></div><div class="arrow arrow-right"><img src="' + image_arrow + '"></div><table class=footer><tr><td class=title><tr><td class=description></table>';
-
     var link = document.createElement("link");
     link.rel = "stylesheet";
     link.href = EXTERNAL_URL + "css/spotlight.css";
@@ -375,7 +354,6 @@
     var slide_count;
     /** @dict */
     var options;
-
     var options_infinite;
 
     var slider;
@@ -431,12 +409,11 @@
                     dataset = clone;
                 }
 
+                var anchor_dataset = anchor.dataset;
                 var tmp;
 
                 dataset = dataset.dataset;
-                dataset.src = anchor.href || anchor.src;
-
-                var anchor_dataset = anchor.dataset;
+                dataset.src = anchor.href || anchor.src || anchor_dataset.src || anchor_dataset.href;
 
                 if(options_title !== "false"){
 
@@ -462,17 +439,24 @@
                 }
             }
 
-            prepareStyle(slider, "transform", "translateX(-" + (((index || 1) - 1) * 100) + "%)");
-            init_slide(index || 1);
+            current_slide = index || 1;
+            prepareStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
             paginate();
         }
     }
 
-    function inherit_global_option(anchor, group, key){
+    /**
+     * @param anchor
+     * @param group
+     * @param key
+     * @param {boolean=} value
+     */
 
-        if(anchor[key]){
+    function inherit_global_option(anchor, group, key, value){
 
-            options[key] = group ? group[key] : false;
+        if(value || anchor[key]){
+
+            options[key] = (group && group[key]) || value;
         }
     }
 
@@ -491,22 +475,36 @@
 
         inherit_global_option(anchor, group, "description");
         inherit_global_option(anchor, group, "title");
+        inherit_global_option(anchor, group, "prefetch", true);
+        inherit_global_option(anchor, group, "preloader", true);
 
         options_infinite = options["infinite"];
 
         // handle shorthand "zoom"
 
-        if(typeof options["zoom"] !== "undefined"){
+        var zoom = options["zoom"];
 
-            options["zoom-in"] = options["zoom-out"] = options["zoom"];
+        if(zoom || (zoom === "")){
+
+            options["zoom-in"] = options["zoom-out"] = zoom;
+
             delete options["zoom"];
         }
 
+        var control = options["control"];
+
         // determine controls
 
-        if(typeof options["control"] !== "undefined"){
+        if(control || (control === "")){
 
-            var whitelist = options["control"].split(",");
+            var whitelist = (
+
+                typeof control === "string" ?
+
+                    control.split(",")
+                    :
+                    control
+            );
 
             // prepare to false when using whitelist
 
@@ -540,19 +538,14 @@
 
             var option = controls[i];
 
-            setStyle(getByClass(option, target)[0], "display", options[option] === "false" ? "none" : "table-cell");
+            setStyle(getByClass(option, target)[0], "display", (options[option] === "false") ? "none" : "");
         }
 
         // apply theme
 
-        if(typeof current_theme === "undefined"){
+        if((current_theme = options["theme"]) === "white"){
 
-            current_theme = options["theme"];
-
-            if(current_theme === "white"){
-
-                theme();
-            }
+            theme();
         }
     }
 
@@ -578,13 +571,16 @@
 
         if(!image){
 
-            addClass(target, "loading");
+            var show_preloader = (options["preloader"] !== "false");
 
             image = new Image();
 
             image.onload = /** @this {Image} */ function(){
 
-                removeClass(target, "loading");
+                if(show_preloader){
+
+                    removeClass(target, "loading");
+                }
 
                 setStyle(this, {
 
@@ -592,17 +588,27 @@
                     "opacity": 1,
                     "transform": ""
                 });
+
+                if((options["prefetch"] !== "false") && (index < slide_count)){
+
+                    (new Image()).src = panes[index].dataset.src;
+                }
             };
 
             image.onerror = /** @this {Image} */ function(){
 
-                panel.removeChild(image);
+                panel.removeChild(this);
             };
 
             panel.appendChild(image);
             image.src = panel.dataset.src;
 
-            return false;
+            if(show_preloader){
+
+                addClass(target, "loading");
+            }
+
+            return !show_preloader;
         }
 
         return true;
@@ -615,6 +621,7 @@
     var keycodes = {
 
         "BACKSPACE": 8,
+        "ESCAPE": 27,
         "SPACEBAR": 32,
         "LEFT": 37,
         "RIGHT": 39,
@@ -632,7 +639,7 @@
 
         target = document.createElement("div");
         target.id = "spotlight";
-        target.innerHTML = template;
+        target.innerHTML = '<div class=preloader></div><div class=scene><div class=pane></div></div><div class=header><div class=page></div><div class="icon fullscreen"></div><div class="icon autofit"></div><div class="icon zoom-out"></div><div class="icon zoom-in"></div><div class="icon theme"></div><div class="icon player"></div><div class="icon close"></div></div><div class="arrow arrow-left"></div><div class="arrow arrow-right"></div><div class=footer><div class=title></div><div class=description></div></div>';
 
         setStyle(target, "transition", "none");
 
@@ -649,6 +656,7 @@
         maximize = getByClass("fullscreen", target)[0];
         page = getByClass("page", target)[0];
         player = getByClass("player", target)[0];
+        doc = document.documentElement || document.body;
 
         // install fullscreen
 
@@ -660,8 +668,6 @@
             document["mozCancelFullScreen"] ||
             function(){}
         ));
-
-        doc = document.documentElement || document.body;
 
         doc["requestFullScreen"] || (doc["requestFullScreen"] = (
 
@@ -699,26 +705,23 @@
             [getByClass("theme", target)[0], "", theme]
         ];
 
-        addListener(window, "", dispatch);
+        addListener(document, "", dispatch);
 
     },{ once: true });
 
     /**
-     * @param {boolean=} uninstall
+     * @param {boolean=} install
      */
 
-    function install_listener(uninstall){
+    function install_listener(install){
 
         for(var i = 0; i < event_definitions.length; i++){
 
             var def = event_definitions[i];
 
-            (uninstall ? removeListener : addListener)(
+            (install ? addListener : removeListener)(
 
-                def[0],
-                def[1],
-                def[2],
-                def[3]
+                def[0], def[1], def[2], def[3]
             );
         }
     }
@@ -765,6 +768,10 @@
 
                 case keycodes.BACKSPACE:
                     autofit();
+                    break;
+
+                case keycodes.ESCAPE:
+                    close();
                     break;
 
                 case keycodes.SPACEBAR:
@@ -916,15 +923,21 @@
 
     function end(e){
 
-        if(swipe && dragged){
+        if(is_down && !dragged){
+
+            is_down = false;
+
+            return menu(e);
+        }
+        else if(swipe && dragged){
 
             prepareStyle(slider, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)");
 
-            if((x < -(bodyH / 5)) && next()){
+            if((x < -(bodyH / 10)) && next()){
 
 
             }
-            else if((x > bodyH / 5) && prev()){
+            else if((x > bodyH / 10) && prev()){
 
 
             }
@@ -1167,7 +1180,7 @@
         location.hash = "spotlight";
         location.hash = "show";
 
-        install_listener();
+        install_listener(true);
 
         setStyle(target, "transition", "");
         addClass(doc, "hide-scrollbars");
@@ -1175,9 +1188,13 @@
         autohide();
     }
 
+    /**
+     * @param {boolean=} hashchange
+     */
+
     function close(hashchange){
 
-        install_listener(true);
+        install_listener(false);
 
         history.go(hashchange === true ? -1 : -2);
 
@@ -1287,7 +1304,7 @@
         var animation_slide = true;
         var animation_rotate = false;
 
-        if(typeof option !== "undefined"){
+        if(option || (option === "")){
 
             animation_scale = false;
             animation_fade = false;
@@ -1309,33 +1326,42 @@
 
         setStyle(slider, "transition", animation_slide ? "" : "none");
         setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
-        setStyle(panel, "transform", "");
-        setStyle(image, {
-            "opacity": animation_fade ? 0 : 1,
-            "transform": ""
-        });
 
-        var ref = image;
+        if(panel){
 
-        setTimeout(function(){
+            setStyle(panel, "transform", "");
+        }
 
-            if(ref && (image !== ref) && ref.parentNode){
+        if(image){
 
-                ref.parentNode.removeChild(ref);
-            }
+            setStyle(image, {
+                "opacity": animation_fade ? 0 : 1,
+                "transform": ""
+            });
 
-        }, 800);
+            var ref = image;
+
+            setTimeout(function(){
+
+                if(ref && (image !== ref) && ref.parentNode){
+
+                    ref.parentNode.removeChild(ref);
+                }
+
+            }, 800);
+        }
 
         var image_exist = init_slide(current_slide);
 
         prepareStyle(image, {
             "opacity": animation_fade ? 0 : 1,
-            "transform": "translate(-50%, -50%)" + (animation_scale ? " scale(0.8)" : "") + (animation_rotate && (typeof direction !== "undefined") ? " rotateY(" + (direction ? "" : "-") + "135deg)" : ""),
+            "transform": "translate(-50%, -50%)" + (animation_scale ? " scale(0.8)" : "") + (animation_rotate && (typeof direction !== "undefined") ? " rotateY(" + (direction ? "" : "-") + "90deg)" : ""),
             "maxHeight": "",
             "maxWidth": ""
         });
 
         if(image_exist) setStyle(image, {
+            "visibility": "visible",
             "opacity": 1,
             "transform": ""
         });
@@ -1399,7 +1425,7 @@
                 return /** @type {Element|null} */ (node);
             }
 
-            node = node.parentNode;
+            node = node.parentElement || node.parentNode;
         }
     };
 
