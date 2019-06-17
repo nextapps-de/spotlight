@@ -33,13 +33,13 @@ export function addClass(selector, class_name){
         class_name = [class_name];
     }
 
-    for(let a = 0; a < class_name.length; a++){
+    for(let i = 0; i < nodes.length; i++){
 
-        const current_class = class_name[a];
+        const node = nodes[i];
 
-        for(let i = 0; i < nodes.length; i++){
+        for(let a = 0; a < class_name.length; a++){
 
-            const node = nodes[i];
+            const current_class = class_name[a];
 
             if(ENABLE_CLASS_CACHE){
 
@@ -160,13 +160,13 @@ export function hasClass(selector, class_name){
         class_name = [class_name];
     }
 
-    for(let a = 0; a < class_name.length; a++){
+    for(let i = 0; i < nodes.length; i++){
 
-        const current_class = class_name[a];
+        const node = nodes[i];
 
-        for(let i = 0; i < nodes.length; i++){
+        for(let a = 0; a < class_name.length; a++){
 
-            const node = nodes[i];
+            const current_class = class_name[a];
 
             if(ENABLE_CLASS_CACHE){
 
@@ -234,12 +234,7 @@ export function setStyle(selector, styles, value, force){
 
             const style = keys[a];
 
-            value = styles[style];
-
-            for(let i = 0; i < nodes.length; i++){
-
-                setStyle(nodes[i], style, value, force);
-            }
+            setStyle(nodes, style, styles[style], force);
         }
     }
 }

@@ -163,6 +163,7 @@
   }
   .player.on{
     background-image: url(@pause);
+    animation: pulsate 1s ease infinite;
   }
   .close{
     background-image: url(@close);
@@ -252,5 +253,17 @@
 @media (max-width: 400px), (max-height: 400px) {
   #spotlight .fullscreen{
     display: none !important;
+  }
+}
+
+@keyframes pulsate {
+  0%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.2;
+  }
+  100%{
+    opacity: 1;
   }
 }

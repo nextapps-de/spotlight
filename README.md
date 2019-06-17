@@ -1,7 +1,7 @@
 <p align="center">
     <br>
     <img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/doc/spotlight.svg" alt="Spotlight.js" width="50%">
-    <br><br>
+    <br>
 </p>
 
 <h1></h1>
