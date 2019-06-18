@@ -615,7 +615,7 @@ function autohide(){
             removeClass(target, "menu");
             hide = null;
 
-        }, (option_autohide * 1) || 2000);
+        }, (option_autohide * 1) || 3000);
     }
     else{
 
@@ -1070,7 +1070,7 @@ function paginate(direction){
         }
     }
 
-    setStyle(slider, "transition", animation_slide ? "" : "none");
+    setStyle(slider, "transitionProperty", animation_slide ? "" : "none");
     setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
 
     if(panel){
