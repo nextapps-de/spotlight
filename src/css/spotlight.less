@@ -77,7 +77,7 @@
     border: 0;
     transform: translate(-50%, -50%) scale(1) perspective(100vw);
     transition: transform 1s cubic-bezier(0.1, 1, 0.1, 1),
-                opacity 1s cubic-bezier(0.1, 1, 0.1, 1);
+                opacity 1s cubic-bezier(0.3, 1, 0.3, 1);
     transform-style: preserve-3d;
     pointer-events: none;
     contain: layout paint style;
@@ -98,7 +98,7 @@
     text-align: right;
     background-color: rgba(0, 0, 0, 0.45);
     transform: translateY(-100px);
-    transition: transform 0.35s cubic-bezier(0, 0, 0.25, 1);
+    transition: transform 0.35s ease-out;
     contain: layout size paint style;
   }
   &.menu .header,
@@ -183,7 +183,7 @@
     margin-top: -25px;
     padding: 10px;
     transform: translateX(-100px);
-    transition: transform 0.35s cubic-bezier(0, 0, 0.25, 1),
+    transition: transform 0.35s ease-out,
                 opacity 0.2s ease-out;
     box-sizing: border-box;
     background-position: center center;

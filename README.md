@@ -21,7 +21,7 @@ Spotlight runs out of the box:
 - No additional images/assets
 - No additional handling of dynamic content and event listener
 
-__Demo: https://nextapps-de.github.io/spotlight/__
+<a href="https://nextapps-de.github.io/spotlight/"><b>Show Demo</b></a>
 
 Alternatively you can:
 

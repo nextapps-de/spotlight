@@ -263,6 +263,10 @@ function apply_options(anchor, group){
 
         theme();
     }
+    else{
+
+        current_theme = "white";
+    }
 }
 
 function object_assign(target, source){
@@ -845,7 +849,12 @@ export function autofit(init){
 
 function zoom_in(prevent_autohide){
 
-    zoom(scale /= 0.65);
+    let value = scale / 0.65;
+
+    if(value <= 5){
+
+        zoom(scale = value);
+    }
 
     prevent_autohide || autohide();
 }
@@ -867,12 +876,7 @@ function zoom_out(prevent_autohide){
 
     let value = scale * 0.65;
 
-    if(value < 1){
-
-        value = 1;
-    }
-
-    if(value !== scale){
+    if(value >= 1){
 
         zoom(scale = value);
 

@@ -51,10 +51,12 @@
 </head>
 <body>
     <b>
-        <img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/doc/spotlight.svg" alt="Spotlight.js"><hr>
+        <img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/doc/spotlight.svg" alt="Spotlight.js"><br><br>
+        <a href="https://github.com/nextapps-de/spotlight">Goto Github</a><br><br>
+        <hr>
     </b>
     <p class="spotlight-group">
-        <b>Anchors &amp; Images:</b>
+        <b>Anchors &amp; Images</b>
         <a class="spotlight" href="gallery/brooklyn-bridge-1791001.jpg" data-description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">
             <img src="gallery/brooklyn-bridge-1791001-thumb.jpg" alt="Lorem ipsum dolor sit amet">
         </a>
@@ -65,19 +67,21 @@
             <img src="gallery/canada-2340312-thumb.jpg">
         </a>
     </p>
-    <b>Custom Elements:</b>
+    <b>Custom Elements</b>
     <div class="spotlight-group">
         <div class="spotlight image" data-src="gallery/godafoss-1840758.jpg" style="background-image:url(gallery/godafoss-1840758-thumb.jpg)"></div>
         <div class="spotlight image" data-src="gallery/seljalandsfoss-1751463.jpg" style="background-image:url(gallery/seljalandsfoss-1751463-thumb.jpg)"></div>
         <div class="spotlight image" data-src="gallery/montana-1829251.jpg" style="background-image:url(gallery/montana-1829251-thumb.jpg)"></div>
     </div>
     <br>
-    <b>API Call:</b>
-    <div>
-        <div class="image" style="background-image:url(gallery/london-1758181-thumb.jpg)"></div>
-        <div class="image" style="background-image:url(gallery/sea-1975403-thumb.jpg)"></div>
-        <div class="image" style="background-image:url(gallery/newport-beach-2089906-thumb.jpg)"></div>
-    </div>
+    <b>API Call</b>
+
+    <p>Choose Animation:</p>
+    <input type="checkbox" value="slide" checked> Slide &emsp;
+    <input type="checkbox" value="fade" checked> Fade &emsp;
+    <input type="checkbox" value="scale" checked> Scale &emsp;
+    <input type="checkbox" value="flip"> Flip
+    <br><br>
     <div class="image" style="height: auto">
         <button onclick="showGallery(1)">Show</button>
     </div>
@@ -87,12 +91,12 @@
     <div class="image" style="height: auto">
         <button onclick="showGallery(3)">Show</button>
     </div>
-    <p>Choose Animation:</p>
-    <input type="checkbox" value="slide" checked> Slide &emsp;
-    <input type="checkbox" value="fade" checked> Fade &emsp;
-    <input type="checkbox" value="scale" checked> Scale &emsp;
-    <input type="checkbox" value="flip"> Flip
-    <br><br><br>
+    <div>
+        <div class="image" style="background-image:url(gallery/london-1758181-thumb.jpg)"></div>
+        <div class="image" style="background-image:url(gallery/sea-1975403-thumb.jpg)"></div>
+        <div class="image" style="background-image:url(gallery/newport-beach-2089906-thumb.jpg)"></div>
+    </div>
+    <br><br>
     <script>
 
         const checkboxes = document.getElementsByTagName("input");
