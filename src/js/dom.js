@@ -185,8 +185,6 @@ export function hasClass(selector, class_name){
     return false;
 }
 
-
-
 /**
  * @param {string|Node|Element|Array} selector
  * @param {string|!Object} styles
@@ -222,7 +220,7 @@ export function setStyle(selector, styles, value, force){
 
                 kebab_cache[styles] || camel_to_kebab(styles),
                 value,
-                force || null
+                force ? "important" : ""
             );
         }
     }

@@ -66,6 +66,7 @@ let slide_count;
 let options;
 let options_infinite;
 let options_progress;
+let delay;
 
 let slider;
 let panel;
@@ -200,6 +201,7 @@ function apply_options(anchor, group){
     options_infinite = options["infinite"];
     options_infinite = (typeof options_infinite !== "undefined") && (options_infinite !== "false");
     options_progress = options["progress"] !== "false";
+    delay = (options["player"] * 1) || 7000;
 
     // handle shorthand "zoom"
 
@@ -564,17 +566,12 @@ function play(init){
 
         if(!playing){
 
-            const delay = (options["player"] * 1) || 7000;
-
             playing = setInterval(next, delay);
             addClass(player, "on");
 
             if(options_progress) {
 
-                setStyle(progress, {
-                    "transitionDuration": delay + "ms",
-                    "transform": "translateX(0)"
-                });
+                animate_bar();
             }
         }
     }
@@ -983,8 +980,7 @@ export function goto(slide){
 
             if(playing && options_progress){
 
-                prepareStyle(progress, "transform", "");
-                setStyle(progress, "transform", "translateX(0)");
+                animate_bar();
             }
 
             const dir = slide > current_slide;
@@ -995,6 +991,19 @@ export function goto(slide){
             return true;
         }
     }
+}
+
+function animate_bar(){
+
+    prepareStyle(progress, {
+        "transitionDuration": "",
+        "transform": ""
+    });
+
+    setStyle(progress, {
+        "transitionDuration": delay + "ms",
+        "transform": "translateX(0)"
+    });
 }
 
 /**
