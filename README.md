@@ -66,7 +66,7 @@ __Technical properties:__
   - fully cleanup when gallery was closed
 - No dependencies, no jQuery
 - Responsive
-- Super-lightweight, all in all just 6kb gzip (js + css + html + images)
+- Super-lightweight, all in all just 7kb gzip (js + css + html + images)
 - Support for ES6 module system
 
 <a name="started" id="started"></a>
@@ -102,7 +102,7 @@ __Get Latest Builds:__
 <table>
     <tr>
         <td colspan=3">
-            <b><u>Bundle Standalone (6kb gzip):</u></b>
+            <b><u>Bundle Standalone (7kb gzip):</u></b>
         </td>
     </tr>
     <tr>
@@ -112,7 +112,7 @@ __Get Latest Builds:__
     </tr>
     <tr>
         <td colspan=3">
-            <br><b><u>Bundle CDN (6kb gzip):</u></b>
+            <br><b><u>Bundle CDN (7kb gzip):</u></b>
         </td>
     </tr>
     <tr>
@@ -328,6 +328,12 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
         <td>player</td>
         <td>true / false / number</td>
         <td>Show/hide player button, also set delay between each tick</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>progress</td>
+        <td>true / false</td>
+        <td>Show/hide autoplay progress bar</td>
     </tr>
     <tr></tr>
     <tr>

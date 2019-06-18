@@ -37,7 +37,8 @@ const controls = [
     "page",
     "title",
     "description",
-    "player"
+    "player",
+    "progress"
 ];
 
 let x;
@@ -64,6 +65,7 @@ let slide_count;
 /** @dict */
 let options;
 let options_infinite;
+let options_progress;
 
 let slider;
 let panel;
@@ -78,6 +80,7 @@ let arrow_right;
 let maximize;
 let page;
 let player;
+let progress;
 
 let playing;
 let timer;
@@ -195,6 +198,8 @@ function apply_options(anchor, group){
     inherit_global_option(anchor, group, "preloader", true);
 
     options_infinite = options["infinite"];
+    options_infinite = (typeof options_infinite !== "undefined") && (options_infinite !== "false");
+    options_progress = options["progress"] !== "false";
 
     // handle shorthand "zoom"
 
@@ -377,6 +382,7 @@ addListener(document, "DOMContentLoaded", function(){
     maximize = getByClass("fullscreen", target)[0];
     page = getByClass("page", target)[0];
     player = getByClass("player", target)[0];
+    progress = getByClass("progress", target)[0];
     doc = document.documentElement || document.body;
 
     // install fullscreen
@@ -558,8 +564,18 @@ function play(init){
 
         if(!playing){
 
-            playing = setInterval(next, (options["player"] * 1) || 5000);
+            const delay = (options["player"] * 1) || 7000;
+
+            playing = setInterval(next, delay);
             addClass(player, "on");
+
+            if(options_progress) {
+
+                setStyle(progress, {
+                    "transitionDuration": delay + "ms",
+                    "transform": "translateX(0)"
+                });
+            }
         }
     }
     else{
@@ -568,6 +584,11 @@ function play(init){
 
             playing = clearInterval(playing);
             removeClass(player, "on");
+
+            if(options_progress){
+
+                prepareStyle(progress, "transform", "");
+            }
         }
     }
 
@@ -932,14 +953,9 @@ export function close(hashchange){
 
 export function prev(){
 
-    playing || autohide();
-
     if(current_slide > 1){
 
-        current_slide--;
-        paginate(false);
-
-        return true;
+        return goto(current_slide - 1);
     }
     else if(playing || options_infinite){
 
@@ -949,36 +965,37 @@ export function prev(){
 
 export function next(){
 
-    playing || autohide();
+    if(current_slide < slide_count){
 
-    if(!playing || !is_down){
+        return goto(current_slide + 1);
+    }
+    else if(playing || options_infinite){
 
-        if(current_slide < slide_count){
-
-            current_slide++;
-            paginate(true);
-
-            return true;
-        }
-        else if(playing || options_infinite){
-
-            return goto(1);
-        }
+        return goto(1);
     }
 }
 
 export function goto(slide){
 
-    if(slide !== current_slide){
+    if(!playing || !is_down){
 
-        playing || autohide();
+        if(slide !== current_slide){
 
-        const dir = slide > current_slide;
+            playing || autohide();
 
-        current_slide = slide;
-        paginate(dir);
+            if(playing && options_progress){
 
-        return true;
+                prepareStyle(progress, "transform", "");
+                setStyle(progress, "transform", "translateX(0)");
+            }
+
+            const dir = slide > current_slide;
+
+            current_slide = slide;
+            paginate(dir);
+
+            return true;
+        }
     }
 }
 

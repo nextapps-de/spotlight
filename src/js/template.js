@@ -16,6 +16,7 @@ export default (
         <div class="icon player"></div>
         <div class="icon close"></div>
     </div>
+    <div class=progress></div>
     <div class="arrow arrow-left"></div>
     <div class="arrow arrow-right"></div>
     <div class=footer>

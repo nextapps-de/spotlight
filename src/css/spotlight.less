@@ -114,6 +114,15 @@
     padding-right: 20px;
     opacity: 0.5;
   }
+  .progress{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.45);
+    transform: translateX(-100%);
+    transition: transform 1s linear;
+  }
   .footer{
     position: absolute;
     bottom: 0;
@@ -216,7 +225,8 @@
     .preloader,
     .arrow,
     .header,
-    .footer{
+    .footer,
+    .progress{
       filter: invert(1);
     }
   }
