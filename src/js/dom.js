@@ -287,13 +287,13 @@ let tmp = 0;
 
 export function prepareStyle(node, style, value){
 
-    setStyle(node, "transitionProperty", "none");
+    setStyle(node, "transition", "none");
     setStyle(node, style, value);
 
     // force styles (quick-fix for closure compiler):
     tmp || (tmp = node.clientTop && 0);
 
-    setStyle(node, "transitionProperty", "");
+    setStyle(node, "transition", "");
 }
 
 /**

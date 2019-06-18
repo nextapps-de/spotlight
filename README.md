@@ -38,6 +38,7 @@ Alternatively you can:
   - Toggle resize
   - Switch theme
   - Autoplay
+  - Progress Bar
   - Page
   - Title (inherits from image "alt"-attribute)
   - Description
@@ -45,8 +46,9 @@ Alternatively you can:
 - Prefetch next image (background task)
 - Custom options
 - Simply customize via markup (data-attributes)
-- Customizable animations
+- Arrange built-in animations
 - Custom themes
+- Custom animations
 - Controls:
   - Keyboard
   - Touch
@@ -102,7 +104,7 @@ __Get Latest Builds:__
 <table>
     <tr>
         <td colspan=3">
-            <b><u>Bundle Standalone (7kb gzip):</u></b>
+            <b><u>Bundle Standalone:</u></b>
         </td>
     </tr>
     <tr>
@@ -112,7 +114,7 @@ __Get Latest Builds:__
     </tr>
     <tr>
         <td colspan=3">
-            <br><b><u>Bundle CDN (7kb gzip):</u></b>
+            <br><b><u>Bundle CDN:</u></b>
         </td>
     </tr>
     <tr>
@@ -166,7 +168,7 @@ __Get Latest (ES6 Modules):__
 
 https://github.com/nextapps-de/spotlight/tree/master/src
 
-### Setup Spotlight
+### Basic Setup
 
 __1. Just insert the script resource tag right after the documents head:__
 
@@ -184,7 +186,7 @@ __1. Just insert the script resource tag right after the documents head:__
 </html>
 ```
 
-__2. and add the class ___spotlight___ to an anchor element accordingly, e.g.:__
+__2. Add the class ___spotlight___ to an anchor element accordingly, e.g.:__
 
 ```html
 <a class="spotlight" href="img1.jpg">
@@ -645,7 +647,7 @@ To add custom styling just override CSS classes accordingly:
 
 __Customize builtin themes__
 
-Uae the same classes as above:
+Use the same classes as above:
 
 ```css
 #spotlight.white .title{
@@ -685,6 +687,50 @@ Or apply custom theme via API:
 ```js
 Spotlight.show([ /* Gallery */ ],{
     theme: "my-theme"
+});
+```
+
+<a name="animation" id="animation"></a>
+## Custom Animations
+
+> When you pass a custom animation, all other ambiguous animation settings will be overridden (also when mixed with built-ins).
+
+> The style class for a custom animation describes the __hidden state__ of an image.
+
+You can define your own custom animation by:
+
+<b>1.</b> Extending the default styles (when image is shown) and corresponding transitions as follows:
+
+```css
+#spotlight .scene img{
+    filter: grayscale(0);
+    transition: filter 1s ease-out,
+                opacity 0.5s ease-out;
+}
+```
+
+<b>2.</b> Providing styles for the __hidden state__ of the transition by adding a custom animation name as a class:
+
+```css
+#spotlight .scene img.my-animation{
+    opacity: 0 !important;
+    filter: grayscale(1);
+}
+```
+
+Apply custom animation via markdown:
+
+```html
+<a class="spotlight" href="img.jpg" data-animation="my-animation">
+    <img src="thumb.jpg">
+</a>
+```
+
+Or apply custom animation via API:
+
+```js
+Spotlight.show([ /* Gallery */ ],{
+    animation: "my-animation"
 });
 ```
 

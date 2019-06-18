@@ -663,8 +663,6 @@ function start(e){
 
 function end(e){
 
-
-
     if(is_down && !dragged){
 
         is_down = false;
@@ -1041,14 +1039,14 @@ function paginate(direction){
     let animation_scale = true;
     let animation_fade = true;
     let animation_slide = true;
-    let animation_flip = false;
+    let animation_flip;
+    let animation_custom;
 
     if(option || (option === "")){
 
-        animation_scale = false;
-        animation_fade = false;
+        animation_scale =
+        animation_fade =
         animation_slide = false;
-        animation_flip = false;
 
         const effects = (
 
@@ -1067,10 +1065,20 @@ function paginate(direction){
             else if(effect === "fade") animation_fade = true;
             else if(effect === "slide") animation_slide = true;
             else if(effect === "flip") animation_flip = true;
+            else if(effect !== "false") {
+
+                animation_scale =
+                animation_fade =
+                animation_slide =
+                animation_flip = false;
+                animation_custom = effect;
+
+                break;
+             }
         }
     }
 
-    setStyle(slider, "transitionProperty", animation_slide ? "" : "none");
+    setStyle(slider, "transition", animation_slide ? "" : "none");
     setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
 
     if(panel){
@@ -1099,6 +1107,11 @@ function paginate(direction){
 
     const image_exist = init_slide(current_slide);
 
+    if(animation_custom){
+
+        addClass(image, animation_custom);
+    }
+
     prepareStyle(image, {
         "opacity": animation_fade ? 0 : 1,
         "transform": "translate(-50%, -50%)" + (animation_scale ? " scale(0.8)" : "") + (animation_flip && (typeof direction !== "undefined") ? " rotateY(" + (direction ? "" : "-") + "90deg)" : ""),
@@ -1111,6 +1124,11 @@ function paginate(direction){
         "opacity": 1,
         "transform": ""
     });
+
+    if(animation_custom){
+
+        removeClass(image, animation_custom);
+    }
 
     setStyle(panel, "transform", "");
     setStyle(arrow_left, "visibility", !options_infinite && (current_slide === 1) ? "hidden" : "");
