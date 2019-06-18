@@ -5,7 +5,7 @@
 </p>
 
 <h1></h1>
-<h3>Web's most easy to integrate lightbox gallery library. Super-lightweight, no dependencies.</h3>
+<h3>Web's most easy to integrate lightbox gallery library. Super-lightweight, outstanding performance, no dependencies.</h3>
 
 <a target="_blank" href="https://www.npmjs.com/package/spotlight.js"><img src="https://img.shields.io/npm/v/spotlight.js.svg"></a>
 <a target="_blank" href="https://github.com/nextapps-de/spotlight/issues"><img src="https://img.shields.io/github/issues/nextapps-de/spotlight.svg"></a>
@@ -203,6 +203,16 @@ __2. Add the class ___spotlight___ to an anchor element accordingly, e.g.:__
 This also works with dynamically loaded content. There is no need to inject listeners on new elements. Instead Spotlight make use of global event capturing.
 
 Alternatively you can also use the <a href="#api">Spotlight API</a> for programmatically use.
+
+__Usage with non-anchor elements:__
+
+```html
+<div class="spotlight" data-src="img1.jpg">
+    <div><!-- ... --></div>
+</a>
+```
+
+Pretty much the same like anchors but use ___data-src___ instead of ___href___.
 
 <a name="groups" id="groups"></a>
 ## Gallery-Groups
