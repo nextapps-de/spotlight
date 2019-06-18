@@ -405,7 +405,7 @@ addListener(document, "DOMContentLoaded", function(){
         [slider, "mouseup", end],
         [slider, "mousemove", move],
 
-        [slider, "touchstart", start, {"passive": true}],
+        [slider, "touchstart", start, {"passive": false}],
         [slider, "touchcancel", end],
         [slider, "touchend", end],
         [slider, "touchmove", move, {"passive": true}],
