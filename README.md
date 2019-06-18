@@ -99,7 +99,64 @@ __Version Explanation__
     </tr>
 </table>
 
-__Get Latest Builds:__
+__Get Latest Build (Stable):__
+
+<table>
+    <tr>
+        <td colspan=3">
+            <b><u>Bundle Standalone:</u></b>
+        </td>
+    </tr>
+    <tr>
+        <td>spotlight.bundle.js</td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.5.5/dist/spotlight.bundle.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.5.5/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.5.5/dist/spotlight.bundle.js</a></td>
+    </tr>
+    <tr>
+        <td colspan=3">
+            <br><b><u>Bundle CDN:</u></b>
+        </td>
+    </tr>
+    <tr>
+        <td>spotlight.cdn.js</td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.5.5/dist/spotlight.cdn.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.5.5/dist/spotlight.cdn.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.5.5/dist/spotlight.cdn.js</a></td>
+    </tr>
+    <tr>
+        <td colspan=3">
+            <br><b><u>Non-Bundled:</u></b>
+        </td>
+    </tr>
+    <tr>
+        <td>spotlight.min.js</td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.5.5/dist/js/spotlight.min.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.5.5/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.5.5/dist/js/spotlight.min.js</a></td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>spotlight.css</td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.5.5/dist/css/spotlight.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.5.5/dist/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.5.5/dist/css/spotlight.css</a></td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>img.zip</td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.5.5/dist/img" target="_blank">Download</a></td>
+        <td>Alternatively when using non-bundled version you can download images from <i>/dist/img/</i>.</td>
+    </tr>
+    <tr>
+        <td colspan=3">
+            <br><b><u>ES6 Modules:</u></b>
+        </td>
+    </tr>
+    <tr>
+        <td>src.zip</td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.5.5/src" target="_blank">Download</a></td>
+        <td>The folder <i>"src"</i> of this Github repository.</td>
+    </tr>
+</table>
+
+__Get Latest Build (Nightly):__
 
 <table>
     <tr>
@@ -142,7 +199,7 @@ __Get Latest Builds:__
     <tr>
         <td>img.zip</td>
         <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/master/dist/img" target="_blank">Download</a></td>
-        <td></td>
+        <td>Alternatively when using non-bundled version you can download images from <i>/dist/img/</i>.</td>
     </tr>
     <tr>
         <td colspan=3">
@@ -155,8 +212,6 @@ __Get Latest Builds:__
         <td>The folder <i>"src"</i> of this Github repository.</td>
     </tr>
 </table>
-
-Alternatively when using non-bundled version you can download images from _/dist/img/_.
 
 __Get Latest (NPM):__
 

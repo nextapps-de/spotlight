@@ -33,6 +33,7 @@
   "files": [
     "dist/",
     "src/",
+    "!src/gallery/",
     "task/",
     "README.md",
     "CHANGELOG.md",
