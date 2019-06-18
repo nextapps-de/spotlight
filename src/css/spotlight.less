@@ -104,7 +104,7 @@
   }
   &.menu .header,
   .header:hover{
-    transform: translateY(0px);
+    transform: translateY(0);
   }
   .header div {
     display: inline-block;
@@ -209,15 +209,16 @@
     transform: translateX(100px) scaleX(-1);
   }
   &.menu .arrow-left{
-    transform: translateX(0px);
+    transform: translateX(0);
   }
   &.menu .arrow-right{
-    transform: translateX(0px) scaleX(-1);
+    transform: translateX(0) scaleX(-1);
   }
   .icon:hover,
   .arrow-right:hover,
   .arrow-left:hover {
     opacity: 1;
+    animation: none;
   }
   &.white {
     color: #fff;

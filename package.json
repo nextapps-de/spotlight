@@ -1,6 +1,6 @@
 {
   "name": "spotlight.js",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "",
   "homepage": "https://github.com/nextapps-de/spotlight/",
   "author": "Thomas Wilkerling",
@@ -21,8 +21,8 @@
   "scripts": {
     "copy": "cpx \"src/img/*.*\" dist/img/",
     "clean": "if exist dist rmdir dist /s /q && mkdir dist",
-    "build:css": "lessc --autoprefix=\">=0.15%\" --clean-css=\"--s1 --advanced --rebase\" src/css/spotlight.less src/css/spotlight.css && csso src/css/spotlight.css --output src/css/spotlight.css && cpx \"src/css/spotlight.css\" dist/css/",
-    "build:css:bundle": "cpx \"src/css/spotlight.less\" tmp/ && lessc --autoprefix=\">=0.15%\" --clean-css=\"--s1 --advanced --rebase\" tmp/spotlight.less tmp/spotlight.css && csso tmp/spotlight.css --output tmp/spotlight.css && cpx \"tmp/spotlight.css\" tmp/",
+    "build:css": "lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" src/css/spotlight.less src/css/spotlight.css && csso src/css/spotlight.css --output src/css/spotlight.css && cpx \"src/css/spotlight.css\" dist/css/",
+    "build:css:bundle": "cpx \"src/css/spotlight.less\" tmp/ && lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" tmp/spotlight.less tmp/spotlight.css && csso tmp/spotlight.css --output tmp/spotlight.css && cpx \"tmp/spotlight.css\" tmp/",
     "build:js": "node task/build",
     "build:bundle": "node task/build --bundle",
     "build:extern": "node task/build --extern",

@@ -34,6 +34,13 @@ const ENABLE_STYLE_CACHE = true;
 
 const ENABLE_CLASS_CACHE = true;
 
+
+/**
+ * @define {boolean}
+ */
+
+const ENABLE_CONTENT_CACHE = true;
+
 /**
  * @define {boolean}
  */

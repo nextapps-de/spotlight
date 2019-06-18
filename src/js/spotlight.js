@@ -7,7 +7,7 @@
  */
 
 import "./config.js";
-import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag } from "./dom.js";
+import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag, setText } from "./dom.js";
 import { addListener, removeListener, cancelEvent } from "./event.js";
 import stylesheet from "../../tmp/style.js";
 import template from "../../tmp/template.js";
@@ -1148,13 +1148,12 @@ function paginate(direction){
 
     if(has_content){
 
-        title.textContent = dataset.title || "";
-        description.textContent = dataset.description || "";
+        setText(title, dataset.title);
+        setText(description, dataset.description);
     }
 
     setStyle(footer, "visibility", has_content ? "visible" : "hidden");
-
-    page.textContent = current_slide + " / " + slide_count;
+    setText(page, current_slide + " / " + slide_count);
 }
 
 export function show(payload, config){

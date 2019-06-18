@@ -17,6 +17,7 @@ function createClassCache(node){
     }
 
     node._class = cache;
+    node._classList = current_classes;
 }
 
 /**
@@ -51,9 +52,12 @@ export function addClass(selector, class_name){
                 }
 
                 node._class[current_class] = 1;
+                node._classList.add(current_class);
             }
+            else{
 
-            node.classList.add(current_class);
+                node.classList.add(current_class);
+            }
         }
     }
 }
@@ -90,9 +94,12 @@ export function removeClass(selector, class_name){
                 }
 
                 node._class[current_class] = 0;
+                node._classList.remove(current_class);
             }
+            else{
 
-            node.classList.remove(current_class);
+                node.classList.remove(current_class);
+            }
         }
     }
 }
@@ -138,9 +145,12 @@ export function toggleClass(selector, class_name, toggle_state){
 
                 node._class || createClassCache(node);
                 node._class[current_class] = !node._class[current_class];
+                node._classList.toggle(current_class);
             }
+            else{
 
-            node.classList.toggle(current_class);
+                node.classList.toggle(current_class);
+            }
         }
     }
 }
@@ -186,6 +196,7 @@ export function hasClass(selector, class_name){
 }
 
 /**
+ * TODO: change loop, so that all styles on each element applied before next node
  * @param {string|Node|Element|Array} selector
  * @param {string|!Object} styles
  * @param {string|number=} value
@@ -216,11 +227,11 @@ export function setStyle(selector, styles, value, force){
                 node_style[styles] = value;
             }
 
-            node.style.setProperty(
+            (ENABLE_STYLE_CACHE ? node._style_ref || (node._style_ref = node.style) : node.style).setProperty(
 
                 kebab_cache[styles] || camel_to_kebab(styles),
                 value,
-                force ? "important" : ""
+                force ? "important" : null
             );
         }
     }
@@ -288,10 +299,34 @@ export function prepareStyle(node, style, value){
     setStyle(node, "transition", "none");
     setStyle(node, style, value);
 
-    // force styles (quick-fix for closure compiler):
+    // force applying styles (quick-fix for closure compiler):
     tmp || (tmp = node.clientTop && 0);
 
     setStyle(node, "transition", "");
+}
+
+export function setText(selector, text){
+
+    text || (text = "");
+
+    const nodes = getNodes(selector);
+
+    for(let i = 0; i < nodes.length; i++){
+
+        const node = nodes[i];
+
+        if(ENABLE_CONTENT_CACHE){
+
+            if(node._text === text){
+
+               continue;
+            }
+
+            node._text = text;
+        }
+
+        node.textContent = text;
+    }
 }
 
 /**
