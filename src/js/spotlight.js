@@ -8,7 +8,7 @@
 
 import "./config.js";
 import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag } from "./dom.js";
-import { addListener, removeListener, clearEvent } from "./event.js";
+import { addListener, removeListener, cancelEvent } from "./event.js";
 import stylesheet from "../../tmp/style.js";
 import template from "../../tmp/template.js";
 import template_module from "./template.js";
@@ -51,12 +51,13 @@ let imageH;
 let maxHeight;
 let scale;
 
-let is_down = false;
-let dragged = false;
-let swipe = false;
-let changed = false;
-let toggle = false;
-let current_theme = false;
+let is_down;
+let dragged;
+let draggable;
+let changed;
+let toggle;
+let toggle_theme;
+let current_theme;
 
 let current_slide;
 let slide_count;
@@ -78,12 +79,27 @@ let maximize;
 let page;
 let player;
 
-let playing = null;
-let timer = null;
-let hide = null;
+let playing;
+let timer;
+let hide;
 let doc;
+let gallery;
 
 let event_definitions;
+
+/**
+ * @param {string} src
+ * @param {string=} title
+ * @param {string=} description
+ * @constructor
+ */
+
+function Page(src, title, description){
+
+    this.src = src;
+    this.title = title;
+    this.description = description;
+}
 
 function init_gallery(anchors, index){
 
@@ -92,59 +108,51 @@ function init_gallery(anchors, index){
         panes || (panes = getByClass("pane", target));
 
         const length = panes.length;
-
         const options_title = options["title"];
         const options_description = options["description"];
+
+        gallery = new Array(slide_count);
 
         // TODO initialize when sliding on the fly
 
         for(let i = 0; i < slide_count; i++){
 
             const anchor = anchors[i];
+            const anchor_dataset = anchor.dataset;
 
-            let dataset;
+            if(i >= length){
 
-            if(i < length){
-
-                dataset = panes[i];
-            }
-            else{
-
-                const clone = panes[0].cloneNode(true);
+                const clone = panes[0].cloneNode(false);
 
                 setStyle(clone, "left", (i * 100) + "%");
                 panes[0].parentNode.appendChild(clone);
-                dataset = clone;
             }
 
-            const anchor_dataset = anchor.dataset;
             let tmp;
 
-            dataset = dataset.dataset;
-            dataset.src = anchor.href || anchor.src || anchor_dataset.src || anchor_dataset.href;
+            gallery[i] = new Page(
 
-            if(options_title !== "false"){
+                /* src: */ (
+                    (anchor_dataset && (anchor_dataset.href || anchor_dataset.src)) ||
+                    anchor.src ||
+                    anchor.href
+                ),
 
-                dataset.title = (
-
-                    anchor["title"] ||
+                /* title: */ (
                     (anchor_dataset && anchor_dataset.title) ||
+                    anchor["title"] ||
                     ((tmp = getByTag("img", anchor)).length && tmp[0]["alt"]) ||
                     options_title ||
                     ""
-                );
-            }
+                ),
 
-            if(options_description !== "false"){
-
-                dataset.description = (
-
-                    anchor["description"] ||
+                /* description: */ (
                     (anchor_dataset && anchor_dataset.description) ||
+                    anchor["description"] ||
                     options_description ||
                     ""
-                );
-            }
+                )
+            );
         }
 
         current_slide = index || 1;
@@ -251,7 +259,7 @@ function apply_options(anchor, group){
 
     // apply theme
 
-    if((current_theme = options["theme"]) === "white"){
+    if((current_theme = options["theme"])){
 
         theme();
     }
@@ -299,7 +307,7 @@ function init_slide(index){
 
             if((options["prefetch"] !== "false") && (index < slide_count)){
 
-                (new Image()).src = panes[index].dataset.src;
+                (new Image()).src = gallery[index].src;
             }
         };
 
@@ -309,7 +317,7 @@ function init_slide(index){
         };
 
         panel.appendChild(image);
-        image.src = panel.dataset.src;
+        image.src = gallery[index - 1].src;
 
         if(show_preloader){
 
@@ -341,6 +349,7 @@ const keycodes = {
     "MINUS": 189
 };
 
+addListener(document, "", dispatch);
 addListener(document, "DOMContentLoaded", function(){
 
     // add template
@@ -413,8 +422,6 @@ addListener(document, "DOMContentLoaded", function(){
         [getByClass("theme", target)[0], "", theme]
     ];
 
-    addListener(document, "", dispatch);
-
 },{ once: true });
 
 /**
@@ -465,7 +472,7 @@ function dispatch(event){
 
     show_gallery();
 
-    return clearEvent(event);
+    return cancelEvent(event);
 }
 
 function key_listener(event){
@@ -608,7 +615,7 @@ export function menu(e){
         autohide();
     }
 
-    return clearEvent(e);
+    return cancelEvent(e);
 }
 
 function start(e){
@@ -622,14 +629,16 @@ function start(e){
     bodyH = document.body.clientHeight;
     imageW = image.width * scale;
     imageH = image.height * scale;
-    swipe = imageW <= bodyW;
+    draggable = imageW <= bodyW;
     startX = touch.x;
     startY = touch.y;
 
-    return clearEvent(e, true);
+    return cancelEvent(e, true);
 }
 
 function end(e){
+
+
 
     if(is_down && !dragged){
 
@@ -637,7 +646,7 @@ function end(e){
 
         return menu(e);
     }
-    else if(swipe && dragged){
+    else if(draggable && dragged){
 
         prepareStyle(slider, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)");
 
@@ -655,14 +664,14 @@ function end(e){
         }
 
         x = 0;
-        swipe = false;
+        draggable = false;
 
         setStyle(panel, "transform", "");
     }
 
     is_down = false;
 
-    return clearEvent(e);
+    return cancelEvent(e);
 }
 
 function move(e){
@@ -675,11 +684,11 @@ function move(e){
         const diff = (imageW - bodyW) / 2;
 
         dragged = true;
-        swipe = imageW <= bodyW;
+        draggable = imageW <= bodyW;
 
         x -= startX - (startX = touch.x);
 
-        if(!swipe){
+        if(!draggable){
 
             if(x > diff){
 
@@ -725,7 +734,7 @@ function move(e){
         autohide();
     }
 
-    return clearEvent(e, true);
+    return cancelEvent(e, true);
 }
 
 function pointer(event){
@@ -799,8 +808,6 @@ export function fullscreen(init){
         doc["requestFullScreen"]();
         addClass(maximize, "on");
     }
-
-    return !isFullscreen;
 }
 
 /**
@@ -915,8 +922,8 @@ export function close(hashchange){
     }
 
     image.parentNode.removeChild(image);
-    panel = null;
-    image = null;
+
+    panel = image = gallery = null;
 }
 
 export function prev(){
@@ -940,16 +947,19 @@ export function next(){
 
     playing || autohide();
 
-    if(current_slide < slide_count){
+    if(!playing || !is_down){
 
-        current_slide++;
-        paginate(true);
+        if(current_slide < slide_count){
 
-        return true;
-    }
-    else if(playing || options_infinite){
+            current_slide++;
+            paginate(true);
 
-        return goto(1);
+            return true;
+        }
+        else if(playing || options_infinite){
+
+            return goto(1);
+        }
     }
 }
 
@@ -976,22 +986,22 @@ export function theme(init){
 
     if(typeof init === "boolean"){
 
-        current_theme = init;
+        toggle_theme = init;
     }
     else{
 
-        current_theme = !current_theme;
+        toggle_theme = !toggle_theme;
 
         autohide();
     }
 
-    if(current_theme){
+    if(toggle_theme){
 
-        addClass(target, "white");
+        addClass(target, current_theme);
     }
     else{
 
-        removeClass(target, "white");
+        removeClass(target, current_theme);
     }
 }
 
@@ -1010,16 +1020,23 @@ function paginate(direction){
     let animation_scale = true;
     let animation_fade = true;
     let animation_slide = true;
-    let animation_rotate = false;
+    let animation_flip = false;
 
     if(option || (option === "")){
 
         animation_scale = false;
         animation_fade = false;
         animation_slide = false;
-        animation_rotate = false;
+        animation_flip = false;
 
-        const effects = option.split(",");
+        const effects = (
+
+            typeof option === "string" ?
+
+                option.split(",")
+            :
+                option
+        );
 
         for(let i = 0; i < effects.length; i++){
 
@@ -1028,7 +1045,7 @@ function paginate(direction){
                  if(effect === "scale") animation_scale = true;
             else if(effect === "fade") animation_fade = true;
             else if(effect === "slide") animation_slide = true;
-            else if(effect === "rotate") animation_rotate = true;
+            else if(effect === "flip") animation_flip = true;
         }
     }
 
@@ -1063,7 +1080,7 @@ function paginate(direction){
 
     prepareStyle(image, {
         "opacity": animation_fade ? 0 : 1,
-        "transform": "translate(-50%, -50%)" + (animation_scale ? " scale(0.8)" : "") + (animation_rotate && (typeof direction !== "undefined") ? " rotateY(" + (direction ? "" : "-") + "90deg)" : ""),
+        "transform": "translate(-50%, -50%)" + (animation_scale ? " scale(0.8)" : "") + (animation_flip && (typeof direction !== "undefined") ? " rotateY(" + (direction ? "" : "-") + "90deg)" : ""),
         "maxHeight": "",
         "maxWidth": ""
     });
@@ -1078,7 +1095,7 @@ function paginate(direction){
     setStyle(arrow_left, "visibility", !options_infinite && (current_slide === 1) ? "hidden" : "");
     setStyle(arrow_right, "visibility", !options_infinite && (current_slide === slide_count) ? "hidden" : "");
 
-    const dataset = panel.dataset;
+    const dataset = gallery[current_slide - 1];
     const has_content = dataset.title || dataset.description;
 
     if(has_content){

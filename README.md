@@ -11,7 +11,7 @@
 <a target="_blank" href="https://github.com/nextapps-de/spotlight/issues"><img src="https://img.shields.io/github/issues/nextapps-de/spotlight.svg"></a>
 <a target="_blank" href="https://github.com/nextapps-de/spotlight/blob/master/LICENSE.md"><img src="https://img.shields.io/npm/l/spotlight.js.svg"></a>
 
-<a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#options">Options</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#api">API</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a>
+<a href="https://nextapps-de.github.io/spotlight/">Demo</a> &ensp;&bull;&ensp; <a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#options">Options</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#api">API</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a>
 
 Spotlight runs out of the box:
 
@@ -46,6 +46,7 @@ Alternatively you can:
 - Custom options
 - Simply customize via markup (data-attributes)
 - Customizable animations
+- Custom themes
 - Controls:
   - Keyboard
   - Touch
@@ -74,48 +75,31 @@ __Technical properties:__
 __Version Explanation__
 
 <table>
-    <tr></tr>
     <tr>
-        <td>Version</td>
-        <td>Description</td>
-    </tr>
-    <tr>
-        <td>
-            <b>Bundle Standalone</b>
-        </td>
+        <td>Bundle Standalone</td>
         <td>
             All assets bundled into one single file (js + css + html + images).
         </td>
     </tr>
     <tr></tr>
     <tr>
-        <td>
-            <b>Bundle CDN</b>
-        </td>
+        <td>Bundle CDN</td>
         <td>
             Also a bundled file (js + html), but images and css will load from extern CDN.
         </td>
     </tr>
     <tr></tr>
     <tr>
-        <td>
-            <b>Non-Bundled</b>
-        </td>
+        <td>Non-Bundled</td>
         <td>
             Each asset file exists separately. Recommended when extended customization is needed.
         </td>
     </tr>
 </table>
 
-__Get Latest:__
+__Get Latest Builds:__
 
 <table>
-    <tr></tr>
-    <tr>
-        <td>Build</td>
-        <td>File</td>
-        <td>CDN</td>
-    </tr>
     <tr>
         <td colspan=3">
             <b><u>Bundle Standalone (6kb gzip):</u></b>
@@ -128,7 +112,7 @@ __Get Latest:__
     </tr>
     <tr>
         <td colspan=3">
-            <b><u>Bundle CDN (6kb gzip):</u></b>
+            <br><b><u>Bundle CDN (6kb gzip):</u></b>
         </td>
     </tr>
     <tr>
@@ -138,7 +122,7 @@ __Get Latest:__
     </tr>
     <tr>
         <td colspan=3">
-            <b><u>Non-Bundled (6kb gzip):</u></b>
+            <br><b><u>Non-Bundled:</u></b>
         </td>
     </tr>
     <tr>
@@ -160,7 +144,7 @@ __Get Latest:__
     </tr>
     <tr>
         <td colspan=3">
-            <b><u>ES6 Modules:</u></b>
+            <br><b><u>ES6 Modules:</u></b>
         </td>
     </tr>
     <tr>
@@ -170,9 +154,7 @@ __Get Latest:__
     </tr>
 </table>
 
-Alternatively when using non-bundled version you can download images from: 
-
-https://github.com/nextapps-de/spotlight/tree/master/dist/img/
+Alternatively when using non-bundled version you can download images from _/dist/img/_.
 
 __Get Latest (NPM):__
 
@@ -184,35 +166,20 @@ __Get Latest (ES6 Modules):__
 
 https://github.com/nextapps-de/spotlight/tree/master/src
 
-Example:
-
-```js
-import Spotlight from "./spotlight.js";
-
-Spotlight.show(
-    [ /* Gallery */ ], 
-    { /* Options */ }
-);
-```
-
 ### Setup Spotlight
 
-__1. Just insert the script resource tag somewhere in your document:__
+__1. Just insert the script resource tag right after the documents head:__
 
-> It is very common to load the library right before the closing body tag of your document. In rare situations it might produce a short flashing/reflow after page load, depending on your stack. Moving the script tag into the head section will solve this issue.
+> When you need to add custom styling through css class modifications it is recommended to load the library before you load the css. Otherwise you have to add an _"!important"_ flag to override existing styles.
 
 ```html
 <html>
 <head>
+    <script src="spotlight.bundle.js"></script>
     <title></title>
 </head>
 <body>
-    <!-- 
-    
-    CONTENT 
-    
-    -->
-    <script src="spotlight.bundle.js"></script>
+    <!-- CONTENT -->
 </body>
 </html>
 ```
@@ -282,12 +249,22 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
         <td>Description</td>
     </tr>
     <tr>
+        <td>index</td>
+        <td>
+            number
+        </td>
+        <td>
+            Sets the starting index when showing the gallery by using the <a href="#api">Spotlight API</a>
+        </td>
+    </tr>
+    <tr></tr>
+    <tr>
         <td>animation</td>
         <td>
             "fade"<br>
             "slide"<br>
             "scale"<br>
-            "rotate"
+            "flip"
         </td>
         <td>
             Change animation (use built-ins<!-- or custom keyframe name-->)<br><br>
@@ -575,6 +552,17 @@ Spotlight.menu(true);
 Spotlight.menu(false);
 ```
 
+__Example ES6:__
+
+```js
+import Spotlight from "./spotlight.js";
+
+Spotlight.show(
+    [ /* Gallery */ ], 
+    { /* Options */ }
+);
+```
+
 <a name="styling" id="styling"></a>
 ## Custom Styling
 
@@ -594,7 +582,8 @@ To add custom styling just override CSS classes accordingly:
 #spotlight .description{
     /* image description */
 }
-
+```
+```css
 #spotlight .page{
     /* current page */
 }
@@ -643,6 +632,75 @@ To add custom styling just override CSS classes accordingly:
 #spotlight .arrow-right{
     /* button arrow right */
 }
+```
+
+<a name="themes" id="themes"></a>
+## Themes
+
+__Customize builtin themes__
+
+Uae the same classes as above:
+
+```css
+#spotlight.white .title{
+    /* image title in white theme */
+}
+```
+
+```css
+#spotlight.dark{
+    /* main background in dark theme */
+}
+```
+
+__Create New Themes__
+
+Define styles, e.g. for the custom theme name "my-theme":
+
+```css
+#spotlight.my-theme .title{
+    /* image title in custom theme */
+}
+#spotlight.my-theme{
+    /* main background in custom theme */
+}
+```
+
+Apply custom theme via markdown:
+
+```html
+<a class="spotlight" href="img.jpg" data-theme="my-theme">
+    <img src="thumb.jpg">
+</a>
+```
+
+Or apply custom theme via API:
+
+```js
+Spotlight.show([ /* Gallery */ ],{
+    theme: "my-theme"
+});
+```
+
+<a name="advanced" id="advanced"></a>
+## Advanced Recommendations
+
+It is very common to load the library right before the closing body tag of your document. In rare situations it might produce a short flashing/reflow after page load, depending on your stack. Moving the script tag into the head section will solve this issue.
+
+> If you like to override css classes for custom styling you may need to add _"!important"_ flag to the css property value.
+
+```html
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <!-- 
+    CONTENT 
+    -->
+    <script src="spotlight.bundle.js"></script>
+</body>
+</html>
 ```
 
 <a name="builds" id="builds"></a>

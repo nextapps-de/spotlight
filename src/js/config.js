@@ -33,3 +33,9 @@ const ENABLE_STYLE_CACHE = true;
  */
 
 const ENABLE_CLASS_CACHE = true;
+
+/**
+ * @define {boolean}
+ */
+
+const DEFAULT_EVENT_CAPTURE = true;

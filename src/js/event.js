@@ -1,3 +1,5 @@
+import "./config.js";
+
 /**
  * @param {!Window|Document|Element} node
  * @param {string} event
@@ -32,7 +34,7 @@ export function removeListener(node, event, fn, mode){
 
 function handleListener(type, node, event, fn, mode){
 
-    node[type + "EventListener"](event || "click", fn, typeof mode === "undefined" ? true : mode);
+    node[type + "EventListener"](event || "click", fn, typeof mode === "undefined" ? DEFAULT_EVENT_CAPTURE : mode);
 }
 
 /**
@@ -41,7 +43,7 @@ function handleListener(type, node, event, fn, mode){
  * @returns {boolean}
  */
 
-export function clearEvent(event, passive){
+export function cancelEvent(event, passive){
 
     event || (event = window.event);
 
