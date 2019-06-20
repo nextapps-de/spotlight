@@ -45,11 +45,10 @@ let x;
 let y;
 let startX;
 let startY;
-let bodyW;
-let bodyH;
+let viewportW;
+let viewportH;
 let imageW;
 let imageH;
-let maxHeight;
 let scale;
 
 let is_down;
@@ -82,6 +81,7 @@ let maximize;
 let page;
 let player;
 let progress;
+let preloader;
 
 let playing;
 let timer;
@@ -306,8 +306,11 @@ function init_slide(index){
 
             if(show_preloader){
 
-                removeClass(target, "loading");
+                removeClass(preloader, "loading");
             }
+
+            imageW = this.width;
+            imageH = this.height;
 
             setStyle(this, {
 
@@ -332,7 +335,7 @@ function init_slide(index){
 
         if(show_preloader){
 
-            addClass(target, "loading");
+            addClass(preloader, "loading");
         }
 
         return !show_preloader;
@@ -385,6 +388,7 @@ addListener(document, "DOMContentLoaded", function(){
     page = getByClass("page", target)[0];
     player = getByClass("player", target)[0];
     progress = getByClass("progress", target)[0];
+    preloader = getByClass("preloader", target)[0];
     doc = document.documentElement || document.body;
 
     // install fullscreen
@@ -412,15 +416,17 @@ addListener(document, "DOMContentLoaded", function(){
         [window, "keydown", key_listener],
         [window, "wheel", wheel_listener],
         [window, "hashchange", history_listener],
-        [slider, "mousedown", start],
-        [slider, "mouseleave", end],
-        [slider, "mouseup", end],
-        [slider, "mousemove", move],
+        [window, "resize", resize_listener],
 
-        [slider, "touchstart", start, {"passive": false}],
-        [slider, "touchcancel", end],
-        [slider, "touchend", end],
-        [slider, "touchmove", move, {"passive": true}],
+        [preloader, "mousedown", start],
+        [preloader, "mouseleave", end],
+        [preloader, "mouseup", end],
+        [preloader, "mousemove", move],
+
+        [preloader, "touchstart", start, {"passive": false}],
+        [preloader, "touchcancel", end],
+        [preloader, "touchend", end],
+        [preloader, "touchmove", move, {"passive": true}],
 
         [maximize,"", fullscreen],
         [arrow_left, "", prev],
@@ -435,6 +441,25 @@ addListener(document, "DOMContentLoaded", function(){
     ];
 
 },{ once: true });
+
+function resize_listener(){
+
+    viewportW = target.clientWidth;
+    viewportH = target.clientHeight;
+
+    if(image){
+
+        imageW = image.width;
+        imageH = image.height;
+
+        update_scroll();
+    }
+}
+
+function update_scroll(){
+
+    setStyle(image, "transform", "translate(-50%, -50%) scale(" + scale + ")");
+}
 
 /**
  * @param {boolean=} install
@@ -647,11 +672,7 @@ function start(e){
 
     const touch = pointer(e);
 
-    bodyW = document.body.clientWidth;
-    bodyH = document.body.clientHeight;
-    imageW = image.width * scale;
-    imageH = image.height * scale;
-    draggable = imageW <= bodyW;
+    draggable = (imageW * scale) <= viewportW;
     startX = touch.x;
     startY = touch.y;
 
@@ -668,13 +689,13 @@ function end(e){
     }
     else if(draggable && dragged){
 
-        prepareStyle(slider, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / bodyW * 100))) + "%)");
+        prepareStyle(slider, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / viewportW * 100))) + "%)");
 
-        if((x < -(bodyH / 10)) && next()){
+        if((x < -(viewportH / 10)) && next()){
 
 
         }
-        else if((x > bodyH / 10) && prev()){
+        else if((x > viewportH / 10) && prev()){
 
 
         }
@@ -701,10 +722,9 @@ function move(e){
         timer || request();
 
         const touch = pointer(e);
-        const diff = (imageW - bodyW) / 2;
+        const diff = (imageW * scale - viewportW) / 2;
 
         dragged = true;
-        draggable = imageW <= bodyW;
 
         x -= startX - (startX = touch.x);
 
@@ -714,9 +734,9 @@ function move(e){
 
                 x = diff;
             }
-            else if((bodyW - x - imageW + diff) > 0){
+            else if((viewportW - x - (imageW * scale) + diff) > 0){
 
-                x = bodyW - imageW + diff;
+                x = viewportW - (imageW * scale) + diff;
             }
             else{
 
@@ -728,10 +748,10 @@ function move(e){
             changed = true;
         }
 
-        if(imageH > bodyH){
+        if((imageH * scale) > viewportH){
 
             // TODO: solve this by computation
-            const diff = maxHeight === "none" ? (imageH - bodyH) / 2 : (imageH - bodyH) / 2;
+            const diff = ((imageH * scale) - viewportH) / 2;
 
             y -= startY - (startY = touch.y);
 
@@ -739,9 +759,9 @@ function move(e){
 
                 y = diff;
             }
-            else if((bodyH - y - imageH + diff) > 0){
+            else if((viewportH - y - (imageH * scale) + diff) > 0){
 
-                y = bodyH - imageH + diff;
+                y = viewportH - (imageH * scale) + diff;
             }
             else{
 
@@ -845,11 +865,13 @@ export function autofit(init){
 
     setStyle(image, {
 
-        "maxHeight": maxHeight = (toggle ? "none" : ""),
+        "maxHeight": toggle ? "none" : "",
         "maxWidth": toggle ? "none" : "",
         "transform": ""
     });
 
+    imageW = image.width;
+    imageH = image.height;
     scale = 1;
     x = 0;
     y = 0;
@@ -881,7 +903,9 @@ function zoom_in(prevent_autohide){
 
 export function zoom(factor){
 
-    setStyle(image, "transform", "translate(-50%, -50%) scale(" + (factor || 1) + ")");
+    scale = factor || 1;
+
+    update_scroll();
 }
 
 /**
@@ -915,11 +939,12 @@ function show_gallery(config){
     location.hash = "spotlight";
     location.hash = "show";
 
-    install_listener(true);
-
     setStyle(target, "transition", "");
     addClass(doc, "hide-scrollbars");
     addClass(target, "show");
+
+    install_listener(true);
+    resize_listener();
     autohide();
 }
 
@@ -1087,8 +1112,10 @@ function paginate(direction){
         }
     }
 
-    setStyle(slider, "transition", animation_slide ? "" : "none");
-    setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
+    setStyle(slider, {
+        "transition": animation_slide ? "" : "none",
+        "transform": "translateX(-" + ((current_slide - 1) * 100) + "%)"
+    });
 
     if(panel){
 
