@@ -306,22 +306,25 @@ function init_slide(index){
 
             if(show_preloader){
 
-                removeClass(preloader, "loading");
+                removeClass(preloader, "show");
             }
 
-            imageW = this.width;
-            imageH = this.height;
+            if(gallery){
 
-            setStyle(this, {
+                imageW = this.width;
+                imageH = this.height;
 
-                "visibility": "visible",
-                "opacity": 1,
-                "transform": ""
-            });
+                setStyle(this, {
 
-            if((options["prefetch"] !== "false") && (index < slide_count)){
+                    "visibility": "visible",
+                    "opacity": 1,
+                    "transform": ""
+                });
 
-                (new Image()).src = gallery[index].src;
+                if((options["prefetch"] !== "false") && (index < slide_count)){
+
+                    (new Image()).src = gallery[index].src;
+                }
             }
         };
 
@@ -335,7 +338,7 @@ function init_slide(index){
 
         if(show_preloader){
 
-            addClass(preloader, "loading");
+            addClass(preloader, "show");
         }
 
         return !show_preloader;
@@ -350,17 +353,17 @@ function init_slide(index){
 
 const keycodes = {
 
-    "BACKSPACE": 8,
-    "ESCAPE": 27,
-    "SPACEBAR": 32,
-    "LEFT": 37,
-    "RIGHT": 39,
-    "UP": 38,
-    "NUMBLOCK_PLUS" : 107,
-    "PLUS": 187,
-    "DOWN": 40,
-    "NUMBLOCK_MINUS": 109,
-    "MINUS": 189
+    BACKSPACE: 8,
+    ESCAPE: 27,
+    SPACEBAR: 32,
+    LEFT: 37,
+    RIGHT: 39,
+    UP: 38,
+    NUMBLOCK_PLUS : 107,
+    PLUS: 187,
+    DOWN: 40,
+    NUMBLOCK_MINUS: 109,
+    MINUS: 189
 };
 
 addListener(document, "", dispatch);
@@ -411,6 +414,8 @@ addListener(document, "DOMContentLoaded", function(){
         function(){}
     ));
 
+    const drag = getByClass("drag", target)[0];
+
     event_definitions = [
 
         [window, "keydown", key_listener],
@@ -418,15 +423,15 @@ addListener(document, "DOMContentLoaded", function(){
         [window, "hashchange", history_listener],
         [window, "resize", resize_listener],
 
-        [preloader, "mousedown", start],
-        [preloader, "mouseleave", end],
-        [preloader, "mouseup", end],
-        [preloader, "mousemove", move],
+        [drag, "mousedown", start],
+        [drag, "mouseleave", end],
+        [drag, "mouseup", end],
+        [drag, "mousemove", move],
 
-        [preloader, "touchstart", start, {"passive": false}],
-        [preloader, "touchcancel", end],
-        [preloader, "touchend", end],
-        [preloader, "touchmove", move, {"passive": true}],
+        [drag, "touchstart", start, {"passive": false}],
+        [drag, "touchcancel", end],
+        [drag, "touchend", end],
+        [drag, "touchmove", move, {"passive": true}],
 
         [maximize,"", fullscreen],
         [arrow_left, "", prev],

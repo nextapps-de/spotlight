@@ -2,7 +2,8 @@
 
 export default (
 
-   `<div class=preloader></div>
+   `<div class=drag></div>
+    <div class=preloader></div>
     <div class=scene>
         <div class=pane></div>
     </div>

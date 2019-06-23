@@ -41,14 +41,20 @@
     top: 0;
     width: 100%;
     height: 100%;
-    opacity: 0;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 42px 42px;
+    visibility: hidden;
   }
-  .preloader.loading{
-    transition: opacity 0.25s cubic-bezier(1, 0, 1, 0);
-    opacity: 1;
+  .preloader.show{
+    transition: visibility 0s linear 0.25s;
+    visibility: visible;
+  }
+  .drag{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
   }
   .scene {
     position: absolute;
@@ -175,7 +181,7 @@
   .close{
     background-image: url(@close);
   }
-  .preloader.loading{
+  .preloader{
     background-image: url(@preloader);
   }
   .arrow {

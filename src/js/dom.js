@@ -28,37 +28,44 @@ function createClassCache(node){
 export function addClass(selector, class_name){
 
     const nodes = getNodes(selector);
+    const is_string = typeof class_name === "string";
 
-    if(typeof class_name === "string"){
+    if(nodes.length){
 
-        class_name = [class_name];
-    }
+        for(let i = 0; i < nodes.length; i++){
 
-    for(let i = 0; i < nodes.length; i++){
-
-        const node = nodes[i];
-
-        for(let a = 0; a < class_name.length; a++){
-
-            const current_class = class_name[a];
-
-            if(ENABLE_CLASS_CACHE){
-
-                node._class || createClassCache(node);
-
-                if(node._class[current_class]){
-
-                    continue;
-                }
-
-                node._class[current_class] = 1;
-                node._classList.add(current_class);
-            }
-            else{
-
-                node.classList.add(current_class);
-            }
+            (is_string ? addClassPerform : addClassNames)(nodes[i], class_name);
         }
+    }
+    else{
+
+        (is_string ? addClassPerform : addClassNames)(nodes, class_name);
+    }
+}
+
+function addClassNames(node, class_name){
+
+    for(let i = 0; i < class_name.length; i++){
+
+        addClassPerform(node, class_name[i]);
+    }
+}
+
+function addClassPerform(node, current_class){
+
+    if(ENABLE_CLASS_CACHE){
+
+        node._class || createClassCache(node);
+
+        if(!node._class[current_class]){
+
+            node._class[current_class] = 1;
+            node._classList.add(current_class);
+        }
+    }
+    else{
+
+        node.classList.add(current_class);
     }
 }
 
@@ -70,37 +77,44 @@ export function addClass(selector, class_name){
 export function removeClass(selector, class_name){
 
     const nodes = getNodes(selector);
+    const is_string = typeof class_name === "string";
 
-    if(typeof class_name === "string"){
+    if(nodes.length){
 
-        class_name = [class_name];
-    }
+        for(let i = 0; i < nodes.length; i++){
 
-    for(let i = 0; i < nodes.length; i++){
-
-        const node = nodes[i];
-
-        for(let a = 0; a < class_name.length; a++){
-
-            const current_class = class_name[a];
-
-            if(ENABLE_CLASS_CACHE){
-
-                node._class || createClassCache(node);
-
-                if(!node._class[current_class]){
-
-                    continue;
-                }
-
-                node._class[current_class] = 0;
-                node._classList.remove(current_class);
-            }
-            else{
-
-                node.classList.remove(current_class);
-            }
+            (is_string ? removeClassPerform : removeClassNames)(nodes[i], class_name);
         }
+    }
+    else{
+
+        (is_string ? removeClassPerform : removeClassNames)(nodes, class_name);
+    }
+}
+
+function removeClassNames(node, class_name){
+
+    for(let i = 0; i < class_name.length; i++){
+
+        removeClassPerform(node, class_name[i]);
+    }
+}
+
+function removeClassPerform(node, current_class){
+
+    if(ENABLE_CLASS_CACHE){
+
+        node._class || createClassCache(node);
+
+        if(node._class[current_class]){
+
+            node._class[current_class] = 0;
+            node._classList.remove(current_class);
+        }
+    }
+    else{
+
+        node.classList.remove(current_class);
     }
 }
 
@@ -122,36 +136,45 @@ export function toggleClass(selector, class_name, toggle_state){
 
             removeClass(selector, class_name);
         }
-
-        return;
     }
+    else{
 
-    const nodes = getNodes(selector);
+        const nodes = getNodes(selector);
+        const is_string = typeof class_name === "string";
 
-    if(typeof class_name === "string"){
+        if(nodes.length){
 
-        class_name = [class_name];
-    }
+            for(let i = 0; i < nodes.length; i++){
 
-    for(let i = 0; i < nodes.length; i++){
-
-        const node = nodes[i];
-
-        for(let a = 0; a < class_name.length; a++){
-
-            const current_class = class_name[a];
-
-            if(ENABLE_CLASS_CACHE){
-
-                node._class || createClassCache(node);
-                node._class[current_class] = !node._class[current_class];
-                node._classList.toggle(current_class);
-            }
-            else{
-
-                node.classList.toggle(current_class);
+                (is_string ? toggleClassPerform : toggleClassNames)(nodes[i], class_name);
             }
         }
+        else{
+
+            (is_string ? toggleClassPerform : toggleClassNames)(nodes, class_name);
+        }
+    }
+}
+
+function toggleClassNames(node, class_name){
+
+    for(let i = 0; i < class_name.length; i++){
+
+        toggleClassPerform(node, class_name[i]);
+    }
+}
+
+function toggleClassPerform(node, current_class){
+
+    if(ENABLE_CLASS_CACHE){
+
+        node._class || createClassCache(node);
+        node._class[current_class] = !node._class[current_class];
+        node._classList.toggle(current_class);
+    }
+    else{
+
+        node.classList.toggle(current_class);
     }
 }
 
@@ -165,38 +188,37 @@ export function hasClass(selector, class_name){
 
     const nodes = getNodes(selector);
 
-    if(typeof class_name === "string"){
+    if(nodes.length){
 
-        class_name = [class_name];
-    }
+        for(let i = 0; i < nodes.length; i++){
 
-    for(let i = 0; i < nodes.length; i++){
-
-        const node = nodes[i];
-
-        for(let a = 0; a < class_name.length; a++){
-
-            const current_class = class_name[a];
-
-            if(ENABLE_CLASS_CACHE){
-
-                node._class || createClassCache(node);
-
-                return !!node._class[current_class];
-            }
-
-            if(node.classList.contains(current_class)){
+            if(hasClassPerform(nodes[i], class_name)){
 
                 return true;
             }
         }
+
+        return false;
+    }
+    else{
+
+        return hasClassPerform(nodes, class_name);
+    }
+}
+
+function hasClassPerform(node, class_name){
+
+    if(ENABLE_CLASS_CACHE){
+
+        node._class || createClassCache(node);
+
+        return !!node._class[class_name];
     }
 
-    return false;
+    return node.classList.contains(class_name);
 }
 
 /**
- * TODO: change loop, so that all styles on each element applied before next node
  * @param {string|Node|Element|Array} selector
  * @param {string|!Object} styles
  * @param {string|number=} value
@@ -206,46 +228,54 @@ export function hasClass(selector, class_name){
 export function setStyle(selector, styles, value, force){
 
     const nodes = getNodes(selector);
+    const is_string = typeof styles === "string";
+    const keys = !is_string && Object.keys(/** @type {!Object} */ (styles));
 
-    if(typeof styles === "string"){
+    if(nodes.length){
 
         for(let i = 0; i < nodes.length; i++){
 
-            const node = nodes[i];
-
-            if(ENABLE_STYLE_CACHE){
-
-                let node_style = node._style;
-
-                node_style || (node._style = node_style = {});
-
-                if(node_style[styles] === value){
-
-                    continue;
-                }
-
-                node_style[styles] = value;
-            }
-
-            (ENABLE_STYLE_CACHE ? node._style_ref || (node._style_ref = node.style) : node.style).setProperty(
-
-                kebab_cache[styles] || camel_to_kebab(styles),
-                value,
-                force ? "important" : null
-            );
+            (keys ? setStyleProps : setStylePerform)(nodes[i], styles, keys || value, force);
         }
     }
     else{
 
-        const keys = Object.keys(styles);
-
-        for(let a = 0; a < keys.length; a++){
-
-            const style = keys[a];
-
-            setStyle(nodes, style, styles[style], force);
-        }
+        (keys ? setStyleProps : setStylePerform)(nodes, styles, keys || value, force);
     }
+}
+
+function setStyleProps(node, styles, keys, force){
+
+    for(let a = 0; a < keys.length; a++){
+
+        const style = keys[a];
+
+        setStylePerform(node, style, styles[style], force);
+    }
+}
+
+function setStylePerform(node, styles, value, force){
+
+    if(ENABLE_STYLE_CACHE){
+
+        let node_style = node._style;
+
+        node_style || (node._style = node_style = {});
+
+        if(node_style[styles] === value){
+
+            return;
+        }
+
+        node_style[styles] = value;
+    }
+
+    (ENABLE_STYLE_CACHE ? node._style_ref || (node._style_ref = node.style) : node.style).setProperty(
+
+        kebab_cache[styles] || camel_to_kebab(styles),
+        value,
+        force ? "important" : null
+    );
 }
 
 function camel_to_kebab(style){
@@ -311,22 +341,32 @@ export function setText(selector, text){
 
     const nodes = getNodes(selector);
 
-    for(let i = 0; i < nodes.length; i++){
+    if(nodes.length){
 
-        const node = nodes[i];
+        for(let i = 0; i < nodes.length; i++){
 
-        if(ENABLE_CONTENT_CACHE){
+            setTextProcess(nodes[i], text);
+        }
+    }
+    else{
 
-            if(node._text === text){
+        setTextProcess(nodes, text);
+    }
+}
 
-               continue;
-            }
+function setTextProcess(node, text){
 
-            node._text = text;
+    if(ENABLE_CONTENT_CACHE){
+
+        if(node._text === text){
+
+            return;
         }
 
-        node.textContent = text;
+        node._text = text;
     }
+
+    node.textContent = text;
 }
 
 /**
@@ -336,20 +376,7 @@ export function setText(selector, text){
 
 export function getNode(selector, context){
 
-    return (
-
-        typeof selector === 'string' ?
-
-            (context ?
-
-                getNode(context)
-            :
-                document
-
-            ).querySelector(selector)
-        :
-            selector
-    );
+    return getNodeProcess(selector, context, 0);
 }
 
 /**
@@ -359,33 +386,25 @@ export function getNode(selector, context){
 
 export function getNodes(selector, context){
 
-    if(selector.constructor === Array){
+    return getNodeProcess(selector, context, 1);
+}
 
-        selector = /** @type Array */ (selector);
+function getNodeProcess(selector, context, all){
 
-        for(let i = 0; i < selector.length; i++){
+    return (
 
-            selector[i] = getNode(selector[i]);
-        }
+        typeof selector === "string" ?
 
-        return selector;
-    }
-    else if(typeof selector === "string"){
+            (context ?
 
-        return (
+                    getNode(context)
+                :
+                    document
 
-            context ?
-
-                getNode(context)
-            :
-                document
-
-        ).querySelectorAll(selector);
-    }
-    else{
-
-        return [selector];
-    }
+            )[all ? "querySelectorAll" : "querySelector"](selector)
+        :
+            selector
+    );
 }
 
 export function getById(id){
@@ -473,7 +492,7 @@ export function getByTagCache(tag, context){
 
 export function getNodeCache(selector, context){
 
-    return getCache(selector, context, /* multiple? */ false);
+    return getCacheProcess(selector, context, /* multiple? */ 0);
 }
 
 /**
@@ -483,16 +502,16 @@ export function getNodeCache(selector, context){
 
 export function getNodesCache(selector, context){
 
-    return getCache(selector, context, /* multiple? */ true);
+    return getCacheProcess(selector, context, /* multiple? */ 1);
 }
 
 /**
  * @param {string} selector
  * @param {string=} context
- * @param {boolean=} multiple
+ * @param {boolean|number=} multiple
  */
 
-export function getCache(selector, context, multiple){
+function getCacheProcess(selector, context, multiple){
 
     let key = (context || "$") + selector;
     let cache = multiple ? nodes_cache : node_cache;
@@ -500,15 +519,17 @@ export function getCache(selector, context, multiple){
 
     if(!item){
 
-        cache[key] = item = (
+        if(!multiple){
 
-            multiple ?
+            item = nodes_cache[key];
 
-                getNodes
-            :
-                getNode
+            if(item){
 
-        )(selector, context);
+                return item[0];
+            }
+        }
+
+        cache[key] = item = getNodeProcess(selector, context, multiple);
     }
 
     return item;
