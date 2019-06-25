@@ -174,7 +174,7 @@ https://github.com/nextapps-de/spotlight/tree/master/src
 
 __1. Just insert the script resource tag right after the documents head:__
 
-> When you need to add custom styling through css class modifications it is recommended to load the library before you load the css. Otherwise you have to add an _"!important"_ flag to override existing styles.
+> When you need to add custom styling through css class modifications it is recommended to load the library before you load the css which contains the modifications. Otherwise you have to add an _"!important"_ flag to override existing styles.
 
 ```html
 <html>
@@ -268,7 +268,7 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
             number
         </td>
         <td>
-            Sets the starting index when showing the gallery by using the <a href="#api">Spotlight API</a>
+            Sets the starting index when showing the gallery by using the <a href="#api">Spotlight API</a>. The index starts from 1.
         </td>
     </tr>
     <tr></tr>
@@ -594,6 +594,8 @@ Spotlight.show(
 );
 ```
 
+> __Note:__ You may need to perform `npm run build` initially to make pre-compiled files available.
+
 <a name="styling" id="styling"></a>
 ## Custom Styling
 
@@ -757,10 +759,10 @@ Spotlight.show([ /* Gallery */ ],{
 });
 ```
 
-<a name="advanced" id="advanced"></a>
-## Advanced Recommendations
+<a name="notes" id="notes"></a>
+## Note
 
-It is very common to load the library right before the closing body tag of your document. In rare situations it might produce a short flashing/reflow after page load, depending on your stack. Moving the script tag into the head section will solve this issue.
+It is very common to load the library right before the closing body tag of your document.
 
 > If you like to override css classes for custom styling you may need to add _"!important"_ flag to the css property value.
 
@@ -777,6 +779,12 @@ It is very common to load the library right before the closing body tag of your 
 </body>
 </html>
 ```
+
+When using Spotlight exclusively through the API it is recommended to follow this practice. But there are some important facts you might need to know:
+
+1. When loading the library before loading other stylesheets (which modifies the Spotlight default theme) you do not have to add a "!important" flag to the styles.
+2. When using Spotlight with anchors it is recommended to load the library in the head section of the document to prevent executing the default anchor behavior when the user has clicked during page load. 
+3. In rare situations it also might produce a short flashing/reflow after page load, depending on your stack. Moving the script tag into the head section will solve this issue.
 
 <a name="builds" id="builds"></a>
 ## Custom Builds
