@@ -1,9 +1,8 @@
 // https://kangax.github.io/html-minifier/
 
-export default (
+export default ( // <div class=drag></div>
 
-   `<div class=drag></div>
-    <div class=preloader></div>
+   `<div class=preloader></div>
     <div class=scene>
         <div class=pane></div>
     </div>

@@ -1,6 +1,6 @@
 {
   "name": "spotlight.js",
-  "version": "0.5.9",
+  "version": "0.6.0",
   "description": "",
   "homepage": "https://github.com/nextapps-de/spotlight/",
   "author": "Thomas Wilkerling",
@@ -21,12 +21,12 @@
   "scripts": {
     "copy": "cpx \"src/img/*.*\" dist/img/",
     "clean": "if exist dist rmdir dist /s /q && mkdir dist",
-    "build:css": "lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" src/css/spotlight.less src/css/spotlight.css && csso src/css/spotlight.css --output src/css/spotlight.css && cpx \"src/css/spotlight.css\" dist/css/",
-    "build:css:bundle": "cpx \"src/css/spotlight.less\" tmp/ && lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" tmp/spotlight.less tmp/spotlight.css && csso tmp/spotlight.css --output tmp/spotlight.css && cpx \"tmp/spotlight.css\" tmp/",
+    "build:css": "lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" src/css/spotlight.less dist/css/spotlight.css && csso dist/css/spotlight.css --output dist/css/spotlight.css",
+    "build:css:bundle": "cpx \"src/css/spotlight.less\" tmp/ && lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" tmp/spotlight.less tmp/spotlight.css && csso tmp/spotlight.css --output tmp/spotlight.css",
     "build:js": "node task/build",
     "build:bundle": "node task/build --bundle",
     "build:extern": "node task/build --extern",
-    "build": "npm run clean && npm run build:css && npm run build:css:bundle && node task/bundle && npm run build:css:bundle && npm run build:js && npm run build:bundle && npm run build:extern && npm run copy && echo Build Complete. && exit 0",
+    "build": "npm run clean && npm run build:css && node task/bundle --image && npm run build:css:bundle && node task/bundle --style && node task/bundle --template && npm run build:js && npm run build:bundle && npm run build:extern && npm run copy && echo Build Complete. && exit 0",
     "server": "node task/server.js",
     "update": "npm install base64-img@latest && npm install cpx@latest && npm install csso@latest && npm install csso-cli@latest && npm install google-closure-compiler@nightly && npm install less@latest && npm install less-plugin-autoprefix@latest && npm install less-plugin-clean-css@latest && npm install web-servo@latest"
   },
@@ -46,7 +46,7 @@
     "cpx": "^1.5.0",
     "csso": "^3.5.1",
     "csso-cli": "^2.0.2",
-    "google-closure-compiler": "^20190618.0.0-nightly",
+    "google-closure-compiler": "^20190625.0.0-nightly",
     "less": "^3.9.0",
     "less-plugin-autoprefix": "^2.0.0",
     "less-plugin-clean-css": "^1.5.1",

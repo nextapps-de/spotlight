@@ -169,8 +169,7 @@ function toggleClassPerform(node, current_class){
     if(ENABLE_CLASS_CACHE){
 
         node._class || createClassCache(node);
-        node._class[current_class] = !node._class[current_class];
-        node._classList.toggle(current_class);
+        node._class[current_class] = node._classList.toggle(current_class);
     }
     else{
 

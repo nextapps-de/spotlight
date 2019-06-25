@@ -105,6 +105,16 @@ function Page(src, title, description){
     this.description = description;
 }
 
+/**
+ * @param {string} class_name
+ * @returns {Element}
+ */
+
+function getOneByClass(class_name){
+
+    return getByClass(class_name, target)[0];
+}
+
 function init_gallery(anchors, index){
 
     if((slide_count = anchors.length)){
@@ -261,7 +271,7 @@ function apply_options(anchor, group){
 
         const option = controls[i];
 
-        setStyle(getByClass(option, target)[0], "display", (options[option] === "false") ? "none" : "");
+        setStyle(getOneByClass(option), "display", (options[option] === "false") ? "none" : "");
     }
 
     // apply theme
@@ -381,17 +391,17 @@ addListener(document, "DOMContentLoaded", function(){
 
     // cache static elements
 
-    slider = getByClass("scene", target)[0];
-    footer = getByClass("footer", target)[0];
-    title = getByClass("title", footer)[0];
-    description = getByClass("description", footer)[0];
-    arrow_left = getByClass("arrow-left", target)[0];
-    arrow_right = getByClass("arrow-right", target)[0];
-    maximize = getByClass("fullscreen", target)[0];
-    page = getByClass("page", target)[0];
-    player = getByClass("player", target)[0];
-    progress = getByClass("progress", target)[0];
-    preloader = getByClass("preloader", target)[0];
+    slider = getOneByClass("scene");
+    footer = getOneByClass("footer");
+    title = getOneByClass("title");
+    description = getOneByClass("description");
+    arrow_left = getOneByClass("arrow-left");
+    arrow_right = getOneByClass("arrow-right");
+    maximize = getOneByClass("fullscreen");
+    page = getOneByClass("page");
+    player = getOneByClass("player");
+    progress = getOneByClass("progress");
+    preloader = getOneByClass("preloader");
     doc = document.documentElement || document.body;
 
     // install fullscreen
@@ -414,7 +424,7 @@ addListener(document, "DOMContentLoaded", function(){
         function(){}
     ));
 
-    const drag = getByClass("drag", target)[0];
+    //const drag = getOneByClass("drag");
 
     event_definitions = [
 
@@ -423,26 +433,26 @@ addListener(document, "DOMContentLoaded", function(){
         [window, "hashchange", history_listener],
         [window, "resize", resize_listener],
 
-        [drag, "mousedown", start],
-        [drag, "mouseleave", end],
-        [drag, "mouseup", end],
-        [drag, "mousemove", move],
+        [preloader, "mousedown", start],
+        [preloader, "mouseleave", end],
+        [preloader, "mouseup", end],
+        [preloader, "mousemove", move],
 
-        [drag, "touchstart", start, {"passive": false}],
-        [drag, "touchcancel", end],
-        [drag, "touchend", end],
-        [drag, "touchmove", move, {"passive": true}],
+        [preloader, "touchstart", start, {"passive": false}],
+        [preloader, "touchcancel", end],
+        [preloader, "touchend", end],
+        [preloader, "touchmove", move, {"passive": true}],
 
         [maximize,"", fullscreen],
         [arrow_left, "", prev],
         [arrow_right, "", next],
         [player, "", play],
 
-        [getByClass("autofit", target)[0],"", autofit],
-        [getByClass("zoom-in", target)[0],"", zoom_in],
-        [getByClass("zoom-out", target)[0],"", zoom_out],
-        [getByClass("close", target)[0],"", close],
-        [getByClass("theme", target)[0], "", theme]
+        [getOneByClass("autofit"),"", autofit],
+        [getOneByClass("zoom-in"),"", zoom_in],
+        [getOneByClass("zoom-out"),"", zoom_out],
+        [getOneByClass("close"),"", close],
+        [getOneByClass("theme"), "", theme]
     ];
 
 },{ once: true });
