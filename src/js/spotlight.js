@@ -983,7 +983,7 @@ export function close(hashchange){
 
     image.parentNode.removeChild(image);
 
-    panel = image = gallery = null;
+    panel = image = gallery = options = null;
 }
 
 export function prev(){
@@ -1196,6 +1196,8 @@ function paginate(direction){
 
     setStyle(footer, "visibility", has_content ? "visible" : "hidden");
     setText(page, current_slide + " / " + slide_count);
+
+    options["onchange"] && options["onchange"](current_slide);
 }
 
 export function show(payload, config){

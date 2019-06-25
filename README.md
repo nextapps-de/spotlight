@@ -273,6 +273,17 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     </tr>
     <tr></tr>
     <tr>
+        <td>onchange</td>
+        <td>
+            function(index)
+        </td>
+        <td>
+            Pass a callback function which is get fired every time when a page has changed (the first parameter is equal to the new index).<br>
+            <b>Note:</b> The image may not have been fully loaded when the event is fired (preloading phase).
+        </td>
+    </tr>
+    <tr></tr>
+    <tr>
         <td>animation</td>
         <td>
             "fade"<br>
@@ -282,7 +293,7 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
         </td>
         <td>
             Change animation (use built-ins<!-- or custom keyframe name-->)<br><br>
-            <b>Note:</b> could also combined as comma-separated list, e.g: <code>data-animation="slide,fade,scale"</code> (this is the default animation). 
+            <b>Note:</b> Could also combined as comma-separated list, e.g: <code>data-animation="slide,fade,scale"</code> (this is the default animation). 
         </td>
     </tr>
     <tr></tr>
