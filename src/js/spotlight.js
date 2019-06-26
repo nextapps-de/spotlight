@@ -65,12 +65,13 @@ let slide_count;
 let options;
 let options_infinite;
 let options_progress;
+let options_onchange;
 let delay;
 
-let slider;
 let panel;
 let panes;
 let image;
+let slider;
 let target;
 let footer;
 let title;
@@ -98,12 +99,14 @@ let event_definitions;
  * @constructor
  */
 
+/*
 function Page(src, title, description){
 
     this.src = src;
     this.title = title;
     this.description = description;
 }
+*/
 
 /**
  * @param {string} class_name
@@ -144,29 +147,27 @@ function init_gallery(anchors, index){
 
             let tmp;
 
-            gallery[i] = new Page(
+            gallery[i] = {
 
-                /* src: */ (
+                src: (
                     (anchor_dataset && (anchor_dataset.href || anchor_dataset.src)) ||
                     anchor.src ||
                     anchor.href
                 ),
-
-                /* title: */ (
+                title: (
                     (anchor_dataset && anchor_dataset.title) ||
                     anchor["title"] ||
                     ((tmp = getByTag("img", anchor)).length && tmp[0]["alt"]) ||
                     options_title ||
                     ""
                 ),
-
-                /* description: */ (
+                description: (
                     (anchor_dataset && anchor_dataset.description) ||
                     anchor["description"] ||
                     options_description ||
                     ""
                 )
-            );
+            };
         }
 
         current_slide = index || 1;
@@ -208,6 +209,7 @@ function apply_options(anchor, group){
     inherit_global_option(anchor, group, "prefetch", true);
     inherit_global_option(anchor, group, "preloader", true);
 
+    options_onchange = anchor["onchange"];
     options_infinite = options["infinite"];
     options_infinite = (typeof options_infinite !== "undefined") && (options_infinite !== "false");
     options_progress = options["progress"] !== "false";
@@ -983,7 +985,7 @@ export function close(hashchange){
 
     image.parentNode.removeChild(image);
 
-    panel = image = gallery = options = null;
+    panel = panes = image = gallery = options = options_onchange = null;
 }
 
 export function prev(){
@@ -1197,7 +1199,7 @@ function paginate(direction){
     setStyle(footer, "visibility", has_content ? "visible" : "hidden");
     setText(page, current_slide + " / " + slide_count);
 
-    options["onchange"] && options["onchange"](current_slide);
+    options_onchange && options_onchange(current_slide);
 }
 
 export function show(payload, config){

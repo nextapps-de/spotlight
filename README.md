@@ -279,7 +279,7 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
         </td>
         <td>
             Pass a callback function which is get fired every time when a page has changed (the first parameter is equal to the new index).<br>
-            <b>Note:</b> The image may not have been fully loaded when the event is fired (preloading phase).
+            <b>Note:</b> The image may not have been fully loaded when the event is fired (preloading phase). The index starts from 1.
         </td>
     </tr>
     <tr></tr>
