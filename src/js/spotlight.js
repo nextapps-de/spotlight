@@ -171,7 +171,7 @@ function init_gallery(anchors, index){
         }
 
         current_slide = index || 1;
-        prepareStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
+        update_slider(true);
         paginate();
     }
 }
@@ -479,6 +479,26 @@ function update_scroll(){
 }
 
 /**
+ * @param {number=} x
+ * @param {number=} y
+ */
+
+function update_panel(x, y){
+
+    setStyle(panel, "transform", x || y ? "translate(" + x + "px, " + y + "px)" : "");
+}
+
+/**
+ * @param {boolean=} prepare
+ * @param {number=} value
+ */
+
+function update_slider(prepare, value){
+
+    (prepare ? prepareStyle : setStyle)(slider, "transform", "translateX(" + (-(current_slide - 1) * 100 + (value || 0)) + "%)");
+}
+
+/**
  * @param {boolean=} install
  */
 
@@ -706,7 +726,7 @@ function end(e){
     }
     else if(draggable && dragged){
 
-        prepareStyle(slider, "transform", "translateX(" + (-((current_slide - 1) * 100 - (x / viewportW * 100))) + "%)");
+        update_slider(true, x / viewportW * 100);
 
         if((x < -(viewportH / 10)) && next()){
 
@@ -718,13 +738,13 @@ function end(e){
         }
         else{
 
-            setStyle(slider, "transform", "translateX(-" + ((current_slide - 1) * 100) + "%)");
+            update_slider();
         }
 
         x = 0;
         draggable = false;
 
-        setStyle(panel, "transform", "");
+        update_panel();
     }
 
     is_down = false;
@@ -823,7 +843,7 @@ function update(timestamp){
             request();
         }
 
-        setStyle(panel, "transform", "translate(" + x + "px, " + y + "px)");
+        update_panel(x, y);
     }
     else{
 
@@ -894,7 +914,7 @@ export function autofit(init){
     y = 0;
     changed = true;
 
-    update();
+    update_panel();
     autohide();
 }
 
@@ -941,7 +961,7 @@ function zoom_out(prevent_autohide){
         y = 0;
         changed = true;
 
-        update();
+        update_panel();
     }
 
     prevent_autohide || autohide();
@@ -1129,14 +1149,12 @@ function paginate(direction){
         }
     }
 
-    setStyle(slider, {
-        "transition": animation_slide ? "" : "none",
-        "transform": "translateX(-" + ((current_slide - 1) * 100) + "%)"
-    });
+    setStyle(slider, "transition", animation_slide ? "" : "none");
+    update_slider();
 
     if(panel){
 
-        setStyle(panel, "transform", "");
+        update_panel();
     }
 
     if(image){
@@ -1183,7 +1201,7 @@ function paginate(direction){
         removeClass(image, animation_custom);
     }
 
-    setStyle(panel, "transform", "");
+    update_panel();
     setStyle(arrow_left, "visibility", !options_infinite && (current_slide === 1) ? "hidden" : "");
     setStyle(arrow_right, "visibility", !options_infinite && (current_slide === slide_count) ? "hidden" : "");
 
