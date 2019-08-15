@@ -379,7 +379,9 @@ const keycodes = {
 };
 
 addListener(document, "", dispatch);
-addListener(document, "DOMContentLoaded", function(){
+addListener(document, "DOMContentLoaded", init, { once: true });
+
+export function init(){
 
     // add template
 
@@ -457,7 +459,7 @@ addListener(document, "DOMContentLoaded", function(){
         [getOneByClass("theme"), "", theme]
     ];
 
-},{ once: true });
+}
 
 function resize_listener(){
 
@@ -620,7 +622,7 @@ function history_listener(){
  * @param {boolean=} init
  */
 
-function play(init){
+export function play(init){
 
     const state = (typeof init === "boolean" ? init : !playing);
 
@@ -1267,8 +1269,9 @@ const closest = Element.prototype.closest || function(classname){
 
 /* Export API */
 
-window["Spotlight"] = {
+export default {
 
+    "init": init,
     "theme": theme,
     "fullscreen": fullscreen,
     "autofit": autofit,

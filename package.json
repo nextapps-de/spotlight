@@ -1,6 +1,6 @@
 {
   "name": "spotlight.js",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "",
   "homepage": "https://github.com/nextapps-de/spotlight/",
   "author": "Thomas Wilkerling",
@@ -11,6 +11,8 @@
     "url": "https://github.com/nextapps-de/spotlight/issues",
     "email": "info@nextapps.de"
   },
+  "main": "src/js/spotlight.js",
+  "type": "module",
   "browser": "dist/spotlight.bundle.js",
   "preferGlobal": false,
   "bin": {},
@@ -46,7 +48,7 @@
     "cpx": "^1.5.0",
     "csso": "^3.5.1",
     "csso-cli": "^2.0.2",
-    "google-closure-compiler": "^20190625.0.0-nightly",
+    "google-closure-compiler": "^20190815.0.0-nightly",
     "less": "^3.9.0",
     "less-plugin-autoprefix": "^2.0.0",
     "less-plugin-clean-css": "^1.5.1",

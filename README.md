@@ -109,8 +109,8 @@ __Get Latest Build (Stable):__
     </tr>
     <tr>
         <td>spotlight.bundle.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.2/dist/spotlight.bundle.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.2/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.2/dist/spotlight.bundle.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.3/dist/spotlight.bundle.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/spotlight.bundle.js</a></td>
     </tr>
     <tr>
         <td colspan=3">
@@ -119,8 +119,8 @@ __Get Latest Build (Stable):__
     </tr>
     <tr>
         <td>spotlight.cdn.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.2/dist/spotlight.cdn.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.2/dist/spotlight.cdn.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.2/dist/spotlight.cdn.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.3/dist/spotlight.cdn.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/spotlight.cdn.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/spotlight.cdn.js</a></td>
     </tr>
     <tr>
         <td colspan=3">
@@ -129,19 +129,19 @@ __Get Latest Build (Stable):__
     </tr>
     <tr>
         <td>spotlight.min.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.2/dist/js/spotlight.min.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.2/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.2/dist/js/spotlight.min.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.3/dist/js/spotlight.min.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/js/spotlight.min.js</a></td>
     </tr>
     <tr></tr>
     <tr>
         <td>spotlight.css</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.2/dist/css/spotlight.css" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.2/dist/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.2/dist/css/spotlight.css</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.3/dist/css/spotlight.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/css/spotlight.css</a></td>
     </tr>
     <tr></tr>
     <tr>
         <td>img.zip</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.6.2/dist/img" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.6.3/dist/img" target="_blank">Download</a></td>
         <td>Alternatively when using non-bundled version you can download images from <i>/dist/img/</i>.</td>
     </tr>
     <tr>
@@ -151,14 +151,14 @@ __Get Latest Build (Stable):__
     </tr>
     <tr>
         <td>src.zip</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.6.2/src" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.6.3/src" target="_blank">Download</a></td>
         <td>The folder <i>"src"</i> of this Github repository.</td>
     </tr>
 </table>
 
 __Get Latest Build (Nightly):__
 
-Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/0.6.2/dist/" into "/spotlight/__master__/dist".
+Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/0.6.3/dist/" into "/spotlight/__master__/dist".
 
 __Get Latest (NPM):__
 
@@ -303,7 +303,7 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
             string
         </td>
         <td>
-            Show/hide control elements as "whitelisted" through a comma-separated list, e.g. <code>data-control="reset,page,fullscreen"</code>
+            Show/hide control elements as "whitelisted" through a comma-separated list, e.g. <code>data-control="autofit,page,fullscreen"</code>
         </td>
     </tr>
     <tr></tr>
@@ -338,9 +338,9 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     </tr>
     <tr></tr>
     <tr>
-        <td>reset</td>
+        <td>autofit</td>
         <td>true / false</td>
-        <td>Show/hide reset button</td>
+        <td>Show/hide autofit button</td>
     </tr>
     <tr></tr>
     <tr>
@@ -436,7 +436,7 @@ The same from above as __explicitly__:
 
 ```html
 <div class="spotlight-group" data-fullscreen="true" data-contrast="true"
-     data-zoomin="false" data-zoomout="false" data-reset="true">
+     data-zoomin="false" data-zoomout="false" data-autofit="true">
 ```
 
 > When control attributes are not specified they are automatically enabled by default.
@@ -778,6 +778,18 @@ It is very common to load the library right before the closing body tag of your 
     <script src="spotlight.bundle.js"></script>
 </body>
 </html>
+```
+
+Load library as async:
+
+```html
+<script src="spotlight.bundle.js" async></script>
+```
+
+Initialize Spotlight manually (once):
+
+```js
+Spotlight.init();
 ```
 
 When using Spotlight exclusively through the API it is recommended to follow this practice. But there are some important facts you might need to know:
