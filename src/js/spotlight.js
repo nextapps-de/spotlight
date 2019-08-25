@@ -9,9 +9,11 @@
 import "./config.js";
 import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag, setText } from "./dom.js";
 import { addListener, removeListener, cancelEvent } from "./event.js";
-import stylesheet from "../../tmp/style.js";
-import template from "../../tmp/template.js";
-import template_module from "./template.js";
+import stylesheet from "./style.js";
+import template from "./template.js";
+//import stylesheet from "../../tmp/style.js";
+//import template from "../../tmp/template.js";
+//import template_module from "./template.js";
 
 if(BUILD_BUNDLE){
 
