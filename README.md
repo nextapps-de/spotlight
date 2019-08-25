@@ -18,7 +18,7 @@ Spotlight runs out of the box:
 - No additional Javascript coding
 - No additional HTML snippets
 - No additional CSS resources
-- No additional images/assets
+- No additional icons/assets
 - No additional handling of dynamic content and event listener
 
 <a href="https://nextapps-de.github.io/spotlight/"><b>Show Demo</b></a>
@@ -68,7 +68,7 @@ __Technical properties:__
   - fully cleanup when gallery was closed
 - No dependencies, no jQuery
 - Responsive
-- Super-lightweight, all in all just 7kb gzip (js + css + html + images)
+- Super-lightweight, all in all just 7kb gzip (js + css + html + icons)
 - Support for ES6 module system
 
 <a name="started" id="started"></a>
@@ -80,14 +80,14 @@ __Version Explanation__
     <tr>
         <td>Bundle Standalone</td>
         <td>
-            All assets bundled into one single file (js + css + html + images).
+            All assets bundled into one single file (js + css + html + icons).
         </td>
     </tr>
     <tr></tr>
     <tr>
         <td>Bundle CDN</td>
         <td>
-            Also a bundled file (js + html), but images and css will load from extern CDN.
+            Also a bundled file (js + html), but icons and css will load from extern CDN.
         </td>
     </tr>
     <tr></tr>
@@ -142,7 +142,7 @@ __Get Latest Build (Stable):__
     <tr>
         <td>img.zip</td>
         <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.6.3/dist/img" target="_blank">Download</a></td>
-        <td>Alternatively when using non-bundled version you can download images from <i>/dist/img/</i>.</td>
+        <td>Alternatively when using non-bundled version you can download icons from <i>/dist/img/</i>.</td>
     </tr>
     <tr>
         <td colspan=3">
@@ -794,7 +794,7 @@ When using Spotlight exclusively through the API it is recommended to follow thi
 <a name="builds" id="builds"></a>
 ## Custom Builds
 
-> __Note:__ You can modify all source files e.g. stylesheets, template and also the images files located in _/src/img/_. Providing a more handy way to pass custom images is coming soon.
+> __Note:__ You can modify all source files e.g. stylesheets, template and also the icon files located in _/src/img/_. Providing a more handy way to pass custom icons is coming soon.
 
 Perform a full build:
 ```bash
