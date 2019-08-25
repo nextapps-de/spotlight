@@ -76,7 +76,7 @@ const parameter = (function(opt){
     module_resolution: "BROWSER",
     dependency_mode: "SORT_ONLY",
     //js_module_root: "./",
-    //entry_point: "./src/js/spotlight",
+    //entry_point: "./src/js/browser.js",
     //manage_closure_dependencies: true,
     //dependency_mode: "PRUNE_LEGACY",
 

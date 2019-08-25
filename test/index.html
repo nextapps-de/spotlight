@@ -45,8 +45,8 @@
         }
     </style>
     <style>
-        #spotlight.my-theme{
-            background-color: #c00;
+        #spotlight.custom{
+            background-color: #222;
         }
     </style>
     <style>
@@ -56,11 +56,11 @@
             transition: filter 1s ease-out,
                         opacity 0.5s ease-out;
         }
-        #spotlight .scene img.my-animation{
+        */
+        #spotlight .scene img.custom{
             opacity: 0 !important;
             filter: grayscale(1);
         }
-        */
     </style>
 </head>
 <body>
@@ -69,7 +69,7 @@
         <a href="https://github.com/nextapps-de/spotlight">Goto Github</a><br><br>
         <hr>
     </b>
-    <p class="spotlight-group">
+    <p class="spotlight-group" data-title="Lorem ipsum dolor sit amet" data-description="At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">
         <b>Anchors &amp; Images</b>
         <a class="spotlight" href="gallery/brooklyn-bridge-1791001.jpg" data-description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">
             <img src="gallery/brooklyn-bridge-1791001-thumb.jpg" alt="Lorem ipsum dolor sit amet">
@@ -77,12 +77,12 @@
         <a class="spotlight" href="gallery/california-1751455.jpg">
             <img src="gallery/california-1751455-thumb.jpg">
         </a>
-        <a class="spotlight" href="gallery/canada-2340312.jpg">
+        <a class="spotlight" href="gallery/canada-2340312.jpg" data-title="At vero eos et accusam et justo">
             <img src="gallery/canada-2340312-thumb.jpg">
         </a>
     </p>
     <b>Custom Elements</b>
-    <div class="spotlight-group">
+    <div class="spotlight-group" data-theme="white" data-animation="scale,fade,slide" data-control="fullscreen,autofit">
         <div class="spotlight image" data-src="gallery/godafoss-1840758.jpg" style="background-image:url(gallery/godafoss-1840758-thumb.jpg)"></div>
         <div class="spotlight image" data-src="gallery/seljalandsfoss-1751463.jpg" style="background-image:url(gallery/seljalandsfoss-1751463-thumb.jpg)"></div>
         <div class="spotlight image" data-src="gallery/montana-1829251.jpg" style="background-image:url(gallery/montana-1829251-thumb.jpg)"></div>
@@ -93,7 +93,8 @@
     <input type="checkbox" value="slide" checked> Slide &emsp;
     <input type="checkbox" value="fade" checked> Fade &emsp;
     <input type="checkbox" value="scale" checked> Scale &emsp;
-    <input type="checkbox" value="flip"> Flip
+    <input type="checkbox" value="flip"> Flip &emsp;
+    <input type="checkbox" value="custom"> Custom
     <br><br>
     <div class="image" style="height: auto">
         <button onclick="showGallery(1)">Show</button>
@@ -134,7 +135,9 @@
             Spotlight.show(gallery, {
 
                 index: index,
-                theme: "dark",
+                player: false,
+                zoom: false,
+                theme: "custom",
                 animation:  [
                     checkboxes[0].checked && checkboxes[0].value,
                     checkboxes[1].checked && checkboxes[1].value,
@@ -146,6 +149,6 @@
 
     </script>
     <script src="../src/js/config.js"></script>
-    <script type="module" src="../src/js/spotlight.js"></script>
+    <script type="module" src="../src/js/browser.js"></script>
 </body>
 </html>

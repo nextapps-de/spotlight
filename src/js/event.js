@@ -49,9 +49,9 @@ export function cancelEvent(event, passive){
 
     if(event){
 
-        passive || event.preventDefault();
         event.stopImmediatePropagation();
-        event.returnValue = false
+        passive || event.preventDefault();
+        passive || (event.returnValue = false);
     }
 
     return false;

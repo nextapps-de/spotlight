@@ -150,19 +150,19 @@ function init_gallery(anchors, index){
             gallery[i] = {
 
                 src: (
-                    (anchor_dataset && (anchor_dataset.href || anchor_dataset.src)) ||
+                    (anchor_dataset && (anchor_dataset["href"] || anchor_dataset["src"])) ||
                     anchor.src ||
                     anchor.href
                 ),
                 title: (
-                    (anchor_dataset && anchor_dataset.title) ||
+                    (anchor_dataset && anchor_dataset["title"]) ||
                     anchor["title"] ||
                     ((tmp = getByTag("img", anchor)).length && tmp[0]["alt"]) ||
                     options_title ||
                     ""
                 ),
                 description: (
-                    (anchor_dataset && anchor_dataset.description) ||
+                    (anchor_dataset && anchor_dataset["description"]) ||
                     anchor["description"] ||
                     options_description ||
                     ""
@@ -379,9 +379,16 @@ const keycodes = {
 };
 
 addListener(document, "", dispatch);
-addListener(document, "DOMContentLoaded", init, { once: true });
+addListener(document, "DOMContentLoaded", init, { "once": true });
+
+let has_initialized = false;
 
 export function init(){
+
+    if(has_initialized){
+
+        return;
+    }
 
     // add template
 
@@ -459,6 +466,7 @@ export function init(){
         [getOneByClass("theme"), "", theme]
     ];
 
+    has_initialized = true;
 }
 
 function resize_listener(){
@@ -1208,12 +1216,13 @@ function paginate(direction){
     setStyle(arrow_right, "visibility", !options_infinite && (current_slide === slide_count) ? "hidden" : "");
 
     const dataset = gallery[current_slide - 1];
-    const has_content = dataset.title || dataset.description;
+    let has_content = dataset["title"] || dataset["description"];
+        has_content = has_content && (has_content !== "false");
 
     if(has_content){
 
-        setText(title, dataset.title);
-        setText(description, dataset.description);
+        setText(title, dataset["title"] || "");
+        setText(description, dataset["description"] || "");
     }
 
     setStyle(footer, "visibility", has_content ? "visible" : "hidden");
@@ -1266,8 +1275,6 @@ const closest = Element.prototype.closest || function(classname){
         node = node.parentElement || node.parentNode;
     }
 };
-
-/* Export API */
 
 export default {
 

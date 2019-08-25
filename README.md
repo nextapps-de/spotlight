@@ -760,33 +760,26 @@ Spotlight.show([ /* Gallery */ ],{
 ```
 
 <a name="notes" id="notes"></a>
-## Note
+## Preload Library / Async Load
 
-It is very common to load the library right before the closing body tag of your document.
-
-> If you like to override css classes for custom styling you may need to add _"!important"_ flag to the css property value.
+> If you like to override css classes for custom styling you may need to add ___!important___ flag to the css property value.
 
 ```html
 <html>
 <head>
     <title></title>
+    <link rel="preload" href="spotlight.bundle.js" as="script">
 </head>
 <body>
     <!-- 
     CONTENT 
     -->
-    <script src="spotlight.bundle.js"></script>
+    <script src="spotlight.bundle.js" async></script>
 </body>
 </html>
 ```
 
-Load library as async:
-
-```html
-<script src="spotlight.bundle.js" async></script>
-```
-
-Initialize Spotlight manually (once):
+Initialize library manually (once):
 
 ```js
 Spotlight.init();
