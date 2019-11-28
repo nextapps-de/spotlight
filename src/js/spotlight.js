@@ -1027,7 +1027,7 @@ export function prev(){
         return goto(current_slide - 1);
     }
     else if(playing || options_infinite){
-
+        prepareStyle(slider, "transform", "translateX(-" + slide_count * 100 + "%)");
         return goto(slide_count);
     }
 }
@@ -1039,7 +1039,7 @@ export function next(){
         return goto(current_slide + 1);
     }
     else if(playing || options_infinite){
-
+        prepareStyle(slider, "transform", "translateX(100%)");
         return goto(1);
     }
 }
