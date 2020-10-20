@@ -1,3 +1,7 @@
+### Announcement
+
+Spotlight 0.7.0 is coming soon during Dezember 2020, packed with fixes of all the github posted issues also a lot of feature requests like video support or embedding a gallery inline.
+
 <p align="center">
     <br>
     <img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/doc/spotlight.svg" alt="Spotlight.js" width="50%">
@@ -353,6 +357,12 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
         <td>player</td>
         <td>true / false / number</td>
         <td>Show/hide player button, also set delay between each tick</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>autoplay</td>
+        <td>true / false</td>
+        <td>Autoplay when opening gallery (also requires the option <b>player</b> to be set)</td>
     </tr>
     <tr></tr>
     <tr>

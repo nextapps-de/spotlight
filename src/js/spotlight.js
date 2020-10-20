@@ -995,6 +995,11 @@ function show_gallery(config){
     install_listener(true);
     resize_listener();
     autohide();
+
+    if(options["autoplay"]){
+
+        play();
+    }
 }
 
 /**
@@ -1235,7 +1240,7 @@ function paginate(direction){
 
 export function show(payload, config){
 
-    setTimeout(function(){
+    //setTimeout(function(){
 
         if(payload){
 
@@ -1256,7 +1261,7 @@ export function show(payload, config){
         }
 
         show_gallery();
-    });
+    //});
 }
 
 /* Polyfill IE */
