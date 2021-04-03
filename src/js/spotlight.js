@@ -1044,7 +1044,9 @@ export function next(){
         return goto(current_slide + 1);
     }
     else if(playing || options_infinite){
-        prepareStyle(slider, "transform", "translateX(100%)");
+        if (slide_count > 1){
+            prepareStyle(slider, "transform", "translateX(100%)");
+        }
         return goto(1);
     }
 }
