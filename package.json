@@ -12,7 +12,6 @@
     "email": "info@nextapps.de"
   },
   "main": "src/js/spotlight.js",
-  "type": "module",
   "browser": "dist/spotlight.bundle.js",
   "preferGlobal": false,
   "bin": {},
@@ -22,7 +21,7 @@
   },
   "scripts": {
     "copy": "cpx \"src/img/*.*\" dist/img/",
-    "clean": "if exist dist rmdir dist /s /q && mkdir dist",
+    "clean": "if exist dist rmdir dist /s /q && mkdir dist && if exist dist rmdir tmp /s /q && mkdir tmp",
     "build:css": "lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" src/css/spotlight.less dist/css/spotlight.css && csso dist/css/spotlight.css --output dist/css/spotlight.css",
     "build:css:bundle": "cpx \"src/css/spotlight.less\" tmp/ && lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" tmp/spotlight.less tmp/spotlight.css && csso tmp/spotlight.css --output tmp/spotlight.css",
     "build:js": "node task/build",
