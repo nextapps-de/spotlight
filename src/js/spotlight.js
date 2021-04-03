@@ -1240,7 +1240,7 @@ function paginate(direction){
 
 export function show(payload, config){
 
-    //setTimeout(function(){
+    setTimeout(function(){
 
         if(payload){
 
@@ -1261,7 +1261,7 @@ export function show(payload, config){
         }
 
         show_gallery();
-    //});
+    });
 }
 
 /* Polyfill IE */
