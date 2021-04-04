@@ -254,6 +254,11 @@
   -ms-overflow-style: none;
 }
 
+/* in iOS Safari, the image becomes blurry with "will-change: transform, opacity". */
+_::-webkit-full-page-media, _:future, :root #spotlight.show .scene img {
+  will-change: auto !important;
+}
+
 @media (max-width: 800px) {
   #spotlight {
     .header div {
