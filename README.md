@@ -1,7 +1,3 @@
-### Announcement
-
-Spotlight 0.7.0 is coming soon during Dezember 2020, packed with fixes of all the github posted issues also a lot of feature requests like video support or embedding a gallery inline.
-
 <p align="center">
     <br>
     <img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/doc/spotlight.svg" alt="Spotlight.js" width="50%">
