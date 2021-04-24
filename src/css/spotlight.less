@@ -95,6 +95,8 @@
     top:0;
     width:100%;
     height:100%;
+    transition: transform 1s cubic-bezier(0.1, 1, 0.1, 1),
+                opacity 1s cubic-bezier(0.3, 1, 0.3, 1);
     contain: layout size style;
   }
   .header {
@@ -254,6 +256,11 @@
       opacity: 1;
       animation: none;
     }
+  }
+
+  /* in iOS Safari, the image becomes blurry with "will-change: transform, opacity". */
+  _::-webkit-full-page-media, _:future, :root #spotlight.show .scene img {
+    will-change: auto !important;
   }
 
   @media (max-width: 800px) {

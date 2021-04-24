@@ -899,8 +899,11 @@ function zoom_in(prevent_autohide){
 
     let value = scale / 0.65;
 
-    if(value <= 5){
+    if(value <= 50){
 
+        x = x / 0.65;
+        y = y / 0.65;
+        update_panel(x, y);
         zoom(scale = value);
     }
 
@@ -928,13 +931,16 @@ function zoom_out(prevent_autohide){
 
     if(value >= 1){
 
+        x = x * 0.65;
+        y = y * 0.65;
+        update_panel(x, y);
         zoom(scale = value);
 
-        x = 0;
-        y = 0;
-        changed = true;
-
-        update_panel();
+        // x = 0;
+        // y = 0;
+        // changed = true;
+        //
+        // update_panel();
     }
 
     prevent_autohide || autohide();
@@ -1005,7 +1011,12 @@ export function next(){
         return goto(current_slide + 1);
     }
     else if(playing || options_infinite){
-        prepareStyle(slider, "transform", "translateX(100%)");
+
+        if(slide_count > 1){
+
+            prepareStyle(slider, "transform", "translateX(100%)");
+        }
+
         return goto(1);
     }
 }
@@ -1188,7 +1199,7 @@ function paginate(direction){
 
 export function show(payload, config){
 
-    //setTimeout(function(){
+    setTimeout(function(){
 
         if(payload){
 
@@ -1209,7 +1220,7 @@ export function show(payload, config){
         }
 
         show_gallery();
-    //});
+    });
 }
 
 /* Polyfill IE */
