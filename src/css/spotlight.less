@@ -15,7 +15,7 @@
     user-select: none;
     transition: visibility 0.25s ease,
                 opacity 0.25s ease;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: Arial, sans-serif;
     font-size: 16px;
     font-weight: 400;
     contain: layout size paint style;
@@ -140,11 +140,12 @@
     padding: 20px 25px;
     text-align: left;
     pointer-events: none;
-    contain: layout paint style;
+    font-size: 15px;
+    font-weight: 400;
   }
   .footer .title{
-    font-size: 125%;
-    padding-bottom: 10px;
+    font-size: 24px;
+    padding-bottom: 16px;
   }
   .page{
     float:left;
@@ -153,11 +154,9 @@
     line-height: 50px;
   }
   .icon{
-    cursor: pointer;
     background-position: left center;
     background-repeat: no-repeat;
     background-size: 21px 21px;
-    transition: opacity 0.2s ease-out;
   }
   .fullscreen{
     background-image: url(@maximize);
@@ -174,9 +173,11 @@
   .zoom-in{
     background-image: url(@zoomin);
   }
+  /*
   .theme{
     background-image: url(@theme);
   }
+  */
   .player{
     background-image: url(@play);
   }
@@ -202,13 +203,12 @@
     margin-top: -25px;
     padding: 10px;
     transform: translateX(-100px);
-    transition: transform 0.35s ease-out,
-                opacity 0.2s ease-out;
+    transition: transform 0.35s ease-out;
     box-sizing: border-box;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 30px 30px;
-    opacity: 0.65;
+
     background-image: url(@arrow);
   }
   .arrow-right {
@@ -222,13 +222,7 @@
   &.menu .arrow-right{
     transform: translateX(0) scaleX(-1);
   }
-  .icon:hover,
-  .icon:active,
-  .arrow:hover,
-  .arrow:active{
-    opacity: 1;
-    animation: none;
-  }
+
   &.white {
     color: #fff;
     background-color: #fff;
@@ -242,18 +236,27 @@
       filter: invert(1);
     }
   }
-}
 
-.hide-scrollbars{
-  &::-webkit-scrollbar {
-    width: 0;
+  @media (hover: hover) {
+    .icon{
+      cursor: pointer;
+      transition: opacity 0.2s ease-out;
+    }
+    .arrow{
+      opacity: 0.65;
+      transition: transform 0.35s ease-out,
+      opacity 0.2s ease-out;
+    }
+    .icon:hover,
+    .icon:active,
+    .arrow:hover,
+    .arrow:active{
+      opacity: 1;
+      animation: none;
+    }
   }
-  overflow: -moz-hidden-unscrollable;
-  -ms-overflow-style: none;
-}
 
-@media (max-width: 800px) {
-  #spotlight {
+  @media (max-width: 800px) {
     .header div {
       width: 20px;
     }
@@ -270,12 +273,20 @@
       background-size: 30px 30px;
     }
   }
+
+  @media (max-width: 400px), (max-height: 400px) {
+    .fullscreen{
+      display: none !important;
+    }
+  }
 }
 
-@media (max-width: 400px), (max-height: 400px) {
-  #spotlight .fullscreen{
-    display: none !important;
+.hide-scrollbars{
+  &::-webkit-scrollbar {
+    width: 0;
   }
+  overflow: -moz-hidden-unscrollable;
+  -ms-overflow-style: none;
 }
 
 @keyframes pulsate {

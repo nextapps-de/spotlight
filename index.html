@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+    <meta name="robots" content="index, follow">
+    <title>Spotlight.js &ndash; Modern HTML5 Image Gallery</title>
+    <!--<script src="dist/spotlight.bundle.js"></script>-->
+    <!--<script src="dist/js/spotlight.min.js"></script>-->
+    <link rel="stylesheet" href="dist/css/spotlight.min.css">
+    <link rel="stylesheet" href="demo/style.css">
+</head>
+<body>
+    <b>
+        <img src="demo/spotlight.svg" alt="Spotlight.js"><br><br>
+        <a href="https://github.com/nextapps-de/spotlight">Goto Github</a><br><br>
+        <hr>
+    </b>
+    <p class="spotlight-group">
+        <b>Anchors &amp; Images</b>
+        <a class="spotlight" href="demo/gallery/brooklyn-bridge-1791001.jpg" data-description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">
+            <img src="demo/gallery/brooklyn-bridge-1791001-thumb.jpg" alt="Lorem ipsum dolor sit amet">
+        </a>
+        <a class="spotlight" href="demo/gallery/california-1751455.jpg">
+            <img src="demo/gallery/california-1751455-thumb.jpg">
+        </a>
+        <a class="spotlight" href="demo/gallery/canada-2340312.jpg">
+            <img src="demo/gallery/canada-2340312-thumb.jpg">
+        </a>
+    </p>
+    <b>Custom Elements</b>
+    <div class="spotlight-group">
+        <div class="spotlight image" data-src="demo/gallery/godafoss-1840758.jpg" style="background-image:url(demo/gallery/godafoss-1840758-thumb.jpg)"></div>
+        <div class="spotlight image" data-src="demo/gallery/seljalandsfoss-1751463.jpg" style="background-image:url(demo/gallery/seljalandsfoss-1751463-thumb.jpg)"></div>
+        <div class="spotlight image" data-src="demo/gallery/montana-1829251.jpg" style="background-image:url(demo/gallery/montana-1829251-thumb.jpg)"></div>
+    </div>
+    <br>
+    <b>API Call</b>
+    <p>Choose Animation:</p>
+    <input type="checkbox" value="slide" checked> Slide &emsp;
+    <input type="checkbox" value="fade" checked> Fade &emsp;
+    <input type="checkbox" value="scale" checked> Scale &emsp;
+    <input type="checkbox" value="flip"> Flip
+    <br><br>
+    <div class="image" style="height: auto">
+        <button onclick="showGallery(1)">Show</button>
+    </div>
+    <div class="image" style="height: auto">
+        <button onclick="showGallery(2)">Show</button>
+    </div>
+    <div class="image" style="height: auto">
+        <button onclick="showGallery(3)">Show</button>
+    </div>
+    <div>
+        <div class="image" style="background-image:url(demo/gallery/london-1758181-thumb.jpg)"></div>
+        <div class="image" style="background-image:url(demo/gallery/sea-1975403-thumb.jpg)"></div>
+        <div class="image" style="background-image:url(demo/gallery/newport-beach-2089906-thumb.jpg)"></div>
+    </div>
+    <br><br>
+    <script type="module">
+
+        import Spotlight from "./src/js/spotlight.js";
+
+        const checkboxes = document.getElementsByTagName("input");
+
+        const gallery = [{
+
+            title: "Image 1",
+            description: "This is a description.",
+            src: "demo/gallery/london-1758181.jpg"
+        },{
+            title: "Image 2",
+            description: "This is a description.",
+            src: "demo/gallery/sea-1975403.jpg"
+        },{
+            title: "Image 3",
+            description: "This is a description.",
+            src: "demo/gallery/newport-beach-2089906.jpg"
+        }];
+
+        window.showGallery = function(index){
+
+            Spotlight.show(gallery, {
+
+                index: index,
+                theme: "dark",
+                autoplay: true,
+                animation:  [
+                    checkboxes[0].checked && checkboxes[0].value,
+                    checkboxes[1].checked && checkboxes[1].value,
+                    checkboxes[2].checked && checkboxes[2].value,
+                    checkboxes[3].checked && checkboxes[3].value
+                ]
+            });
+        };
+
+    </script>
+</body>
+</html>

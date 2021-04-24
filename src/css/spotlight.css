@@ -1,0 +1,283 @@
+#spotlight {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+  color: #fff;
+  background-color: #000;
+  visibility: hidden;
+  opacity: 0;
+  overflow: hidden;
+  user-select: none;
+  transition: visibility 0.25s ease, opacity 0.25s ease;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  contain: layout size paint style;
+  touch-action: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  /*
+  .drag{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+  */
+  /*
+  .theme{
+    background-image: url(@theme);
+  }
+  */
+}
+#spotlight.show {
+  opacity: 1;
+  visibility: visible;
+  transition: none;
+}
+#spotlight.show .scene,
+#spotlight.show .pane {
+  will-change: transform;
+}
+#spotlight.show .scene img {
+  will-change: transform, opacity;
+}
+#spotlight .preloader {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 42px 42px;
+  opacity: 0;
+  /*pointer-events: none;*/
+  /*transition: none;*/
+}
+#spotlight .preloader.show {
+  transition: opacity 0.1s linear 0.25s;
+  opacity: 1;
+}
+#spotlight .scene {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 1s cubic-bezier(0.1, 1, 0.1, 1);
+  contain: layout size style;
+  pointer-events: none;
+}
+#spotlight .scene img {
+  display: inline-block;
+  position: absolute;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  left: 50%;
+  top: 50%;
+  opacity: 1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  transform: translate(-50%, -50%) scale(1) perspective(100vw);
+  transition: transform 1s cubic-bezier(0.1, 1, 0.1, 1), opacity 1s cubic-bezier(0.3, 1, 0.3, 1);
+  transform-style: preserve-3d;
+  /*pointer-events: none;*/
+  contain: layout paint style;
+  visibility: hidden;
+}
+#spotlight .pane {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  contain: layout size style;
+}
+#spotlight .header {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 50px;
+  text-align: right;
+  background-color: rgba(0, 0, 0, 0.45);
+  transform: translateY(-100px);
+  transition: transform 0.35s ease-out;
+  contain: layout size paint style;
+}
+#spotlight.menu .header,
+#spotlight .header:hover {
+  transform: translateY(0);
+}
+#spotlight .header div {
+  display: inline-block;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: 30px;
+  height: 50px;
+  padding-right: 20px;
+  opacity: 0.5;
+}
+#spotlight .progress {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.45);
+  transform: translateX(-100%);
+  transition: transform 1s linear;
+}
+#spotlight .footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  line-height: 1.35em;
+  padding: 20px 25px;
+  text-align: left;
+  pointer-events: none;
+  contain: layout paint style;
+}
+#spotlight .footer .title {
+  font-size: 125%;
+  padding-bottom: 10px;
+}
+#spotlight .page {
+  float: left;
+  width: auto;
+  padding-left: 20px;
+  line-height: 50px;
+}
+#spotlight .icon {
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: 21px 21px;
+}
+#spotlight .fullscreen {
+  background-image: url("../img/maximize.svg");
+}
+#spotlight .fullscreen.on {
+  background-image: url("../img/minimize.svg");
+}
+#spotlight .autofit {
+  background-image: url("../img/autofit.svg");
+}
+#spotlight .zoom-out {
+  background-image: url("../img/zoom-out.svg");
+}
+#spotlight .zoom-in {
+  background-image: url("../img/zoom-in.svg");
+}
+#spotlight .player {
+  background-image: url("../img/play.svg");
+}
+#spotlight .player.on {
+  background-image: url("../img/pause.svg");
+  animation: pulsate 1s ease infinite;
+}
+#spotlight .close {
+  background-image: url("../img/close.svg");
+}
+#spotlight .preloader.show {
+  background-image: url("../img/preloader.svg");
+}
+#spotlight .arrow {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.45);
+  border-radius: 100%;
+  cursor: pointer;
+  margin-top: -25px;
+  padding: 10px;
+  transform: translateX(-100px);
+  transition: transform 0.35s ease-out;
+  box-sizing: border-box;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 30px 30px;
+  background-image: url("../img/arrow.svg");
+}
+#spotlight .arrow-right {
+  left: auto;
+  right: 20px;
+  transform: translateX(100px) scaleX(-1);
+}
+#spotlight.menu .arrow-left {
+  transform: translateX(0);
+}
+#spotlight.menu .arrow-right {
+  transform: translateX(0) scaleX(-1);
+}
+#spotlight.white {
+  color: #fff;
+  background-color: #fff;
+}
+#spotlight.white .preloader,
+#spotlight.white .arrow,
+#spotlight.white .header,
+#spotlight.white .footer,
+#spotlight.white .progress {
+  filter: invert(1);
+}
+@media (hover: hover) {
+  #spotlight .icon {
+    cursor: pointer;
+    transition: opacity 0.2s ease-out;
+  }
+  #spotlight .arrow {
+    opacity: 0.65;
+    transition: transform 0.35s ease-out, opacity 0.2s ease-out;
+  }
+  #spotlight .icon:hover,
+  #spotlight .icon:active,
+  #spotlight .arrow:hover,
+  #spotlight .arrow:active {
+    opacity: 1;
+    animation: none;
+  }
+}
+@media (max-width: 800px) {
+  #spotlight .header div {
+    width: 20px;
+  }
+  #spotlight .footer {
+    font-size: 12px;
+  }
+  #spotlight .arrow {
+    width: 35px;
+    height: 35px;
+    margin-top: -17.5px;
+    background-size: 15px 15px;
+  }
+  #spotlight .preloader {
+    background-size: 30px 30px;
+  }
+}
+@media (max-width: 400px), (max-height: 400px) {
+  #spotlight .fullscreen {
+    display: none !important;
+  }
+}
+.hide-scrollbars {
+  overflow: -moz-hidden-unscrollable;
+  -ms-overflow-style: none;
+}
+.hide-scrollbars::-webkit-scrollbar {
+  width: 0;
+}
+@keyframes pulsate {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
+}

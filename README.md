@@ -1,14 +1,4 @@
-### Announcement
-
-Spotlight 0.7.0 is coming soon during Dezember 2020, packed with fixes of all the github posted issues also a lot of feature requests like video support or embedding a gallery inline.
-
-<p align="center">
-    <br>
-    <img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/doc/spotlight.svg" alt="Spotlight.js" width="50%">
-    <br>
-</p>
-
-<h1></h1>
+<h1><img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/readme/spotlight.svg" alt="Spotlight.js: Modern HTML5 Image Gallery" width="50%"></h1>
 <h3>Web's most easy to integrate lightbox gallery library. Super-lightweight, outstanding performance, no dependencies.</h3>
 
 <a target="_blank" href="https://www.npmjs.com/package/spotlight.js"><img src="https://img.shields.io/npm/v/spotlight.js.svg"></a>
@@ -113,8 +103,8 @@ __Get Latest Build (Stable):__
     </tr>
     <tr>
         <td>spotlight.bundle.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.3/dist/spotlight.bundle.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/spotlight.bundle.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.0/dist/spotlight.bundle.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.0/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.0/dist/spotlight.bundle.js</a></td>
     </tr>
     <tr>
         <td colspan=3">
@@ -123,8 +113,8 @@ __Get Latest Build (Stable):__
     </tr>
     <tr>
         <td>spotlight.cdn.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.3/dist/spotlight.cdn.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/spotlight.cdn.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/spotlight.cdn.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.0/dist/spotlight.cdn.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.0/dist/spotlight.cdn.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.0/dist/spotlight.cdn.js</a></td>
     </tr>
     <tr>
         <td colspan=3">
@@ -133,19 +123,19 @@ __Get Latest Build (Stable):__
     </tr>
     <tr>
         <td>spotlight.min.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.3/dist/js/spotlight.min.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/js/spotlight.min.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.0/dist/js/spotlight.min.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.0/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.0/dist/js/spotlight.min.js</a></td>
     </tr>
     <tr></tr>
     <tr>
         <td>spotlight.css</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.6.3/dist/css/spotlight.css" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/css/spotlight.css</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.0/dist/css/spotlight.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.0/dist/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.0/dist/css/spotlight.css</a></td>
     </tr>
     <tr></tr>
     <tr>
         <td>img.zip</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.6.3/dist/img" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.0/dist/img" target="_blank">Download</a></td>
         <td>Alternatively when using non-bundled version you can download icons from <i>/dist/img/</i>.</td>
     </tr>
     <tr>
@@ -155,14 +145,14 @@ __Get Latest Build (Stable):__
     </tr>
     <tr>
         <td>src.zip</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.6.3/src" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.0/src" target="_blank">Download</a></td>
         <td>The folder <i>"src"</i> of this Github repository.</td>
     </tr>
 </table>
 
 __Get Latest Build (Nightly):__
 
-Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/0.6.3/dist/" into "/spotlight/__master__/dist".
+Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/0.7.0/dist/" into "/spotlight/__master__/dist".
 
 __Get Latest (NPM):__
 
@@ -356,7 +346,7 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     <tr>
         <td>player</td>
         <td>true / false / number</td>
-        <td>Show/hide player button, also set delay between each tick</td>
+        <td>Show/hide player button, also set delay in seconds between each tick</td>
     </tr>
     <tr></tr>
     <tr>

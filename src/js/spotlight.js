@@ -6,32 +6,12 @@
  * https://github.com/nextapps-de/spotlight
  */
 
-import "./config.js";
-import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag, setText } from "./dom.js";
-import { addListener, removeListener, cancelEvent } from "./event.js";
-import stylesheet from "./style.js";
+import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag, setText, addListener, removeListener, cancelEvent } from "./helper.js";
 import template from "./template.js";
-//import stylesheet from "../../tmp/style.js";
-//import template from "../../tmp/template.js";
-//import template_module from "./template.js";
-
-if(BUILD_BUNDLE){
-
-    const style = document.createElement("style");
-    style.innerHTML = stylesheet;
-    getByTag("head")[0].appendChild(style);
-}
-else if(USE_EXTERNAL_ASSETS){
-
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = EXTERNAL_URL + "css/spotlight.css";
-    getByTag("head")[0].appendChild(link);
-}
 
 const controls = [
 
-    "theme",
+    //"theme",
     "fullscreen",
     "autofit",
     "zoom-in",
@@ -58,7 +38,7 @@ let dragged;
 let draggable;
 let changed;
 let toggle;
-let toggle_theme;
+//let toggle_theme;
 let current_theme;
 
 let current_slide;
@@ -89,35 +69,123 @@ let preloader;
 let playing;
 let timer;
 let hide;
-let doc;
+let body;
 let gallery;
 
 let event_definitions;
+let prefix_request, prefix_exit;
 
 /**
- * @param {string} src
- * @param {string=} title
- * @param {string=} description
- * @constructor
+ * @enum {number}
  */
 
-/*
-function Page(src, title, description){
+const keycodes = {
 
-    this.src = src;
-    this.title = title;
-    this.description = description;
-}
-*/
+    BACKSPACE: 8,
+    ESCAPE: 27,
+    SPACEBAR: 32,
+    LEFT: 37,
+    RIGHT: 39,
+    UP: 38,
+    NUMBLOCK_PLUS : 107,
+    PLUS: 187,
+    DOWN: 40,
+    NUMBLOCK_MINUS: 109,
+    MINUS: 189
+};
 
-/**
- * @param {string} class_name
- * @returns {Element}
- */
+addListener(window, "click", dispatch);
+addListener(document, "DOMContentLoaded", init, { "once": true });
 
-function getOneByClass(class_name){
+export function init(){
 
-    return getByClass(class_name, target)[0];
+    if(target){
+
+        return;
+    }
+
+    body = document.body;
+
+    // add template
+
+    // target = document.createElement("div");
+    // target.id = "spotlight";
+    // target.innerHTML = template;
+
+    target = template();
+
+    setStyle(target, "transition", "none");
+
+    body.appendChild(target);
+
+    // cache static elements
+
+    slider = getOneByClass("scene");
+    footer = getOneByClass("footer");
+    title = getOneByClass("title");
+    description = getOneByClass("description");
+    arrow_left = getOneByClass("arrow-left");
+    arrow_right = getOneByClass("arrow-right");
+    maximize = getOneByClass("fullscreen");
+    page = getOneByClass("page");
+    player = getOneByClass("player");
+    progress = getOneByClass("progress");
+    preloader = getOneByClass("preloader");
+
+    body[prefix_request = "requestFullscreen"] ||
+    body[prefix_request = "msRequestFullscreen"] ||
+    body[prefix_request = "webkitRequestFullscreen"] ||
+    body[prefix_request = "mozRequestFullscreen"] ||
+    (prefix_request = "");
+
+    if(prefix_request){
+
+        prefix_exit = (
+
+            prefix_request.replace("request", "exit")
+                          .replace("mozRequest", "mozCancel")
+                          .replace("Request", "Exit")
+        );
+    }
+    else{
+
+        setStyle(maximize, "display", "none");
+    }
+
+    install_listener([
+
+        [preloader, "mousedown", start],
+        [preloader, "mouseleave", end],
+        [preloader, "mouseup", end],
+        [preloader, "mousemove", move],
+
+        [preloader, "touchstart", start, { "passive": false }],
+        [preloader, "touchcancel", end],
+        [preloader, "touchend", end],
+        [preloader, "touchmove", move/*, { "passive": true }*/],
+
+        [maximize, "click", fullscreen],
+        [arrow_left, "click", prev],
+        [arrow_right, "click", next],
+        [player, "click", play],
+
+        [getOneByClass("autofit"), "click", autofit],
+        [getOneByClass("zoom-in"), "click", zoom_in],
+        [getOneByClass("zoom-out"), "click", zoom_out],
+        [getOneByClass("close"), "click", close],
+        //[getOneByClass("theme"), "click", theme]
+
+    ], true);
+
+    //const drag = getOneByClass("drag");
+
+    event_definitions = [
+
+        [window, "keydown", key_listener],
+        [window, "wheel", wheel_listener],
+        [window, "hashchange", history_listener],
+        [window, "resize", resize_listener]
+    ];
 }
 
 function init_gallery(anchors, index){
@@ -203,8 +271,8 @@ function apply_options(anchor, group){
     // merge inherited options
 
     options = {};
-    group && object_assign(options, group);
-    object_assign(options, anchor);
+    group && assign(options, group);
+    assign(options, anchor);
 
     inherit_global_option(anchor, group, "description");
     inherit_global_option(anchor, group, "title");
@@ -215,7 +283,7 @@ function apply_options(anchor, group){
     options_infinite = options["infinite"];
     options_infinite = (typeof options_infinite !== "undefined") && (options_infinite !== "false");
     options_progress = options["progress"] !== "false";
-    delay = (options["player"] * 1) || 7000;
+    delay = (options["player"] * 1000) || 7000;
 
     // handle shorthand "zoom"
 
@@ -282,26 +350,8 @@ function apply_options(anchor, group){
 
     if((current_theme = options["theme"])){
 
-        theme();
+        theme(current_theme);
     }
-    else{
-
-        current_theme = "white";
-    }
-}
-
-function object_assign(target, source){
-
-    const keys = Object.keys(source);
-
-    for(let i = 0; i < keys.length; i++){
-
-        const key = keys[i];
-
-        target[key] = "" + source[key];
-    }
-
-    return target;
 }
 
 function init_slide(index){
@@ -361,114 +411,17 @@ function init_slide(index){
     return true;
 }
 
-/**
- * @enum {number}
- */
 
-const keycodes = {
 
-    BACKSPACE: 8,
-    ESCAPE: 27,
-    SPACEBAR: 32,
-    LEFT: 37,
-    RIGHT: 39,
-    UP: 38,
-    NUMBLOCK_PLUS : 107,
-    PLUS: 187,
-    DOWN: 40,
-    NUMBLOCK_MINUS: 109,
-    MINUS: 189
-};
+function has_fullscreen(){
 
-addListener(document, "", dispatch);
-addListener(document, "DOMContentLoaded", init, { "once": true });
+    return (
 
-let has_initialized = false;
-
-export function init(){
-
-    if(has_initialized){
-
-        return;
-    }
-
-    // add template
-
-    target = document.createElement("div");
-    target.id = "spotlight";
-    target.innerHTML = BUILD_BUNDLE ? template : template; //template_module;
-
-    setStyle(target, "transition", "none");
-
-    document.body.appendChild(target);
-
-    // cache static elements
-
-    slider = getOneByClass("scene");
-    footer = getOneByClass("footer");
-    title = getOneByClass("title");
-    description = getOneByClass("description");
-    arrow_left = getOneByClass("arrow-left");
-    arrow_right = getOneByClass("arrow-right");
-    maximize = getOneByClass("fullscreen");
-    page = getOneByClass("page");
-    player = getOneByClass("player");
-    progress = getOneByClass("progress");
-    preloader = getOneByClass("preloader");
-    doc = document.documentElement || document.body;
-
-    // install fullscreen
-
-    document["cancelFullScreen"] || (document["cancelFullScreen"] = (
-
-        document["exitFullscreen"] ||
-        document["webkitCancelFullScreen"] ||
-        document["webkitExitFullscreen"] ||
-        document["mozCancelFullScreen"] ||
-        function(){}
-    ));
-
-    doc["requestFullScreen"] || (doc["requestFullScreen"] = (
-
-        doc["webkitRequestFullScreen"] ||
-        doc["msRequestFullScreen"] ||
-        doc["mozRequestFullScreen"] ||
-        setStyle(maximize, "display", "none") ||
-        function(){}
-    ));
-
-    //const drag = getOneByClass("drag");
-
-    event_definitions = [
-
-        [window, "keydown", key_listener],
-        [window, "wheel", wheel_listener],
-        [window, "hashchange", history_listener],
-        [window, "resize", resize_listener],
-
-        [preloader, "mousedown", start],
-        [preloader, "mouseleave", end],
-        [preloader, "mouseup", end],
-        [preloader, "mousemove", move],
-
-        [preloader, "touchstart", start, {"passive": false}],
-        [preloader, "touchcancel", end],
-        [preloader, "touchend", end],
-        [preloader, "touchmove", move, {"passive": true}],
-
-        [maximize,"", fullscreen],
-        [arrow_left, "", prev],
-        [arrow_right, "", next],
-        [player, "", play],
-
-        [getOneByClass("autofit"),"", autofit],
-        [getOneByClass("zoom-in"),"", zoom_in],
-        [getOneByClass("zoom-out"),"", zoom_out],
-        [getOneByClass("close"),"", close],
-        [getOneByClass("theme"), "", theme]
-    ];
-
-    has_initialized = true;
+        document["fullscreen"] ||
+        document["fullscreenElement"] ||
+        document["webkitFullscreenElement"] ||
+        document["mozFullScreenElement"]
+    );
 }
 
 function resize_listener(){
@@ -511,14 +464,15 @@ function update_slider(prepare, value){
 }
 
 /**
+ * @param {Array} listener
  * @param {boolean=} install
  */
 
-function install_listener(install){
+function install_listener(listener, install){
 
-    for(let i = 0; i < event_definitions.length; i++){
+    for(let i = 0; i < listener.length; i++){
 
-        const def = event_definitions[i];
+        const def = listener[i];
 
         (install ? addListener : removeListener)(
 
@@ -532,6 +486,8 @@ function install_listener(install){
  */
 
 function dispatch(event){
+
+    cancelEvent(event);
 
     const self = closest.call(event.target, ".spotlight");
 
@@ -764,11 +720,16 @@ function end(e){
     return cancelEvent(e);
 }
 
+const use_raf = false;
+
 function move(e){
 
     if(is_down){
 
-        timer || request();
+        if(use_raf){
+
+            timer || request();
+        }
 
         const touch = pointer(e);
         const diff = (imageW * scale - viewportW) / 2;
@@ -817,6 +778,8 @@ function move(e){
                 changed = true;
             }
         }
+
+        use_raf || update_panel(x, y);
     }
     else{
 
@@ -882,19 +845,17 @@ export function fullscreen(init){
 
             init
         :
-            document["isFullScreen"] ||
-            document["webkitIsFullScreen"] ||
-            document["mozFullScreen"]
+            has_fullscreen()
     );
 
     if(isFullscreen){
 
-        document["cancelFullScreen"]();
+        document[prefix_exit]();
         removeClass(maximize, "on");
     }
     else{
 
-        doc["requestFullScreen"]();
+        target[prefix_request]();
         addClass(maximize, "on");
     }
 }
@@ -989,10 +950,10 @@ function show_gallery(config){
     location.hash = "show";
 
     setStyle(target, "transition", "");
-    addClass(doc, "hide-scrollbars");
+    addClass(body, "hide-scrollbars");
     addClass(target, "show");
 
-    install_listener(true);
+    install_listener(event_definitions, true);
     resize_listener();
     autohide();
 
@@ -1008,11 +969,11 @@ function show_gallery(config){
 
 export function close(hashchange){
 
-    install_listener(false);
+    install_listener(event_definitions, false);
 
     history.go(hashchange === true ? -1 : -2);
 
-    removeClass(doc, "hide-scrollbars");
+    removeClass(body, "hide-scrollbars");
     removeClass(target, "show");
 
     if(playing){
@@ -1086,30 +1047,17 @@ function animate_bar(){
 }
 
 /**
- * @param {boolean=} init
+ * @param {string} theme
  */
 
-export function theme(init){
+export function theme(theme){
 
-    if(typeof init === "boolean"){
-
-        toggle_theme = init;
-    }
-    else{
-
-        toggle_theme = !toggle_theme;
-
-        autohide();
-    }
-
-    if(toggle_theme){
-
-        addClass(target, current_theme);
-    }
-    else{
+    if(current_theme){
 
         removeClass(target, current_theme);
     }
+
+    addClass(target, current_theme = theme);
 }
 
 /**
@@ -1266,6 +1214,20 @@ export function show(payload, config){
 
 /* Polyfill IE */
 
+const assign = Object.prototype.assign || function(target, source){
+
+    const keys = Object.keys(source);
+
+    for(let i = 0; i < keys.length; i++){
+
+        const key = keys[i];
+
+        target[key] = "" + source[key];
+    }
+
+    return target;
+};
+
 const closest = Element.prototype.closest || function(classname){
 
     let node = this;
@@ -1279,22 +1241,32 @@ const closest = Element.prototype.closest || function(classname){
             return /** @type {Element|null} */ (node);
         }
 
-        node = node.parentElement || node.parentNode;
+        node = node.parentElement /* || node.parentNode */;
     }
 };
 
+/**
+ * @param {string} class_name
+ * @returns {Element}
+ */
+
+function getOneByClass(class_name){
+
+    return getByClass(class_name, target)[0];
+}
+
 export default {
 
-    "init": init,
-    "theme": theme,
-    "fullscreen": fullscreen,
-    "autofit": autofit,
-    "next": next,
-    "prev": prev,
-    "goto": goto,
-    "close": close,
-    "zoom": zoom,
-    "menu": menu,
-    "show": show,
-    "play": play
+    init: init,
+    theme: theme,
+    fullscreen: fullscreen,
+    autofit: autofit,
+    next: next,
+    prev: prev,
+    goto: goto,
+    close: close,
+    zoom: zoom,
+    menu: menu,
+    show: show,
+    play: play
 };

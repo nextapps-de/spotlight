@@ -1,7 +1,7 @@
 {
   "name": "spotlight.js",
-  "version": "0.6.6",
-  "description": "",
+  "version": "0.7.0",
+  "description": "Modern HTML5 Image Gallery",
   "homepage": "https://github.com/nextapps-de/spotlight/",
   "author": "Thomas Wilkerling",
   "copyright": "Nextapps GmbH",
@@ -15,7 +15,6 @@
   "type": "module",
   "browser": "dist/spotlight.bundle.js",
   "preferGlobal": false,
-  "bin": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/nextapps-de/spotlight.git"
@@ -23,35 +22,34 @@
   "scripts": {
     "copy": "cpx \"src/img/*.*\" dist/img/",
     "clean": "if exist dist rmdir dist /s /q && mkdir dist",
-    "build:css": "lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" src/css/spotlight.less dist/css/spotlight.css && csso dist/css/spotlight.css --output dist/css/spotlight.css",
-    "build:css:bundle": "cpx \"src/css/spotlight.less\" tmp/ && lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" tmp/spotlight.less tmp/spotlight.css && csso tmp/spotlight.css --output tmp/spotlight.css",
+    "build:css": "lessc src/css/spotlight.less src/css/spotlight.css",
+    "build:css:bundle": "node task/bundle --image && lessc --autoprefix=\">=1%\" --csswring=\"--sourcemap --preserve-hacks\" --clean-css=\"--s1 --advanced --rebase\" tmp/bundle.less dist/css/spotlight.min.css && csso dist/css/spotlight.min.css --output dist/css/spotlight.min.css",
     "build:js": "node task/build",
     "build:bundle": "node task/build --bundle",
-    "build:extern": "node task/build --extern",
-    "build": "npm run clean && npm run build:css && node task/bundle --image && npm run build:css:bundle && node task/bundle --style && node task/bundle --template && npm run build:js && npm run build:bundle && npm run build:extern && npm run copy && echo Build Complete. && exit 0",
-    "server": "node task/server.js",
-    "update": "npm install base64-img@latest && npm install cpx@latest && npm install csso@latest && npm install csso-cli@latest && npm install google-closure-compiler@nightly && npm install less@latest && npm install less-plugin-autoprefix@latest && npm install less-plugin-clean-css@latest && npm install web-servo@latest"
+    "build:svg": "node task/svgo",
+    "build": "npm run clean && npm run copy && npm run build:svg && npm run build:css && npm run build:css:bundle && node task/bundle --style && npm run build:js && npm run build:bundle && echo Build Complete. && exit 0",
+    "server": "node task/server.js"
   },
   "files": [
     "dist/",
     "src/",
-    "!src/gallery/",
     "task/",
     "README.md",
     "CHANGELOG.md",
     "LICENSE"
   ],
   "readme": "README.md",
-  "dependencies": {},
   "devDependencies": {
     "base64-img": "^1.0.4",
     "cpx": "^1.5.0",
-    "csso": "^4.0.3",
+    "csso": "^4.2.0",
     "csso-cli": "^3.0.0",
-    "google-closure-compiler": "^20190825.0.0-nightly",
-    "less": "^3.12.2",
+    "google-closure-compiler": "^20210406.0.0",
+    "less": "^4.1.1",
     "less-plugin-autoprefix": "^2.0.0",
     "less-plugin-clean-css": "^1.5.1",
+    "less-plugin-csswring": "^0.0.1",
+    "svgo": "^2.3.0",
     "web-servo": "^0.5.1"
   }
 }

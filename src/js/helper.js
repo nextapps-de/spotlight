@@ -1,24 +1,4 @@
-"use strict";
-
-import "./config.js";
-
-const node_cache = {};
-const nodes_cache = {};
 const kebab_cache = {};
-
-function createClassCache(node){
-
-    const current_classes = node.classList;
-    const cache = {};
-
-    for(let a = 0; a < current_classes.length; a++){
-
-        cache[current_classes[a]] = 1;
-    }
-
-    node._class = cache;
-    node._classList = current_classes;
-}
 
 /**
  * @param selector
@@ -53,20 +33,7 @@ function addClassNames(node, class_name){
 
 function addClassPerform(node, current_class){
 
-    if(ENABLE_CLASS_CACHE){
-
-        node._class || createClassCache(node);
-
-        if(!node._class[current_class]){
-
-            node._class[current_class] = 1;
-            node._classList.add(current_class);
-        }
-    }
-    else{
-
-        node.classList.add(current_class);
-    }
+    node.classList.add(current_class);
 }
 
 /**
@@ -102,20 +69,7 @@ function removeClassNames(node, class_name){
 
 function removeClassPerform(node, current_class){
 
-    if(ENABLE_CLASS_CACHE){
-
-        node._class || createClassCache(node);
-
-        if(node._class[current_class]){
-
-            node._class[current_class] = 0;
-            node._classList.remove(current_class);
-        }
-    }
-    else{
-
-        node.classList.remove(current_class);
-    }
+    node.classList.remove(current_class);
 }
 
 /**
@@ -166,15 +120,7 @@ function toggleClassNames(node, class_name){
 
 function toggleClassPerform(node, current_class){
 
-    if(ENABLE_CLASS_CACHE){
-
-        node._class || createClassCache(node);
-        node._class[current_class] = node._classList.toggle(current_class);
-    }
-    else{
-
-        node.classList.toggle(current_class);
-    }
+    node.classList.toggle(current_class);
 }
 
 /**
@@ -206,13 +152,6 @@ export function hasClass(selector, class_name){
 }
 
 function hasClassPerform(node, class_name){
-
-    if(ENABLE_CLASS_CACHE){
-
-        node._class || createClassCache(node);
-
-        return !!node._class[class_name];
-    }
 
     return node.classList.contains(class_name);
 }
@@ -255,21 +194,8 @@ function setStyleProps(node, styles, keys, force){
 
 function setStylePerform(node, styles, value, force){
 
-    if(ENABLE_STYLE_CACHE){
 
-        let node_style = node._style;
-
-        node_style || (node._style = node_style = {});
-
-        if(node_style[styles] === value){
-
-            return;
-        }
-
-        node_style[styles] = value;
-    }
-
-    (ENABLE_STYLE_CACHE ? node._style_ref || (node._style_ref = node.style) : node.style).setProperty(
+    node.style.setProperty(
 
         kebab_cache[styles] || camel_to_kebab(styles),
         value,
@@ -294,25 +220,10 @@ export function getStyle(selector, style){
 
     const node = getNode(selector);
 
-    let node_style = node._style;
+    const css = node._css || (node._css = getComputedStyle(node, null));
+    const value = css[style];
 
-    if(!ENABLE_STYLE_CACHE || !node_style || !node_style[style]){
-
-        const css = node._css || (node._css = getComputedStyle(node, null));
-        const value = css[style];
-
-        if(ENABLE_STYLE_CACHE){
-
-            node._style = node_style = {};
-            node_style[style] = value;
-        }
-
-        return value;
-    }
-    else if(ENABLE_STYLE_CACHE){
-
-        return node_style[style];
-    }
+    return value;
 }
 
 let tmp = 0;
@@ -355,16 +266,6 @@ export function setText(selector, text){
 
 function setTextProcess(node, text){
 
-    if(ENABLE_CONTENT_CACHE){
-
-        if(node._text === text){
-
-            return;
-        }
-
-        node._text = text;
-    }
-
     node.textContent = text;
 }
 
@@ -406,11 +307,6 @@ function getNodeProcess(selector, context, all){
     );
 }
 
-export function getById(id){
-
-    return document.getElementById(id);
-}
-
 /**
  * @param {string} classname
  * @param {Node|Element=} context
@@ -433,103 +329,46 @@ export function getByTag(tag, context){
     return (context || document).getElementsByTagName(tag);
 }
 
-export function getByIdCache(id){
+/**
+ * @param {!Window|Document|Element} node
+ * @param {string} event
+ * @param {Function} fn
+ * @param {AddEventListenerOptions|boolean=} mode
+ */
 
-    const key = "$#" + id;
-    let item = node_cache[key];
+export function addListener(node, event, fn, mode){
 
-    if(!item){
+    node.addEventListener(event, fn, mode || void 0);
+}
 
-        node_cache[key] = item = getById(id);
+/**
+ * @param {!Window|Document|Element} node
+ * @param {string} event
+ * @param {Function} fn
+ * @param {EventListenerOptions|boolean=} mode
+ */
+
+export function removeListener(node, event, fn, mode){
+
+    node.removeEventListener(event, fn, mode || void 0);
+}
+
+/**
+ * @param event
+ * @param {boolean=} passive
+ * @returns {boolean}
+ */
+
+export function cancelEvent(event, passive){
+
+    event || (event = window.event);
+
+    if(event){
+
+        event.stopPropagation();
+        passive || event.preventDefault();
+        passive || (event.returnValue = false);
     }
 
-    return item;
-}
-
-/**
- * @param {string} classname
- * @param {Node|Element=} context
- * @returns {HTMLCollection}
- */
-
-export function getByClassCache(classname, context){
-
-    const key = (context || "$") + "." + classname;
-    let items = nodes_cache[key];
-
-    if(!items){
-
-        nodes_cache[key] = items = getByClass(classname, context);
-    }
-
-    return items;
-}
-
-/**
- * @param {string} tag
- * @param {Node|Element=} context
- * @returns {HTMLCollection}
- */
-
-export function getByTagCache(tag, context){
-
-    const key = (context || "$") + tag;
-    let items = nodes_cache[key];
-
-    if(!items){
-
-        nodes_cache[key] = items = getByTag(tag, context);
-    }
-
-    return items;
-}
-
-/**
- * @param {string} selector
- * @param {string=} context
- */
-
-export function getNodeCache(selector, context){
-
-    return getCacheProcess(selector, context, /* multiple? */ 0);
-}
-
-/**
- * @param {string} selector
- * @param {string=} context
- */
-
-export function getNodesCache(selector, context){
-
-    return getCacheProcess(selector, context, /* multiple? */ 1);
-}
-
-/**
- * @param {string} selector
- * @param {string=} context
- * @param {boolean|number=} multiple
- */
-
-function getCacheProcess(selector, context, multiple){
-
-    let key = (context || "$") + selector;
-    let cache = multiple ? nodes_cache : node_cache;
-    let item = cache[key];
-
-    if(!item){
-
-        if(!multiple){
-
-            item = nodes_cache[key];
-
-            if(item){
-
-                return item[0];
-            }
-        }
-
-        cache[key] = item = getNodeProcess(selector, context, multiple);
-    }
-
-    return item;
+    return false;
 }

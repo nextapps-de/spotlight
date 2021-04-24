@@ -33,7 +33,7 @@ const options = (function(argv){
 */
 
 const bundle = process.argv[2] === "--bundle";
-const extern = process.argv[2] === "--extern";
+//const extern = process.argv[2] === "--extern";
 
 const parameter = (function(opt){
 
@@ -74,9 +74,10 @@ const parameter = (function(opt){
     transform_amd_modules: true,
     process_common_js_modules: true,
     module_resolution: "BROWSER",
-    dependency_mode: "SORT_ONLY",
+    dependency_mode: "PRUNE_LEGACY",
+    rewrite_polyfills: false,
     //js_module_root: "./",
-    //entry_point: "./src/js/browser.js",
+    entry_point: "./src/js/webpack.js",
     //manage_closure_dependencies: true,
     //dependency_mode: "PRUNE_LEGACY",
 
@@ -86,16 +87,22 @@ const parameter = (function(opt){
     //formatting: "PRETTY_PRINT"
 });
 
-exec("java -jar node_modules/google-closure-compiler-java/compiler.jar" + parameter + " --js='tmp/**.js' --js='src/js/**.js' --define='DEBUG=false' --define='BUILD_BUNDLE=" + (bundle ? "true" : "false") + "' --define='USE_EXTERNAL_ASSETS=" + (extern ? "true" : "false") + "' --js_output_file='" + (bundle ? "dist/spotlight.bundle.js" : extern ? "dist/spotlight.cdn.js" : "dist/js/spotlight.min.js") + "' && exit 0", function(){
+exec((/^win/.test(process.platform) ?
 
-    let build = fs.readFileSync((bundle ? "dist/spotlight.bundle.js" : extern ? "dist/spotlight.cdn.js" : "dist/js/spotlight.min.js"));
+        "\"node_modules/google-closure-compiler-windows/compiler.exe\""
+        :
+        "java -jar node_modules/google-closure-compiler-java/compiler.jar"
+
+) + parameter + " --js='tmp/**.js' --js='src/js/**.js' --js_output_file='" + (bundle ? "dist/spotlight.bundle.js" : "dist/js/spotlight.min.js") + "' && exit 0", function(){
+
+    let build = fs.readFileSync((bundle ? "dist/spotlight.bundle.js" : "dist/js/spotlight.min.js"));
     let preserve = fs.readFileSync("src/js/spotlight.js", "utf8");
 
     const package_json = require("../package.json");
 
-    preserve = preserve.replace("* Spotlight.js", "* Spotlight.js v" + package_json.version + (bundle ? " (Bundle)" : extern ? " (CDN)" : ""));
+    preserve = preserve.replace("* Spotlight.js", "* Spotlight.js v" + package_json.version + (bundle ? " (Bundle)" : ""));
     build = preserve.substring(0, preserve.indexOf('*/') + 2) + "\n" + build;
-    fs.writeFileSync((bundle ? "dist/spotlight.bundle.js" : extern ? "dist/spotlight.cdn.js" : "dist/js/spotlight.min.js"), build);
+    fs.writeFileSync((bundle ? "dist/spotlight.bundle.js" : "dist/js/spotlight.min.js"), build);
 
     console.log("Build Complete.");
 });
