@@ -1,4 +1,4 @@
-<h1><img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/readme/spotlight.svg" alt="Spotlight.js: Modern HTML5 Image Gallery" width="50%"></h1>
+<h1><img src="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@master/demo/spotlight.svg" alt="Spotlight.js: Modern HTML5 Gallery for Images, Videos and Media" width="100%"></h1>
 <h3>Web's most easy to integrate lightbox gallery library. Super-lightweight, outstanding performance, no dependencies.</h3>
 
 <a target="_blank" href="https://www.npmjs.com/package/spotlight.js"><img src="https://img.shields.io/npm/v/spotlight.js.svg"></a>

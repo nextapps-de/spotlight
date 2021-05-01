@@ -35,6 +35,8 @@ const options = (function(argv){
 const bundle = process.argv[2] === "--bundle";
 //const extern = process.argv[2] === "--extern";
 
+// https://github.com/google/closure-compiler/blob/master/src/com/google/javascript/jscomp/CommandLineRunner.java#L130-L655
+
 const parameter = (function(opt){
 
     let parameter = '';
@@ -50,7 +52,8 @@ const parameter = (function(opt){
     return parameter;
 })({
 
-    compilation_level: "ADVANCED_OPTIMIZATIONS", //"WHITESPACE"
+    compilation_level: "ADVANCED", // "WHITESPACE_ONLY"
+    num_parallel_threads: 4,
     use_types_for_optimization: true,
     //new_type_inf: true,
     //jscomp_warning: "newCheckTypes",
@@ -79,21 +82,18 @@ const parameter = (function(opt){
     //js_module_root: "./",
     entry_point: "./src/js/webpack.js",
     //manage_closure_dependencies: true,
-    //dependency_mode: "PRUNE_LEGACY",
-
     isolation_mode: "IIFE"
     //output_wrapper: "(function(){%output%}());"
-
     //formatting: "PRETTY_PRINT"
 });
 
 exec((/^win/.test(process.platform) ?
 
         "\"node_modules/google-closure-compiler-windows/compiler.exe\""
-        :
+    :
         "java -jar node_modules/google-closure-compiler-java/compiler.jar"
 
-) + parameter + " --js='tmp/**.js' --js='src/js/**.js' --js_output_file='" + (bundle ? "dist/spotlight.bundle.js" : "dist/js/spotlight.min.js") + "' && exit 0", function(){
+) + parameter + (bundle ? " --js='tmp/**.js'" : "") + " --js='src/js/**.js' --js_output_file='" + (bundle ? "dist/spotlight.bundle.js" : "dist/js/spotlight.min.js") + "' && exit 0", function(){
 
     let build = fs.readFileSync((bundle ? "dist/spotlight.bundle.js" : "dist/js/spotlight.min.js"));
     let preserve = fs.readFileSync("src/js/spotlight.js", "utf8");

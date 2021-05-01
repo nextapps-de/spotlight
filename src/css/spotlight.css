@@ -6,70 +6,86 @@
   z-index: 99999;
   color: #fff;
   background-color: #000;
-  visibility: hidden;
   opacity: 0;
   overflow: hidden;
   user-select: none;
-  transition: visibility 0.25s ease, opacity 0.25s ease;
-  font-family: Helvetica, Arial, sans-serif;
+  transition: opacity 0.2s ease-out;
+  font-family: Arial, sans-serif;
   font-size: 16px;
   font-weight: 400;
-  contain: layout size paint style;
+  contain: strict;
   touch-action: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  /*
-  .drag{
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-  }
-  */
-  /*
-  .theme{
-    background-image: url(@theme);
-  }
-  */
+  pointer-events: none;
 }
 #spotlight.show {
   opacity: 1;
-  visibility: visible;
+  transition: none;
+  pointer-events: auto;
+}
+#spotlight.white {
+  color: #000;
+  background-color: #fff;
+}
+#spotlight.white .spl-spinner,
+#spotlight.white .spl-arrow-left,
+#spotlight.white .spl-arrow-right,
+#spotlight.white .spl-page ~ * {
+  filter: invert(1);
+}
+#spotlight.white .spl-progress {
+  background-color: rgba(0, 0, 0, 0.35);
+}
+#spotlight.white .spl-header,
+#spotlight.white .spl-footer {
+  background-color: rgba(255, 255, 255, 0.65);
+}
+#spotlight .cover {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+#spotlight .contain {
+  object-fit: contain;
+  height: 100%;
+  width: 100%;
+}
+#spotlight .autofit {
+  object-fit: none;
+  width: auto;
+  height: auto;
+  max-height: none;
+  max-width: none;
   transition: none;
 }
-#spotlight.show .scene,
-#spotlight.show .pane {
-  will-change: transform;
-}
-#spotlight.show .scene img {
-  will-change: transform, opacity;
-}
-#spotlight .preloader {
+.spl-track {
   position: absolute;
-  top: 0;
   width: 100%;
   height: 100%;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: 42px 42px;
-  opacity: 0;
-  /*pointer-events: none;*/
-  /*transition: none;*/
+  contain: strict;
 }
-#spotlight .preloader.show {
-  transition: opacity 0.1s linear 0.25s;
+.spl-spinner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 42px;
+  opacity: 0;
+}
+#spotlight.spinner .spl-spinner {
+  background-image: url("../img/preloader.svg");
+  transition: opacity 0.2s linear 0.25s;
   opacity: 1;
 }
-#spotlight .scene {
+.spl-scene {
   position: absolute;
-  top: 0;
   width: 100%;
   height: 100%;
-  transition: transform 1s cubic-bezier(0.1, 1, 0.1, 1);
-  contain: layout size style;
-  pointer-events: none;
+  transition: transform 0.65s cubic-bezier(0.1, 1, 0.1, 1);
+  contain: layout size;
+  will-change: transform;
 }
-#spotlight .scene img {
-  display: inline-block;
+.spl-pane > * {
   position: absolute;
   width: auto;
   height: auto;
@@ -77,25 +93,26 @@
   max-height: 100%;
   left: 50%;
   top: 50%;
-  opacity: 1;
   margin: 0;
   padding: 0;
   border: 0;
-  transform: translate(-50%, -50%) scale(1) perspective(100vw);
-  transition: transform 1s cubic-bezier(0.1, 1, 0.1, 1), opacity 1s cubic-bezier(0.3, 1, 0.3, 1);
-  transform-style: preserve-3d;
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0.65s cubic-bezier(0.3, 1, 0.3, 1), opacity 0.65s ease;
   /*pointer-events: none;*/
-  contain: layout paint style;
+  contain: layout style;
+  will-change: transform, opacity;
   visibility: hidden;
 }
-#spotlight .pane {
+.spl-pane {
   position: absolute;
   top: 0;
   width: 100%;
   height: 100%;
-  contain: layout size style;
+  transition: transform 0.65s cubic-bezier(0.3, 1, 0.3, 1);
+  contain: layout size;
+  will-change: transform;
 }
-#spotlight .header {
+.spl-header {
   position: absolute;
   top: 0;
   width: 100%;
@@ -103,164 +120,164 @@
   text-align: right;
   background-color: rgba(0, 0, 0, 0.45);
   transform: translateY(-100px);
-  transition: transform 0.35s ease-out;
-  contain: layout size paint style;
+  transition: transform 0.35s ease;
+  overflow: hidden;
 }
-#spotlight.menu .header,
-#spotlight .header:hover {
+#spotlight.menu .spl-header,
+.spl-header:hover {
   transform: translateY(0);
 }
-#spotlight .header div {
+.spl-header div {
   display: inline-block;
   vertical-align: middle;
   white-space: nowrap;
-  width: 30px;
+  width: 50px;
   height: 50px;
-  padding-right: 20px;
   opacity: 0.5;
 }
-#spotlight .progress {
+.spl-progress {
   position: absolute;
   top: 0;
   width: 100%;
   height: 3px;
   background-color: rgba(255, 255, 255, 0.45);
   transform: translateX(-100%);
-  transition: transform 1s linear;
+  transition: transform linear;
 }
-#spotlight .footer {
+.spl-footer {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.45);
-  line-height: 1.35em;
-  padding: 20px 25px;
+  line-height: 20px;
+  padding: 20px 20px 0 20px;
+  padding-bottom: env(safe-area-inset-bottom, 0);
   text-align: left;
-  pointer-events: none;
-  contain: layout paint style;
+  font-size: 15px;
+  font-weight: 400;
 }
-#spotlight .footer .title {
-  font-size: 125%;
-  padding-bottom: 10px;
+.spl-title {
+  font-size: 22px;
+  margin-bottom: 20px;
 }
-#spotlight .page {
+.spl-description {
+  margin-bottom: 20px;
+}
+.spl-button {
+  display: inline-block;
+  background: #fff;
+  color: #000;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+.spl-page {
   float: left;
   width: auto;
-  padding-left: 20px;
   line-height: 50px;
 }
-#spotlight .icon {
-  background-position: left center;
+.spl-page ~ * {
+  background-position: center;
   background-repeat: no-repeat;
-  background-size: 21px 21px;
+  background-size: 21px;
+  float: right;
 }
-#spotlight .fullscreen {
+.spl-fullscreen {
   background-image: url("../img/maximize.svg");
 }
-#spotlight .fullscreen.on {
+.spl-fullscreen.on {
   background-image: url("../img/minimize.svg");
 }
-#spotlight .autofit {
+.spl-autofit {
   background-image: url("../img/autofit.svg");
 }
-#spotlight .zoom-out {
+.spl-zoom-out {
   background-image: url("../img/zoom-out.svg");
+  background-size: 22px;
 }
-#spotlight .zoom-in {
+.spl-zoom-in {
   background-image: url("../img/zoom-in.svg");
+  background-size: 22px;
 }
-#spotlight .player {
+.spl-download {
+  background-image: url("../img/download.svg");
+  background-size: 20px;
+}
+.spl-theme {
+  background-image: url("../img/theme.svg");
+}
+.spl-play {
   background-image: url("../img/play.svg");
 }
-#spotlight .player.on {
+.spl-play.on {
   background-image: url("../img/pause.svg");
   animation: pulsate 1s ease infinite;
 }
-#spotlight .close {
+.spl-close {
   background-image: url("../img/close.svg");
 }
-#spotlight .preloader.show {
-  background-image: url("../img/preloader.svg");
-}
-#spotlight .arrow {
+.spl-arrow-left,
+.spl-arrow-right {
   position: absolute;
   top: 50%;
   left: 20px;
   width: 50px;
   height: 50px;
+  opacity: 0.65;
   background-color: rgba(0, 0, 0, 0.45);
   border-radius: 100%;
   cursor: pointer;
   margin-top: -25px;
-  padding: 10px;
   transform: translateX(-100px);
-  transition: transform 0.35s ease-out;
-  box-sizing: border-box;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: 30px 30px;
+  transition: transform 0.35s ease;
   background-image: url("../img/arrow.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 30px;
 }
-#spotlight .arrow-right {
+.spl-arrow-right {
   left: auto;
   right: 20px;
   transform: translateX(100px) scaleX(-1);
 }
-#spotlight.menu .arrow-left {
+#spotlight.menu .spl-arrow-left {
   transform: translateX(0);
 }
-#spotlight.menu .arrow-right {
+#spotlight.menu .spl-arrow-right {
   transform: translateX(0) scaleX(-1);
 }
-#spotlight.white {
-  color: #fff;
-  background-color: #fff;
-}
-#spotlight.white .preloader,
-#spotlight.white .arrow,
-#spotlight.white .header,
-#spotlight.white .footer,
-#spotlight.white .progress {
-  filter: invert(1);
-}
 @media (hover: hover) {
-  #spotlight .icon {
+  .spl-page ~ div {
     cursor: pointer;
-    transition: opacity 0.2s ease-out;
+    transition: opacity 0.2s ease;
   }
-  #spotlight .arrow {
-    opacity: 0.65;
-    transition: transform 0.35s ease-out, opacity 0.2s ease-out;
-  }
-  #spotlight .icon:hover,
-  #spotlight .icon:active,
-  #spotlight .arrow:hover,
-  #spotlight .arrow:active {
+  .spl-page ~ div:hover,
+  .spl-arrow-left:hover,
+  .spl-arrow-right:hover {
     opacity: 1;
-    animation: none;
   }
 }
-@media (max-width: 800px) {
-  #spotlight .header div {
-    width: 20px;
+@media (max-width: 500px) {
+  .spl-header div {
+    width: 44px;
   }
-  #spotlight .footer {
-    font-size: 12px;
+  .spl-footer .spl-title {
+    font-size: 20px;
   }
-  #spotlight .arrow {
+  .spl-footer {
+    font-size: 14px;
+  }
+  .spl-arrow-left,
+  .spl-arrow-right {
     width: 35px;
     height: 35px;
     margin-top: -17.5px;
     background-size: 15px 15px;
   }
-  #spotlight .preloader {
+  .spl-spinner {
     background-size: 30px 30px;
-  }
-}
-@media (max-width: 400px), (max-height: 400px) {
-  #spotlight .fullscreen {
-    display: none !important;
   }
 }
 .hide-scrollbars {

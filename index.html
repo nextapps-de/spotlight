@@ -9,38 +9,99 @@
     <!--<script src="dist/js/spotlight.min.js"></script>-->
     <link rel="stylesheet" href="dist/css/spotlight.min.css">
     <link rel="stylesheet" href="demo/style.css">
+    <style>
+        .spl-like{
+            background-image: url(demo/gallery/heart-outline.svg);
+            background-size: 22px;
+        }
+        .spl-like.on{
+            background-image: url(demo/gallery/heart.svg);
+        }
+    </style>
 </head>
 <body>
-    <b>
-        <img src="demo/spotlight.svg" alt="Spotlight.js"><br><br>
-        <a href="https://github.com/nextapps-de/spotlight">Goto Github</a><br><br>
-        <hr>
-    </b>
-    <p class="spotlight-group">
-        <b>Anchors &amp; Images</b>
-        <a class="spotlight" href="demo/gallery/brooklyn-bridge-1791001.jpg" data-description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">
+    <br>
+    <h1>
+        <img src="demo/spotlight.svg" alt="Spotlight.js: Modern HTML5 Image Gallery">
+    </h1>
+    <a href="https://github.com/nextapps-de/spotlight">Goto Github</a><br>
+    <hr><br>
+    <b>Anchors &amp; Images</b>
+    <div class="spotlight-group" data-fit="cover">
+        <!-- href="demo/gallery/brooklyn-bridge-1791001.jpg" -->
+        <a class="spotlight" href="demo/gallery/brooklyn-bridge-1791001.jpg" data-button="Click Me!" data-description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">
             <img src="demo/gallery/brooklyn-bridge-1791001-thumb.jpg" alt="Lorem ipsum dolor sit amet">
         </a>
-        <a class="spotlight" href="demo/gallery/california-1751455.jpg">
-            <img src="demo/gallery/california-1751455-thumb.jpg">
+        <a class="spotlight" href="demo/gallery/california-1751455.jpg" data-description="Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">
+            <img src="demo/gallery/california-1751455-thumb.jpg" alt="At vero eos et accusam">
         </a>
-        <a class="spotlight" href="demo/gallery/canada-2340312.jpg">
+        <a class="spotlight" href="demo/gallery/canada-2340312.jpg" data-description="Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim.">
+            <img src="demo/gallery/canada-2340312-thumb.jpg" alt="Lorem ipsum dolor sit amet">
+        </a>
+    </div>
+    <br>
+    <b>Images, Videos &amp; Node Fragments</b>
+    <div class="spotlight-group">
+        <a class="spotlight" data-media="image" data-src="demo/gallery/canada-2340312.jpg">
             <img src="demo/gallery/canada-2340312-thumb.jpg">
         </a>
-    </p>
+        <a class="spotlight" data-media="video" data-src-webm="//clips.vorwaerts-gmbh.de/big_buck_bunny.webm" data-src-ogg="//clips.vorwaerts-gmbh.de/big_buck_bunny.ogv" data-src-mp4="//clips.vorwaerts-gmbh.de/VfE_html5.mp4" data-autoplay="false" data-poster="demo/gallery/poster.jpg">
+            <img src="demo/gallery/poster.jpg">
+            <!--
+            <video preload="none" hidden>
+                <source src="demo/gallery/movie.mp4" type="video/mp4">
+                <source src="demo/gallery/movie.ogv" type="video/ogg">
+            </video>
+            -->
+        </a>
+        <a class="spotlight" data-media="node" data-src="#fragment">
+            <img src="demo/gallery/godafoss-1840758-thumb.jpg">
+        </a>
+    </div>
+    <div id="backstore" style="display: none">
+        <div id="fragment" style="width: 100%;">
+            <b>Embedded Node Fragment</b><br><br>
+            <img src="demo/gallery/brooklyn-bridge-1791001-thumb.jpg" width="500" height="334">
+            <img src="demo/gallery/california-1751455-thumb.jpg" width="500" height="333">
+            <img src="demo/gallery/canada-2340312-thumb.jpg" width="500" height="333">
+        </div>
+    </div>
+    <br>
     <b>Custom Elements</b>
     <div class="spotlight-group">
         <div class="spotlight image" data-src="demo/gallery/godafoss-1840758.jpg" style="background-image:url(demo/gallery/godafoss-1840758-thumb.jpg)"></div>
         <div class="spotlight image" data-src="demo/gallery/seljalandsfoss-1751463.jpg" style="background-image:url(demo/gallery/seljalandsfoss-1751463-thumb.jpg)"></div>
         <div class="spotlight image" data-src="demo/gallery/montana-1829251.jpg" style="background-image:url(demo/gallery/montana-1829251-thumb.jpg)"></div>
+        <div class="spotlight" data-src="demo/gallery/brooklyn-bridge-1791001.jpg"></div>
     </div>
     <br>
-    <b>API Call</b>
-    <p>Choose Animation:</p>
-    <input type="checkbox" value="slide" checked> Slide &emsp;
-    <input type="checkbox" value="fade" checked> Fade &emsp;
-    <input type="checkbox" value="scale" checked> Scale &emsp;
-    <input type="checkbox" value="flip"> Flip
+    <b>API Call</b><br>
+    Choose Features:<br><br>
+    <label><input type="checkbox" value="page" checked>Page</label>
+    <label><input type="checkbox" value="theme" checked>Theme</label>
+    <label><input type="checkbox" value="fullscreen" checked>Fullscreen</label>
+    <label><input type="checkbox" value="autofit" checked>Autofit</label>
+    <label><input type="checkbox" value="zoom-in" checked>Zoom +</label>
+    <label><input type="checkbox" value="zoom-out" checked>Zoom -</label>
+    <label><input type="checkbox" value="close" checked>Close</label><br>
+    <label><input type="checkbox" value="download" checked>Download</label>
+    <label><input type="checkbox" value="play" checked>Play</label>
+    <label><input type="checkbox" value="arrow-left" checked>Arrow Left</label>
+    <label><input type="checkbox" value="arrow-right" checked>Arrow Right</label>
+    <label><input type="checkbox" value="autoplay" checked>Autoplay</label>
+    <label><input type="checkbox" value="infinite" checked>Infinite Slide</label>
+    <label><input type="checkbox" value="spinner" checked>Spinner</label><br>
+    <label><input type="checkbox" value="preload" checked>Preload Next</label>
+    <label><input type="radio" name="autofit" value="cover" checked>Autofit: Cover</label>
+    <label><input type="radio" name="autofit" value="contain">Autofit: Contain</label>
+    <label><input type="radio" name="theme" value="default" checked>Theme: default</label>
+    <label><input type="radio" name="theme" value="white">Theme: white</label>
+    <br><br>
+    Choose Animation:<br><br>
+    <label><input type="checkbox" value="slide" checked>Slide</label>
+    <label><input type="checkbox" value="fade" checked>Fade</label>
+    <label><input type="checkbox" value="scale" checked>Scale</label>
+    <!--<input type="checkbox" value="flip"> Flip-->
     <br><br>
     <div class="image" style="height: auto">
         <button onclick="showGallery(1)">Show</button>
@@ -59,6 +120,11 @@
     <br><br>
     <script type="module">
 
+        if(location.hash === "#iframe"){
+
+            document.body.style.overflow = "hidden";
+        }
+
         import Spotlight from "./src/js/spotlight.js";
 
         const checkboxes = document.getElementsByTagName("input");
@@ -67,30 +133,86 @@
 
             title: "Image 1",
             description: "This is a description.",
-            src: "demo/gallery/london-1758181.jpg"
+            src: "demo/gallery/london-1758181.jpg",
+            like: false
         },{
             title: "Image 2",
             description: "This is a description.",
-            src: "demo/gallery/sea-1975403.jpg"
+            src: "demo/gallery/sea-1975403.jpg",
+            like: false,
         },{
             title: "Image 3",
             description: "This is a description.",
-            src: "demo/gallery/newport-beach-2089906.jpg"
+            src: "demo/gallery/newport-beach-2089906.jpg",
+            like: false
         }];
 
         window.showGallery = function(index){
 
+            const control = [], animation = [];
+
+            for(let i = 0; i < 11; i++){
+
+                if(checkboxes[i].checked){
+
+                    control.push(checkboxes[i].value);
+                }
+            }
+
+            for(let i = 19; i < checkboxes.length; i++){
+
+                if(checkboxes[i].checked){
+
+                    animation.push(checkboxes[i].value);
+                }
+            }
+
+            let current_slide = 0;
+
+            const button = document.createElement("div");
+            button.className = "spl-like";
+            button.onclick = function(){
+
+                // toggle the current like state
+                const current_like_state = gallery[current_slide].like;
+                gallery[current_slide].like = !current_like_state;
+                this.classList.toggle("on");
+
+                if(current_like_state){
+
+                    // do something if liked ...
+                }
+                else{
+
+                    // do something if unliked ...
+                }
+            }
+
             Spotlight.show(gallery, {
 
                 index: index,
-                theme: "dark",
-                autoplay: true,
-                animation:  [
-                    checkboxes[0].checked && checkboxes[0].value,
-                    checkboxes[1].checked && checkboxes[1].value,
-                    checkboxes[2].checked && checkboxes[2].value,
-                    checkboxes[3].checked && checkboxes[3].value
-                ]
+
+                autoplay: checkboxes[11].checked,
+                infinite: checkboxes[12].checked,
+                spinner: checkboxes[13].checked,
+                preload: checkboxes[14].checked,
+                fit: checkboxes[15].checked ? "cover" : checkboxes[16].checked ? "contain" : "",
+                theme: checkboxes[18].checked ? "white" : "",
+                control: control,
+                animation: animation,
+                onchange: function(index){
+
+                    // store the current index for the button listener
+                    current_slide = index - 1;
+
+                    // add button to the toolbar if not exist
+                    const root = document.querySelector(".spl-header");
+                    root.querySelector(".spl-like") || root.appendChild(button);
+
+                    // apply stored like state initially
+                    const current_like_state = gallery[current_slide].like;
+                    button.classList.toggle("on", current_like_state);
+                }
             });
         };
 

@@ -24,7 +24,8 @@ const style = process.argv[2] === "--style";
             zoomout: base64Sync('src/img/zoom-out.svg'),
             theme: base64Sync('src/img/theme.svg'),
             play: base64Sync('src/img/play.svg'),
-            pause: base64Sync('src/img/pause.svg')
+            pause: base64Sync('src/img/pause.svg'),
+            download: base64Sync('src/img/download.svg')
         };
 
         let tmp = "";

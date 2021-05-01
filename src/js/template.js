@@ -1,31 +1,35 @@
-const template = document.createElement("div");
+const template = /** @type {HTMLElement} */ (document.createElement("div"));
 template.id = "spotlight";
 template.innerHTML = (
 
-    '<div class=preloader></div>' +
-    '<div class=scene>' +
-        '<div class=pane></div>' +
+    // the spinner needs to be a separated element to apply animation
+    '<div class=spl-spinner></div>' +
+
+    // the wrapper "spl-track" is required to forward pointer events
+    '<div class=spl-track>' +
+        '<div class=spl-scene>' +
+            '<div class=spl-pane></div>' +
+        '</div>' +
     '</div>' +
-    '<div class=header>' +
-        '<div class=page></div>' +
-        '<div class="icon player"></div>' +
-        '<div class="icon zoom-in"></div>' +
-        '<div class="icon zoom-out"></div>' +
-        //'<div class="icon theme"></div>' +
-        '<div class="icon autofit"></div>' +
-        '<div class="icon fullscreen"></div>' +
-        '<div class="icon close"></div>' +
+    '<div class=spl-header>' +
+        '<div class=spl-page> </div>' +
+        '<div class=spl-close></div>' +
+        '<div class=spl-fullscreen></div>' +
+        '<div class=spl-autofit></div>' +
+        '<div class=spl-zoom-in></div>' +
+        '<div class=spl-zoom-out></div>' +
+        '<div class=spl-theme></div>' +
+        '<div class=spl-play></div>' +
+        '<div class=spl-download></div>' +
     '</div>' +
-    '<div class=progress></div>' +
-    '<div class="arrow arrow-left"></div>' +
-    '<div class="arrow arrow-right"></div>' +
-    '<div class=footer>' +
-        '<div class=title></div>' +
-        '<div class=description></div>' +
+    '<div class=spl-progress></div>' +
+    '<div class=spl-arrow-left></div>' +
+    '<div class=spl-arrow-right></div>' +
+    '<div class=spl-footer>' +
+        '<div class=spl-title> </div>' +
+        '<div class=spl-description> </div>' +
+        '<div class=spl-button> </div>' +
     '</div>'
 );
 
-export default function(){
-
-    return template.cloneNode(true);
-}
+export default template;
