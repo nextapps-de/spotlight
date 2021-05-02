@@ -13,6 +13,8 @@ template.innerHTML = (
     '</div>' +
     '<div class=spl-header>' +
         '<div class=spl-page> </div>' +
+        // added via addControl()
+        /*
         '<div class=spl-close></div>' +
         '<div class=spl-fullscreen></div>' +
         '<div class=spl-autofit></div>' +
@@ -21,6 +23,7 @@ template.innerHTML = (
         '<div class=spl-theme></div>' +
         '<div class=spl-play></div>' +
         '<div class=spl-download></div>' +
+         */
     '</div>' +
     '<div class=spl-progress></div>' +
     '<div class=spl-arrow-left></div>' +

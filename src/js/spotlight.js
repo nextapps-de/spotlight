@@ -36,8 +36,9 @@ const controls_default = {
     "fullscreen": 1
 };
 
+const tpl_video = document.createElement("video");
+const tpl_control = document.createElement("div");
 const controls_dom = {};
-const video = document.createElement("video");
 const video_support = {};
 
 let x;
@@ -62,12 +63,16 @@ let options;
 let options_group;
 let options_infinite;
 let options_progress;
+let options_onshow;
 let options_onchange;
+let options_onclose;
 let options_fit;
 let options_autohide;
 let options_autoplay;
 let options_theme;
 let options_preload;
+let options_href;
+let options_click;
 let delay;
 
 let animation_scale;
@@ -75,10 +80,12 @@ let animation_fade;
 let animation_slide;
 let animation_custom;
 
+let body;
 let panel;
 let panes;
 let media;
 let slider;
+let header;
 let footer;
 let title;
 let description;
@@ -89,14 +96,12 @@ let maximize;
 let page;
 let player;
 let progress;
-let track;
 
+let gallery;
+let gallery_next;
 let playing;
 let hide;
 let hide_cooldown;
-let body;
-let gallery;
-let gallery_next;
 
 let prefix_request, prefix_exit;
 
@@ -121,23 +126,24 @@ const keycodes = {
 
 addListener(document, "click", dispatch);
 
-function init(){
+function setup(){
 
     //console.log("init");
 
     body = document.body;
     slider = getOneByClass("scene");
+    header = getOneByClass("header");
     footer = getOneByClass("footer");
     title = getOneByClass("title");
     description = getOneByClass("description");
     button = getOneByClass("button");
     arrow_left = getOneByClass("arrow-left");
     arrow_right = getOneByClass("arrow-right");
-    maximize = getOneByClass("fullscreen");
     page = getOneByClass("page");
-    player = getOneByClass("play");
     progress = getOneByClass("progress");
     panes = [getOneByClass("pane")];
+
+    addControl("close", close);
 
     body[prefix_request = "requestFullscreen"] ||
     body[prefix_request = "msRequestFullscreen"] ||
@@ -153,17 +159,30 @@ function init(){
                           .replace("mozRequest", "mozCancel")
                           .replace("Request", "Exit")
         );
+
+        maximize = addControl("fullscreen", fullscreen);
     }
     else{
 
         controls.pop(); // => "fullscreen"
-        display_state(maximize, false);
     }
 
-    // binding the tracking listeners to the "widget" will prevent all click listeners to be fired
-    // binding the tracking listeners to the "spl-scene" breaks on iOS (seems to be a bug in their visual/touchable overflow calculation)
-    // binding the tracking listeners to a wrapper "track" will fix both
-    // the spinner element could not be used, it is below the widget to allow user actions (pointers)
+    addControl("autofit", autofit);
+    addControl("zoom-in", zoom_in);
+    addControl("zoom-out", zoom_out);
+    addControl("theme", theme);
+    player = addControl("play", play);
+    addControl("download", download);
+
+    addListener(arrow_left, "click", prev);
+    addListener(arrow_right, "click", next);
+
+    /*
+     * binding the tracking listeners to the "widget" will prevent all click listeners to be fired
+     * binding the tracking listeners to the "spl-scene" breaks on iOS (seems to be a bug in their visual/touchable overflow calculation)
+     * binding the tracking listeners to a wrapper "track" will fix both
+     * the spinner element could not be used, it is below the widget to allow user actions (pointers)
+     */
 
     const track = getOneByClass("track");
 
@@ -179,28 +198,50 @@ function init(){
     // click listener for the wrapper "track" is already covered
     //addListener(track, "click", menu);
 
-    addListener(maximize, "click", fullscreen);
-    addListener(arrow_left, "click", prev);
-    addListener(arrow_right, "click", next);
-    addListener(player, "click", play);
+    addListener(button, "click", function(){
 
-    addListener(getOneByClass("autofit"), "click", autofit);
-    addListener(getOneByClass("zoom-in"), "click", zoom_in);
-    addListener(getOneByClass("zoom-out"), "click", zoom_out);
-    addListener(getOneByClass("close"), "click", close);
-    addListener(getOneByClass("download"), "click", download);
-    addListener(getOneByClass("theme"), "click", theme);
+        if(options_click){
+
+            options_click(current_slide, options);
+        }
+        else if(options_href){
+
+            location.href = options_href;
+        }
+    });
 
     /**
-     * @param {string} class_name
+     * @param {string} classname
      * @returns {HTMLElement}
      */
 
-    function getOneByClass(class_name){
+    function getOneByClass(classname){
 
         //console.log("getOneByClass", class_name);
 
-        return controls_dom[class_name] = getByClass("spl-" + class_name, widget)[0];
+        return controls_dom[classname] = getByClass("spl-" + classname, widget)[0];
+    }
+}
+
+export function addControl(classname, fn){
+
+    const div = tpl_control.cloneNode(false);
+
+    div.className = "spl-" + classname;
+    addListener(div, "click", fn);
+    header.appendChild(div);
+
+    return controls_dom[classname] = div;
+}
+
+export function removeControl(classname){
+
+    const div = controls_dom[classname];
+
+    if(div){
+
+        header.removeChild(div);
+        controls_dom[classname] = null;
     }
 }
 
@@ -224,7 +265,8 @@ function dispatch(event){
 
             if(anchors[i] === target){
 
-                show(anchors, group ? group.dataset : {}, i + 1);
+                options_group = group && group.dataset;
+                init_gallery(i + 1);
                 break;
             }
         }
@@ -233,20 +275,27 @@ function dispatch(event){
 
 /**
  * @param {!HTMLCollection|Array} gallery
- * @param {Object=} config
+ * @param {Object=} group
  * @param {number=} index
  */
 
-export function show(gallery, config, index){
+export function show(gallery, group, index){
 
     //console.log("show", gallery, config);
 
     anchors = gallery;
-    options_group = config || (config = {});
-    options_onchange = config["onchange"];
 
-    init_gallery(index || config["index"]);
-    show_gallery();
+    if(group){
+
+        options_group = group;
+        options_onshow = group["onshow"];
+        options_onchange = group["onchange"];
+        options_onclose = group["onclose"];
+        options_click = group["onclick"];
+        index = index || group["index"];
+    }
+
+    init_gallery(index);
 }
 
 function init_gallery(index){
@@ -257,7 +306,8 @@ function init_gallery(index){
 
     if(slide_count){
 
-        body || init();
+        body || setup();
+        options_onshow && options_onshow(index);
 
         const pane = panes[0];
         const parent = pane.parentNode;
@@ -280,6 +330,7 @@ function init_gallery(index){
         current_slide = index || 1;
         disable_animation(slider);
         setup_page(true);
+        show_gallery();
     }
 }
 
@@ -311,7 +362,7 @@ function apply_options(anchor){
     //console.log("apply_options", anchor);
 
     options = {};
-    Object.assign(options, options_group);
+    options_group && Object.assign(options, options_group);
     Object.assign(options, anchor.dataset || anchor);
 
     // apply theme before controls (including control "theme") applies to the options
@@ -322,6 +373,7 @@ function apply_options(anchor){
     options_progress = parse_option("progress", true);
     options_autoplay = parse_option("autoplay");
     options_preload = parse_option("preload", true);
+    options_href = parse_option("buttonHref");
 
     if(options_autoplay){
 
@@ -653,11 +705,11 @@ function history_listener(event) {
 
     //console.log("history_listener");
 
-    if(panel && event.state && event.state["spl"]) {
+    if(panel && /*event.state &&*/ event.state["spl"]) {
 
         close(true);
-        history.back();
-        cancelEvent(event);
+        //history.back();
+        //cancelEvent(event, true);
     }
 }
 
@@ -1190,7 +1242,7 @@ export function close(hashchange){
     setTimeout(function(){
 
         body.removeChild(widget);
-        panel = media = gallery = options = options_group = anchors = options_onchange = null;
+        panel = media = gallery = options = options_group = anchors = options_onshow = options_onchange = options_onclose = options_click = null;
 
     }, 200);
 
@@ -1210,9 +1262,13 @@ export function close(hashchange){
 
         checkout(media);
     }
+
+    options_onclose && options_onclose();
 }
 
 function checkout(media){
+
+    //console.log("checkout");
 
     if(media._root){
 
@@ -1333,7 +1389,7 @@ function determine_src(anchor, size, options){
                             break;
                         }
                     }
-                    else if(video.canPlayType("video/" + key.substring(3).toLowerCase())){
+                    else if(tpl_video.canPlayType("video/" + key.substring(3).toLowerCase())){
 
                         video_support[key] = 1;
                         src = options[key];
@@ -1397,14 +1453,12 @@ function prepare(){
         if((anchor = anchors[current_slide])){
 
             const options_next = anchor.dataset || anchor;
-            const type = !options_next["media"] || (options_next["media"] === "image");
+            const next_is_image = !options_next["media"] || (options_next["media"] === "image");
 
-            if(type) gallery_next = //{
+            if(next_is_image){
 
-                //media: options_next["media"],
-                //src:
-                determine_src(anchor, size, options_next)
-            //};
+                gallery_next = determine_src(anchor, size, options_next);
+            }
         }
     }
 
@@ -1416,7 +1470,7 @@ function prepare(){
 
         //console.log(option + ": ", options[option]);
 
-        display_state(controls_dom[option], parse_option(option) || controls_default[option]);
+        display_state(controls_dom[option], parse_option(option, controls_default[option]));
     }
 }
 
@@ -1438,8 +1492,6 @@ function setup_page(direction){
         setTimeout(function(){
 
             if(ref && (media !== ref)){
-
-                //console.log("ref.parentNode.removeChild(ref)");
 
                 checkout(ref);
                 ref = null;
@@ -1517,5 +1569,7 @@ export default {
     zoom: zoom,
     menu: menu,
     show: show,
-    play: play
+    play: play,
+    addControl: addControl,
+    removeControl: removeControl
 };

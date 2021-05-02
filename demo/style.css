@@ -7,6 +7,12 @@ html, body{
     font-family: Aral, Helvetica, sans-serif;
     text-align: center;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
+    background: #f8f9fa;
+}
+main{
+    position: relative;
+    max-width: 800px;
+    margin: auto;
 }
 a, b{
     display: inline-block;
@@ -51,22 +57,76 @@ hr{
     padding-top: 20px;
 }
 h1 img{
-    width: 400px;
-    max-width: 61.8vw;
+    width: 500px;
+    max-width: 70vw;
 }
-label{
+label, button{
     display: inline-block;
     padding: 5px 10px;
     margin-bottom: 5px;
     border: 1px solid #ddd;
-    background: #f5f5f5;
+    background: #e9ecef;
     font-size: 12px;
     line-height: 20px;
     vertical-align: middle;
     cursor: pointer;
     border-radius: 5px;
 }
+button{
+    border:0;
+    outline: 0;
+    padding: 10px 15px;
+    font-weight: 500;
+    background-color: #6c757d;
+    color: #fff;
+}
 label input{
     float: left;
     margin-right: 10px;
+}
+
+pre{
+    display: inline-block;
+    margin: auto;
+    text-align: left;
+    width: 100%;
+    max-width: calc(100vw - 1.7em);
+}
+pre code.hljs{
+    background: #fff;
+    padding: 1em 1.5em;
+    border-radius: 10px;
+    width: 100%;
+    max-width: calc(100vw - 1.7em);
+}
+
+.hljs{
+    color: #000;
+}
+.hljs-attr {
+    color:#79c0ff
+}
+.hljs-name,
+.hljs-built_in {
+    color: #ffa657;
+}
+.hljs-attribute{
+    color: #e0e7ff
+}
+.hljs-selector-class {
+    color: #79c0ff
+}
+
+.hljs-keyword,
+.hljs-selector-tag {
+    color: #f92672
+}
+
+.hljs-bullet,
+.hljs-link,
+.hljs-literal,
+.hljs-number,
+.hljs-quote,
+.hljs-regexp {
+    color: #d2a8ff
 }

@@ -1,12 +1,28 @@
 {
   "name": "spotlight.js",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Modern HTML5 Image Gallery",
   "homepage": "https://github.com/nextapps-de/spotlight/",
   "author": "Thomas Wilkerling",
   "copyright": "Nextapps GmbH",
   "license": "Apache-2.0",
-  "keywords": [],
+  "keywords": [
+    "gallery",
+    "lightbox",
+    "photo-gallery",
+    "javascript-library",
+    "image-viewer",
+    "image-gallery",
+    "lightbox-gallery-plugin",
+    "gallery-plugin",
+    "gallery-extension",
+    "gallery-widget",
+    "lightbox-gallery",
+    "gallery-template",
+    "gallery-viewer",
+    "gallery-simple",
+    "lightbox-plugin"
+  ],
   "bugs": {
     "url": "https://github.com/nextapps-de/spotlight/issues",
     "email": "info@nextapps.de"
