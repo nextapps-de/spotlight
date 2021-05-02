@@ -8,7 +8,11 @@
 
 <a href="https://nextapps-de.github.io/spotlight/">Demo</a> &ensp;&bull;&ensp; <a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#options">Options</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#api">API</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a> &ensp;&bull;&ensp; <a href="CHANGELOG.md">Changelog</a>
 
-<h3>Live Demo:<br><br><a href="https://nextapps-de.github.io/spotlight/">https://nextapps-de.github.io/spotlight/ </a></h3>
+## Whats new in 0.7.0?
+
+The new version includes tons of fixes, new features and improvements which was collected over the last two years. Read the <a href="CHANGELOG.md">Changelog</a> to get all new features.
+
+<h3>Live Demo:<p></p><a href="https://nextapps-de.github.io/spotlight/">https://nextapps-de.github.io/spotlight/ </a></h3>
 
 Spotlight runs out of the box:
 
@@ -23,25 +27,30 @@ Alternatively you can:
 1. use the non-bundled version of this library (classically contains css files, image files, js files)
 2. use the source files (compatible for the ES6 module system)
 
-## Whats new in 0.7.1?
-
-The new version includes tons of fixes, new features and improvements which was collected over the last two years. Read the <a href="CHANGELOG.md">Changelog</a> to get all new features.
-
 <a name="features" id="features"></a>
 ## Features
 
-- Gallery groups (group images to specific galleries)
-- Gallery Tools:
+- Video Support
+- Mounting HTML node fragments as slides (you can add just everything as a slide!)
+- Gallery groups:
+  - group images to specific galleries
+  - smart inheritance of group config
+- Gallery tools:
   - Fullscreen
   - Zoom in/out
   - Toggle resize
   - Switch theme
   - Autoplay
+  - Download
   - Progress Bar
   - Page
-  - Title (inherits from image "alt"-attribute)
+  - Title (also inherits from image "alt"-attribute)
   - Description
-- Preloader
+  - Customizable button
+- Adaptive responsive images (by viewport size, pixel ratio and available internet bandwidth)
+- Auto-fit images and videos (as "contain" or as "cover")
+- Custom Controls
+- Loading Spinner
 - Prefetch next image (background task)
 - Custom options
 - Simply customize via markup (data-attributes)
@@ -55,6 +64,7 @@ The new version includes tons of fixes, new features and improvements which was 
   - Mousewheel
 - Browser history detection
 - Back-Button (Android)
+- Callbacks (onclick, onshow, onclose, onchange)
 - Global API for programmatic usage
 
 __Technical properties:__
@@ -62,48 +72,24 @@ __Technical properties:__
 - Outstanding performance
 - Memory optimized, tiny footprint, fully cleans up
 - Event capturing (just one single global event listener)
-- Bind event listener for components dynamically:
+- Bind additional global event listener dynamically:
   - install when gallery opens
   - fully cleanup when gallery was closed
 - No dependencies, no jQuery
-- Responsive
-- Super-lightweight, all in all just 7kb gzip (js + css + html + icons)
+- Fully Responsive
+- Touch-friendly mobile support
+- Super-lightweight, all in all just 9kb gzip (js + css + html + icons)
 - Support for ES6 module system
 
-<a name="started" id="started"></a>
+<a name="started"></a>
 ## Getting Started
 
-__Version Explanation__
-
-<table>
-    <tr>
-        <td>Bundle Standalone</td>
-        <td>
-            All assets bundled into one single file (js + css + html + icons).
-        </td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>Bundle CDN</td>
-        <td>
-            Also a bundled file (js + html), but icons and css will load from extern CDN.
-        </td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>Non-Bundled</td>
-        <td>
-            Each asset file exists separately. Recommended when extended customization is needed.
-        </td>
-    </tr>
-</table>
-
-__Get Latest Build (Stable):__
+__Get Latest Stable Build (Recommended):__
 
 <table>
     <tr>
         <td colspan=3">
-            <b><u>Bundle Standalone:</u></b>
+            <b><u>Bundle:</u></b> (all assets bundled into one single file: js + css + html + icons)
         </td>
     </tr>
     <tr>
@@ -113,17 +99,7 @@ __Get Latest Build (Stable):__
     </tr>
     <tr>
         <td colspan=3">
-            <br><b><u>Bundle CDN:</u></b>
-        </td>
-    </tr>
-    <tr>
-        <td>spotlight.cdn.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.1/dist/spotlight.cdn.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/spotlight.cdn.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/spotlight.cdn.js</a></td>
-    </tr>
-    <tr>
-        <td colspan=3">
-            <br><b><u>Non-Bundled:</u></b>
+            <br><b><u>Non-Bundled:</u></b> (js and css are separated, css includes icons as base64)
         </td>
     </tr>
     <tr>
@@ -133,31 +109,39 @@ __Get Latest Build (Stable):__
     </tr>
     <tr></tr>
     <tr>
-        <td>spotlight.css</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.1/dist/css/spotlight.css" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/css/spotlight.css</a></td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>img.zip</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.1/dist/img" target="_blank">Download</a></td>
-        <td>Alternatively when using non-bundled version you can download icons from <i>/dist/img/</i>.</td>
+        <td>spotlight.min.css</td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.1/dist/css/spotlight.min.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/css/spotlight.min.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/css/spotlight.min.css</a></td>
     </tr>
     <tr>
         <td colspan=3">
-            <br><b><u>ES6 Modules:</u></b>
+            <br><b><u>Sources:</u></b> (not bundled at all, images as url to original resources)
         </td>
     </tr>
     <tr>
+        <td>ES6 Modules</td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.1/src/js" target="_blank">Download</a></td>
+        <td>The <i>/src/js</i> folder of this Github repository</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>LESS Files (source)</td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.1/src/css" target="_blank">Download</a></td>
+        <td>The <i>/src/css</i> folder of this Github repository</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>spotlight.css (compiled)</td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.1/src/css/spotlight.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/src/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/src/css/spotlight.css</a></td>
+    </tr>
+    <tr></tr>
+    <tr>
         <td>src.zip</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.1/src" target="_blank">Download</a></td>
-        <td>The folder <i>"src"</i> of this Github repository.</td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.1/dist" target="_blank">Download</a></td>
+        <td>Download all source files including image original resources.</td>
     </tr>
 </table>
-
-__Get Latest Build (Nightly):__
-
-Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/0.7.1/dist/" into "/spotlight/__master__/dist".
 
 __Get Latest (NPM):__
 
@@ -165,9 +149,90 @@ __Get Latest (NPM):__
 npm install spotlight.js
 ```
 
-__Get Latest (ES6 Modules):__
+__Get Latest Nightly (Do not use for production!):__
 
-https://github.com/nextapps-de/spotlight/tree/master/src
+Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/__0.7.1__/dist/" into "/spotlight/__master__/dist".
+
+### Use Bundled Version
+
+The bundled version includes all assets like js, css, html and icon images as base64.
+
+```html
+<html>
+<head>
+    <script src="spotlight.bundle.js"></script>
+</head>
+<body></body>
+</html>
+```
+
+### Use Non-Bundled Version
+
+The non-bundled version needs to load js and css separately (css also includes icons as base64).
+
+```html
+<html>
+<head>
+    <link rel="stylesheet" href="spotlight.min.css">
+    <script src="spotlight.min.js"></script>
+</head>
+<body></body>
+</html>
+```
+
+### Preload Library / Async Load (Recommended)
+
+Just add a link tag to the header sections which indicated to preload the script. Right before the body is closing add your site scripts. Depending on your code you may need to load them in the right order.
+
+```html
+<html>
+<head>
+    <title></title>
+    <link rel="preload" href="spotlight.bundle.js" as="script">
+</head>
+<body>
+    <!--
+    
+    HTML CONTENT
+    
+    -->
+    <!-- BOTTOM OF BODY -->
+    <script src="spotlight.bundle.js" defer></script>
+    <!-- YOUR SCRIPT -->
+    <script src="my-script.js" defer></script>
+</body>
+</html>
+```
+
+You can also load the non-bundled version in the same way.
+
+> In rare situations it might produce a short flashing/reflow after page load, depending on your stack. Moving the script tag into the head section will solve this issue. Also try to use the non-bundled version.
+
+### ES6 Modules
+
+The ES6 modules are located in `src/js/`. You need to load the stylesheet file explicitly (includes icons as base64).
+
+```html
+<head>
+    <link rel="stylesheet" href="dist/css/spotlight.min.css">
+</head>
+```
+
+```html
+<script type="module">
+  import Spotlight from "./src/js/spotlight.js";
+</script>
+```
+
+You can also load modules via CDN, e.g.:
+
+```html
+<script type="module">
+  import Spotlight from "https://unpkg.com/spotlight@0.7.1/src/js/spotlight.js";
+</script>
+```
+
+The ES6 modules are not minified. Please use your favored bundler or build tool for this purpose.
 
 ### Basic Setup
 

@@ -27,11 +27,15 @@ List of improvements:
 - Improve animation handler
 - Improve options and group options inheritance
 - Improve prevention of css class collision
-- Improve initialization and build-up
+- Improve initialization and build-up (parse successively)
 - Improve markup declaration and parsing
 - Improve the history handler to catch the "back" button
 - Improve scheduling of the menu auto-hide
 - Improve handling of custom themes
+- Improve the local build system (config file was removed)
+- Improve packaging of bundles (cdn bundle was removed)
+- Improve ES6 module usage (does not need temporary generated js files)
+- Improve code structure
 - Fixed a lot of bugs
 
 ## v0.0.1
