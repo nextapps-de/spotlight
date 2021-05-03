@@ -9,10 +9,12 @@
     <!--<script src="dist/js/spotlight.min.js"></script>-->
     <link rel="stylesheet" href="dist/css/spotlight.min.css">
     <style>
+        /* custom classes are always prefixed by "spl-" automatically */
         .spl-like{
             background-image: url(demo/gallery/heart-outline.svg);
-            background-size: 22px;
+            background-size: 23px;
         }
+        /* optionally, additional state to toggle the button: */
         .spl-like.on{
             background-image: url(demo/gallery/heart.svg);
         }
@@ -52,35 +54,33 @@
             <img src="demo/gallery/canada-2340312-thumb.jpg" alt="Duis autem vel eum iriure dolor">
         </a>
     </div>
-    <br>
-    <b>Images, Videos &amp; Node Fragments</b>
+    <br><br>
+    <b>Custom Elements, Videos &amp; Node Fragments</b>
     <div class="spotlight-group">
-        <a class="spotlight" data-media="image" data-src="demo/gallery/canada-2340312.jpg" data-description="In hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim.">
+        <div class="spotlight" data-media="image" data-src="demo/gallery/godafoss-1840758.jpg" data-description="In hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim.">
             <img src="demo/gallery/canada-2340312-thumb.jpg" alt="Duis autem vel eum iriure dolor">
-        </a>
+        </div>
         <a class="spotlight" data-media="video" data-src-webm="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@gh-pages/gallery/big_buck_bunny.webm" data-src-ogg="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@gh-pages/demo/gallery/big_buck_bunny.ogv" data-src-mp4="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@gh-pages/demo/gallery/VfE_html5.mp4" data-autoplay="false" data-poster="demo/gallery/poster.jpg">
             <img src="demo/gallery/poster.jpg">
         </a>
         <a class="spotlight" data-media="node" data-src="#fragment">
-            <img src="demo/gallery/godafoss-1840758-thumb.jpg">
+            <img src="demo/gallery/brooklyn-bridge-1791001-thumb.jpg">
+            <img src="demo/gallery/california-1751455-thumb.jpg">
+            <img src="demo/gallery/montana-1829251-thumb.jpg">
         </a>
+        <div class="spotlight" data-src="demo/gallery/brooklyn-bridge-1791001.jpg"></div>
     </div>
-    <div id="backstore" style="display: none">
-        <div id="fragment" style="width: 100%;">
+    <!-- Hidden Backstore -->
+    <div style="display: none">
+        <div id="fragment" style="width: 100%">
             <b>Embedded Node Fragment</b><br><br>
             <img src="demo/gallery/brooklyn-bridge-1791001-thumb.jpg" width="500" height="334">
             <img src="demo/gallery/california-1751455-thumb.jpg" width="500" height="333">
-            <img src="demo/gallery/canada-2340312-thumb.jpg" width="500" height="333">
+            <img src="demo/gallery/montana-1829251-thumb.jpg" width="500" height="331">
         </div>
     </div>
     <br>
-    <b>Custom Elements</b>
-    <div class="spotlight-group">
-        <div class="spotlight image" data-src="demo/gallery/godafoss-1840758.jpg" style="background-image:url(demo/gallery/godafoss-1840758-thumb.jpg)"></div>
-        <div class="spotlight image" data-src="demo/gallery/seljalandsfoss-1751463.jpg" style="background-image:url(demo/gallery/seljalandsfoss-1751463-thumb.jpg)"></div>
-        <div class="spotlight image" data-src="demo/gallery/montana-1829251.jpg" style="background-image:url(demo/gallery/montana-1829251-thumb.jpg)"></div>
-        <div class="spotlight" data-src="demo/gallery/brooklyn-bridge-1791001.jpg"></div>
-    </div>
+    <hr>
     <br>
     <b>API Call</b><br>
     Choose Controls (Toolbar):<br><br>
@@ -104,8 +104,11 @@
         <label><input type="checkbox" value="infinite" checked>Infinite Slide</label>
         <label><input type="checkbox" value="spinner" checked>Spinner</label>
         <label><input type="checkbox" value="preload" checked>Preload Next</label><br>
+        <label><input type="radio" name="autohide" value="false" checked>Autohide: Off</label>
+        <label><input type="radio" name="autohide" value="true" checked>Autohide: Controls</label>
+        <label><input type="radio" name="autohide" value="all">Autohide: All</label><br>
         <label><input type="radio" name="fit" value="cover" checked>Autofit: Cover</label>
-        <label><input type="radio" name="fit" value="contain">Autofit: Contain</label>
+        <label><input type="radio" name="fit" value="contain">Autofit: Contain</label><br>
         <label><input type="radio" name="theme" value="default" checked>Theme: default</label>
         <label><input type="radio" name="theme" value="white">Theme: white</label>
     </div>
@@ -135,9 +138,9 @@
     <br><br>
     <script type="module">
 
-        import Spotlight from "./src/js/spotlight.js";
+        /* Full example of API usage including "like button" as a custom control */
 
-        window.Spotlight = Spotlight;
+        import Spotlight from "./src/js/spotlight.js";
 
         const gallery = [{
 
@@ -145,21 +148,21 @@
             description: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
             src: "demo/gallery/london-1758181.jpg",
             button: "Download Image",
-            onclick: function(){ Spotlight.download() },
+            onclick: Spotlight.download,
             like: false
         },{
             title: "At vero eos et accusam",
             description: "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
             src: "demo/gallery/sea-1975403.jpg",
             button: "Next Slide",
-            onclick: function(){ Spotlight.next() },
+            onclick: Spotlight.next,
             like: false,
         },{
             title: "Duis autem vel eum iriure dolor",
             description: "In hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim.",
             src: "demo/gallery/newport-beach-2089906.jpg",
             button: "Close Gallery",
-            onclick: function(){ Spotlight.close() },
+            onclick: Spotlight.close,
             like: false
         }];
 
@@ -169,11 +172,21 @@
             const animation = to_array(document.getElementById("animation").getElementsByTagName("input"));
             const modifier = document.getElementById("modifier").getElementsByTagName("input");
 
-            function like(){
+            // store the button element to apply dom changes to it
+            let like;
+            // store the current index
+            let slide = 0;
 
-                // toggle the current like state
-                const current_like_state = gallery[current_slide].like;
-                gallery[current_slide].like = !current_like_state;
+            function handler(){
+
+                // get the current like state
+                // at this point we use the stored last index from the variable "slide"
+                const current_like_state = !gallery[slide].like;
+
+                // toggles the current like state
+                gallery[slide].like = current_like_state;
+
+                // assign the state as class to visually represent the current like state
                 this.classList.toggle("on");
 
                 if(current_like_state){
@@ -186,30 +199,33 @@
                 }
             }
 
-            let option_like;
-            let current_slide = 0;
-
             const options = {
 
                 index: index,
                 control: control,
                 animation: animation,
+                // fires when gallery opens
                 onshow: function(index){
 
-                    option_like = Spotlight.addControl("like", like);
+                    // the method "addControl" returns the new created control element
+                    like = Spotlight.addControl("like", handler);
                 },
-                onchange: function(index){
+                // fires when gallery change to another page
+                onchange: function(index, options){
 
                     // store the current index for the button listener
-                    current_slide = index - 1;
+                    // the slide index start from 1 (as "page 1")
+                    slide = index - 1;
 
-                    // apply stored like state initially
-                    const current_like_state = gallery[current_slide].like;
-                    option_like.classList.toggle("on", current_like_state);
-                }
-                ,
+                    // initially apply the stored like state when slide is openened
+                    // at this point we use the stored like element
+                    like.classList.toggle("on", gallery[slide].like);
+                },
+                // fires when gallery is requested to close
                 onclose: function(index){
 
+                    // remove the custom button, so you are able
+                    // to open next gallery without this custom control
                     Spotlight.removeControl("like");
                 }
             };
@@ -218,6 +234,8 @@
 
             Spotlight.show(gallery, options);
         };
+
+        /* helper functions to assign options for the demo page, so skip this part from here */
 
         function to_array(nodelist){
 

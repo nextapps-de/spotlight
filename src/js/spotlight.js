@@ -127,6 +127,11 @@ addListener(document, "click", dispatch);
 
 export function init(){
 
+    if(body){
+
+        return;
+    }
+
     //console.log("init");
 
     body = document.body;
@@ -367,15 +372,13 @@ function apply_options(anchor){
     theme(options["theme"]);
 
     options_click = options["onclick"];
-    options_autohide = parse_option("autohide", 3);
+    options_autohide = parse_option("autohide", true);
     options_infinite = parse_option("infinite");
     options_progress = parse_option("progress", true);
     options_autoplay = parse_option("autoplay");
     options_preload = parse_option("preload", true);
     options_href = parse_option("buttonHref");
     delay = (options_autoplay && parseFloat(options_autoplay)) || 7;
-
-
 
     const control = options["control"];
 
@@ -854,12 +857,12 @@ function autohide(){
 
     if(options_autohide) {
 
-        hide_cooldown = Date.now() + options_autohide * 1000 - 50;
+        hide_cooldown = Date.now() + 2950;
 
         if(!hide){
 
             addClass(widget, "menu");
-            schedule(options_autohide * 1000);
+            schedule(3000);
         }
     }
 }
@@ -1541,6 +1544,8 @@ function setup_page(direction){
 
         setStyle(footer, "transform", options_autohide === "all" ? "" : "none");
     }
+
+    options_autohide || addClass(widget, "menu");
 
     visibility_state(footer, has_content);
     visibility_state(page_prev, options_infinite || (current_slide > 1));

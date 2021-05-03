@@ -638,17 +638,26 @@ You need a markup like this to represent the video from above:
 
 > You can add custom controls to the header toolbar by API usage only.
 
-The basic concept is very straight forward. You just need to assign a unique classname along with an event listener. Basically it looks like this:
+The basic concept is very straight forward. You just need to assign a unique classname along with an event listener. Basically you have to follow these steps.
 
+1. Initialize the Spotlight gallery manually __once__ to make the template available for extensions:
 ```js
-Spotlight.addControl("my-control", function(event){
+Spotlight.init();
+```
+
+The gallery automatically initialize when first time open, so you can also add custom control inside the "onshow" callback.
+
+2. Add the custom control and pass a click handler (returns the button element):
+```js
+var button = Spotlight.addControl("my-control", function(event){
     // handle click event
     console.log("button clicked");
 });
 ```
 
-Define a CSS class to style your button:
+3. Define a CSS class to style your button:
 ```css
+/* your control name will be prefixed by "spl-" automatically */
 .spl-my-control{
     background-image: url(icon.svg);
     background-size: 22px;
@@ -663,7 +672,7 @@ Removing an added control:
 Spotlight.removeControl("my-control");
 ```
 
-### Example (Like Button)
+### Advanced Example (Like Button)
 
 Let's take a useful example like adding a "like button" in the toolbar. You can see a live demo of this example on the demo page (bottom section).
 
@@ -749,12 +758,9 @@ Spotlight.show(gallery, {
         // the slide index start from 1 (as "page 1")
         slide = index - 1;
 
-        // get the current like state
-        const current_like_state = gallery[slide].like;
-
         // initially apply the stored like state when slide is openened
         // at this point we use the stored like element
-        like.classList.toggle("on", current_like_state);
+        like.classList.toggle("on", gallery[slide].like);
     },
     // fires when gallery is requested to close
     onclose: function(index){
@@ -766,7 +772,29 @@ Spotlight.show(gallery, {
 });
 ```
 
-You did not need to remove the custom control everytime. When all your galleries have this custom control, then simply add the control on your first time calling "onshow" and just don't remove it within "onclose".
+You did not need to remove the custom control everytime. When all your galleries have this custom control, then simply add the control after you call `Spotlight.init()` once.
+
+Initialize the Spotlight gallery once:
+```js
+Spotlight.init();
+```
+
+Add the custom control once:
+```js
+like = Spotlight.addControl("like", handler);
+```
+
+Open the gallery and just provide an "onchange" handler:
+```js
+Spotlight.show(gallery, {
+    onchange: function(index, options){
+        slide = index - 1;
+        like.classList.toggle("on", gallery[slide].like);
+    }
+});
+```
+
+That is the same custom like button from above example, just shorter but also non-dynamically added for all gallery instances.
 
 ## Embedding Node Fragments
 
