@@ -27,6 +27,7 @@ List of improvements:
 - Improve animation handler
 - Improve options and group options inheritance
 - Improve prevention of css class collision
+- Improve customization capabilities
 - Improve initialization and build-up (parse successively)
 - Improve markup declaration and parsing
 - Improve the history handler to catch the "back" button

@@ -95,8 +95,8 @@ __Get Latest Stable Build (Recommended):__
     </tr>
     <tr>
         <td>spotlight.bundle.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.1/dist/spotlight.bundle.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/spotlight.bundle.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.2/dist/spotlight.bundle.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.2/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.2/dist/spotlight.bundle.js</a></td>
     </tr>
     <tr>
         <td colspan=3">
@@ -105,14 +105,14 @@ __Get Latest Stable Build (Recommended):__
     </tr>
     <tr>
         <td>spotlight.min.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.1/dist/js/spotlight.min.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/js/spotlight.min.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.2/dist/js/spotlight.min.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.2/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.2/dist/js/spotlight.min.js</a></td>
     </tr>
     <tr></tr>
     <tr>
         <td>spotlight.min.css</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.1/dist/css/spotlight.min.css" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/css/spotlight.min.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/dist/css/spotlight.min.css</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.2/dist/css/spotlight.min.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.2/dist/css/spotlight.min.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.2/dist/css/spotlight.min.css</a></td>
     </tr>
     <tr>
         <td colspan=3">
@@ -121,25 +121,25 @@ __Get Latest Stable Build (Recommended):__
     </tr>
     <tr>
         <td>ES6 Modules</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.1/src/js" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.2/src/js" target="_blank">Download</a></td>
         <td>The <i>/src/js</i> folder of this Github repository</td>
     </tr>
     <tr></tr>
     <tr>
         <td>LESS Files (source)</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.1/src/css" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.2/src/css" target="_blank">Download</a></td>
         <td>The <i>/src/css</i> folder of this Github repository</td>
     </tr>
     <tr></tr>
     <tr>
         <td>spotlight.css (compiled)</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.1/src/css/spotlight.css" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/src/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.1/src/css/spotlight.css</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.2/src/css/spotlight.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.2/src/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.2/src/css/spotlight.css</a></td>
     </tr>
     <tr></tr>
     <tr>
         <td>src.zip</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.1/dist" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.2/dist" target="_blank">Download</a></td>
         <td>Download all source files including image original resources.</td>
     </tr>
 </table>
@@ -152,7 +152,7 @@ npm install spotlight.js
 
 __Get Latest Nightly (Do not use for production!):__
 
-Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/__0.7.1__/dist/" into "/spotlight/__master__/dist".
+Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/__0.7.2__/dist/" into "/spotlight/__master__/dist".
 
 ### Use Bundled Version
 
@@ -229,7 +229,7 @@ You can also load modules via CDN, e.g.:
 
 ```html
 <script type="module">
-  import Spotlight from "https://unpkg.com/spotlight@0.7.1/src/js/spotlight.js";
+  import Spotlight from "https://unpkg.com/spotlight@0.7.2/src/js/spotlight.js";
 </script>
 ```
 
@@ -265,7 +265,7 @@ Alternatively you can use non-anchor elements also:
 
 ```html
 <div class="spotlight" data-src="img1.jpg">
-    <!-- ... -->
+    <!-- image or any other elements -->
 </a>
 ```
 
@@ -279,6 +279,7 @@ Grouping galleries is useful when you have multiple images on your page which sh
 Give one of the outer wrapping element the class ___spotlight-group___, e.g.:
 
 ```html
+<!-- Group 1 -->
 <div class="spotlight-group">
     <a class="spotlight" href="dog1.jpg">
         <img src="dog1-thumb.jpg">
@@ -290,6 +291,7 @@ Give one of the outer wrapping element the class ___spotlight-group___, e.g.:
         <img src="dog3-thumb.jpg">
     </a>
 </div>
+<!-- Group 2 -->
 <div class="spotlight-group">
     <a class="spotlight" href="cat1.jpg">
         <img src="cat1-thumb.jpg">
@@ -600,6 +602,199 @@ Save your images in several sizes and resolutions and assign the __longest__ dim
 When clicked on it Spotlight will pick the optimum choice.
 
 This markup completely falls back to standard browser behavior when something goes wrong, also it is SEO friendly.
+
+## Support Video
+
+> All data-attributes for markup a video is inherited by the attributes of a standard video element.
+
+Considering you want to add a standard video element like this as a slide:
+
+```html
+<video poster="preview.jpg" muted preload controls autoplay playsinline="false">
+    <source src="video.mp4" type="video/mp4">
+    <source src="video.ogv" type="video/ogg">
+    <source src="video.webm" type="video/webm">
+</video>
+```
+
+You need a markup like this to represent the video from above:
+
+```html
+<a class="spotlight" data-media="video"
+                     data-src-webm="video.webm"
+                     data-src-ogg="video.ogv"
+                     data-src-mp4="video.mp4"
+                     data-autoplay="true"
+                     data-muted="true"
+                     data-preload="true"
+                     data-controls="true"
+                     data-playsinline="false"
+                     data-poster="preview.jpg">
+  <img src="preview.jpg">
+</a>
+```
+
+## Custom Controls
+
+> You can add custom controls to the header toolbar by API usage only.
+
+The basic concept is very straight forward. You just need to assign a unique classname along with an event listener. Basically it looks like this:
+
+```js
+Spotlight.addControl("my-control", function(event){
+    // handle click event
+    console.log("button clicked");
+});
+```
+
+Define a CSS class to style your button:
+```css
+.spl-my-control{
+    background-image: url(icon.svg);
+    background-size: 22px;
+}
+```
+
+> Important: custom control classes gets always css-prefixed by "spl-" automatically to prevent classname collision!
+
+Removing an added control:
+
+```js
+Spotlight.removeControl("my-control");
+```
+
+### Example (Like Button)
+
+Let's take a useful example like adding a "like button" in the toolbar. You can see a live demo of this example on the demo page (bottom section).
+
+Providing a gallery as normal and add a custom attribute "like", which stores the current like state of each image.
+```js
+const gallery = [{
+
+    src: "image1.jpg",
+    like: false
+},{
+    src: "image2.jpg",
+    like: false,
+},{
+    src: "image3.jpg",
+    like: false
+}];
+```
+
+Define a CSS class to style your button, e.g.:
+```css
+/* custom classes are always prefixed by "spl-" automatically */
+.spl-like{
+    background-image: url(heart-outline.svg);
+    background-size: 22px;
+}
+/* optionally, additional state to toggle the button: */
+.spl-like.on{
+    background-image: url(heart.svg);
+}
+```
+
+> Please keep in mind, when your custom control has the name "like" the corresponding classname always gets prefixed by "spl-" and becomes "spl-like" to prevent classname collision. Do not name your control in prefixed style like "spl-like", because that will prefix this also (and becomes "spl-spl-like").
+
+We need some variables to store some state which is used in the callback handler later:
+```js
+// store the button element to apply dom changes to it
+let like;
+// store the current index
+let slide = 0;
+```
+
+Implement a click event handler of the like button, e.g.:
+```js
+function handler(event){
+  
+    // get the current like state
+    // at this point we use the stored last index from the variable "slide"
+    const current_like_state = !gallery[slide].like;
+  
+    // toggles the current like state
+    gallery[slide].like = current_like_state;
+  
+    // assign the state as class to visually represent the current like state
+    this.classList.toggle("on");
+  
+    if(current_like_state){
+  
+      // do something if liked ...
+    }
+    else{
+  
+      // do something if unliked ...
+    }
+}
+```
+
+> The keyword `this` corresponds to the current clicked element (the like icon in this example).
+
+Finally, create the gallery and provide some callbacks to insert the custom control dynamically:
+```js
+Spotlight.show(gallery, {
+
+    // fires when gallery opens
+    onshow: function(index){
+
+        // the method "addControl" returns the new created control element
+        like = Spotlight.addControl("like", handler);
+    },
+    // fires when gallery change to another page
+    onchange: function(index, options){
+
+        // store the current index for the button listener
+        // the slide index start from 1 (as "page 1")
+        slide = index - 1;
+
+        // get the current like state
+        const current_like_state = gallery[slide].like;
+
+        // initially apply the stored like state when slide is openened
+        // at this point we use the stored like element
+        like.classList.toggle("on", current_like_state);
+    },
+    // fires when gallery is requested to close
+    onclose: function(index){
+
+        // remove the custom button, so you are able
+        // to open next gallery without this custom control
+        Spotlight.removeControl("like");
+    }
+});
+```
+
+You did not need to remove the custom control everytime. When all your galleries have this custom control, then simply add the control on your first time calling "onshow" and just don't remove it within "onclose".
+
+## Embedding Node Fragments
+
+> With node fragments you can simply add everything as a slide.
+
+You can use this feature completely by markup by providing a query selector as "src" which points to a node in your document.
+
+#### Using Auto-Mount / Auto-Unmount
+
+You can use a hidden backstore optionally which holds the fragments to be inserted as a slide, e.g.:
+
+```html
+<div style="display: none">
+    <div id="fragment" style="width: 100%">
+        <h1>Embedded Node Fragment</h1>
+        <p>Any HTML Content...</p>
+    </div>
+</div>
+```
+
+Provide a __dom query selector__ as "src" which points to a node in your document:
+```html
+<a class="spotlight" data-media="node" data-src="#fragment">
+    Click here to open
+</a>
+```
+
+When closing the gallery or change the page to another slide, the fragment will automatically move back to its original position (the hidden backstore in this example).
 
 <a name="api" id="api"></a>
 ## Spotlight API
