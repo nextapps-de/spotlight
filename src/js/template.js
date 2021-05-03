@@ -1,4 +1,6 @@
-const template = /** @type {HTMLElement} */ (document.createElement("div"));
+import { createElement } from "./helper.js";
+
+const template = createElement("div");
 template.id = "spotlight";
 template.innerHTML = (
 

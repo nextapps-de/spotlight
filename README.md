@@ -6,7 +6,7 @@
 <a target="_blank" href="https://github.com/nextapps-de/spotlight/issues"><img src="https://img.shields.io/github/issues/nextapps-de/spotlight.svg"></a>
 <a target="_blank" href="https://github.com/nextapps-de/spotlight/blob/master/LICENSE.md"><img src="https://img.shields.io/npm/l/spotlight.js.svg"></a>
 
-<a href="https://nextapps-de.github.io/spotlight/">Demo</a> &ensp;&bull;&ensp; <a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#options">Options</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#api">API</a> &ensp;&bull;&ensp; <a href="#builds">Custom Builds</a> &ensp;&bull;&ensp; <a href="CHANGELOG.md">Changelog</a>
+<a href="https://nextapps-de.github.io/spotlight/">Demo</a> &ensp;&bull;&ensp; <a href="#started">Getting Started</a> &ensp;&bull;&ensp; <a href="#groups">Gallery Groups</a> &ensp;&bull;&ensp; <a href="#options">Options</a> &ensp;&bull;&ensp; <a href="#styling">Styling</a> &ensp;&bull;&ensp; <a href="#api">API</a> &ensp;&bull;&ensp; <a href="CHANGELOG.md">Changelog</a>
 
 ## Whats new in 0.7.0?
 
@@ -50,8 +50,9 @@ Alternatively you can:
 - Adaptive responsive images (by viewport size, pixel ratio and available internet bandwidth)
 - Auto-fit images and videos (as "contain" or as "cover")
 - Custom Controls
+- Fully configurable via markup
 - Loading Spinner
-- Prefetch next image (background task)
+- Prefetch next image
 - Custom options
 - Simply customize via markup (data-attributes)
 - Arrange built-in animations
@@ -234,25 +235,13 @@ You can also load modules via CDN, e.g.:
 
 The ES6 modules are not minified. Please use your favored bundler or build tool for this purpose.
 
-### Basic Setup
+## Basic Usage (Markup)
 
-__1. Just insert the script resource tag right after the documents head:__
+#### Anchor + Images
 
-> When you need to add custom styling through css class modifications it is recommended to load the library before you load the css which contains the modifications. Otherwise you have to add an _"!important"_ flag to override existing styles.
+The most simple way is the combination of img tags as preview images (thumbs) wrapped in an anchor element which points to the fully sized image. The advantage of this workaround is it fully falls back to a classical behavior. It is the universal markup language which all web tools already understand. Therefore, it may have some advantages for SEO also.
 
-```html
-<html>
-<head>
-    <script src="spotlight.bundle.js"></script>
-    <title></title>
-</head>
-<body>
-    <!-- CONTENT -->
-</body>
-</html>
-```
-
-__2. Add the class ___spotlight___ to an anchor element accordingly, e.g.:__
+Just add the class ___spotlight___ to an anchor element accordingly, e.g.:
 
 ```html
 <a class="spotlight" href="img1.jpg">
@@ -266,22 +255,26 @@ __2. Add the class ___spotlight___ to an anchor element accordingly, e.g.:__
 </a>
 ```
 
-This also works with dynamically loaded content. There is no need to inject listeners on new elements. Instead Spotlight make use of global event capturing.
+This also works with dynamically loaded content. There is no need to inject listeners on new elements. Instead, Spotlight make use of global event capturing.
 
-Alternatively you can also use the <a href="#api">Spotlight API</a> for programmatically use.
+<!--Alternatively you can also use the <a href="#api">Spotlight API</a> for programmatically use.-->
 
-__Usage with non-anchor elements:__
+#### Non-Anchor Elements
+
+Alternatively you can use non-anchor elements also:
 
 ```html
 <div class="spotlight" data-src="img1.jpg">
-    <div><!-- ... --></div>
+    <!-- ... -->
 </a>
 ```
 
-Pretty much the same like anchors but use ___data-src___ instead of ___href___.
+Pretty much the same like anchors but uses ___data-src___ instead of ___href___.
 
 <a name="groups" id="groups"></a>
 ## Gallery-Groups
+
+Grouping galleries is useful when you have multiple images on your page which should be separated into groups, instead of adding all images to one single gallery when opened.
 
 Give one of the outer wrapping element the class ___spotlight-group___, e.g.:
 
@@ -310,14 +303,18 @@ Give one of the outer wrapping element the class ___spotlight-group___, e.g.:
 </div>
 ```
 
-<a name="options" id="options"></a>
+Each of these groups now opens in its own gallery.
+
+Gallery-Groups are also useful to declare global configuration as markup just once (group options inheritance).
+
+<a name="options"></a>
 ## Options
 
-Pass options as declarative via data-attributes in the HTML markup or use the <a href="#api">Spotlight API</a>.
+Pass options declarative via data-attributes in the HTML markup or use the <a href="#api">Spotlight API</a>.
 
-> When using markup follow these style: `data-option="value"` (change _option_ and _value_ accordingly), e.g.: `<a class="spotlight" data-preftech="false"></a>`.
+> When using markup follow these style: `data-option="value"` (change _option_ and _value_ accordingly), e.g.: `<a class="spotlight" data-preload="false"></a>`.
 
-You can either apply the following data-attributes to the ___spotlight-group___ wrapper element or apply them separately to each ___spotlight___ anchor element (that also overrides group definitions).
+You can either apply the following data-attributes to the ___spotlight-group___ wrapper element or apply them separately to each ___spotlight___ anchor element (that also overrides group definition inheritance).
 
 <table>
     <tr></tr>
@@ -325,6 +322,7 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
         <td>Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td>Values</td>
         <td>Description</td>
+        <td>Default</td>
     </tr>
     <tr>
         <td>index</td>
@@ -334,194 +332,274 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
         <td>
             Sets the starting index when showing the gallery by using the <a href="#api">Spotlight API</a>. The index starts from 1.
         </td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>onchange</td>
-        <td>
-            function(index)
-        </td>
-        <td>
-            Pass a callback function which is get fired every time when a page has changed (the first parameter is equal to the new index).<br>
-            <b>Note:</b> The image may not have been fully loaded when the event is fired (preloading phase). The index starts from 1.
-        </td>
+        <td>1</td>
     </tr>
     <tr></tr>
     <tr>
         <td>animation</td>
         <td>
+            string<br>
+            Array&lt;string><br>
             "fade"<br>
             "slide"<br>
             "scale"<br>
-            "flip"
         </td>
         <td>
-            Change animation (use built-ins<!-- or custom keyframe name-->)<br><br>
-            <b>Note:</b> Could also combined as comma-separated list, e.g: <code>data-animation="slide,fade,scale"</code> (this is the default animation). 
+            Change animation (use built-ins or custom classname)<br>
+            <b>Note:</b> Markup as comma-separated list, e.g: <code>data-animation="slide,fade,scale"</code>. 
         </td>
+        <td>slide, fade, scale</td>
     </tr>
     <tr></tr>
     <tr>
         <td>control</td>
         <td>
-            string
+            string<br>
+            Array&lt;string>
         </td>
         <td>
             Show/hide control elements as "whitelisted" through a comma-separated list, e.g. <code>data-control="autofit,page,fullscreen"</code>
         </td>
+        <td>page, zoom, autofit, fullscreen, close</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>autohide</td>
-        <td>true / false / number</td>
-        <td>Enable/disable automatically hide controls when inactive, also set cooldown time</td>
+        <td>page</td>
+        <td>true / false</td>
+        <td>Show/hide page in the toolbar</td>
+        <td>true</td>
     </tr>
     <tr></tr>
     <tr>
         <td>fullscreen</td>
         <td>true / false</td>
-        <td>Show/hide fullscreen button</td>
+        <td>Show/hide fullscreen button (automatically hides when not supported by the browser)</td>
+        <td>true</td>
     </tr>
     <tr></tr>
     <tr>
         <td>zoom</td>
         <td>true / false</td>
-        <td>Show/hide both zoom buttons</td>
+        <td>Show/hide both zoom buttons in the toolbar</td>
+        <td>true</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>zoomin</td>
+        <td>zoom-in</td>
         <td>true / false</td>
-        <td>Show/hide zoom-in button</td>
+        <td>Show/hide zoom-in button in the toolbar</td>
+        <td>true</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>zoomout</td>
+        <td>zoom-out</td>
         <td>true / false</td>
-        <td>Show/hide zoom-out button</td>
+        <td>Show/hide zoom-out button in the toolbar</td>
+        <td>true</td>
     </tr>
     <tr></tr>
     <tr>
         <td>autofit</td>
         <td>true / false</td>
-        <td>Show/hide autofit button</td>
+        <td>Show/hide autofit button in the toolbar</td>
+        <td>true</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>download</td>
+        <td>true / false</td>
+        <td>Show/hide the download icon in the toolbar</td>
+        <td>false</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>close</td>
+        <td>true / false</td>
+        <td>Show/hide the close icon in the toolbar</td>
+        <td>true</td>
     </tr>
     <tr></tr>
     <tr>
         <td>theme</td>
         <td>true / false</td>
         <td>Show/hide theme button</td>
+        <td>false</td>
     </tr>
     <tr></tr>
     <tr>
         <td>player</td>
         <td>true / false / number</td>
         <td>Show/hide player button, also set delay in seconds between each tick</td>
+        <td>false</td>
     </tr>
     <tr></tr>
     <tr>
         <td>autoplay</td>
         <td>true / false</td>
         <td>Autoplay when opening gallery (also requires the option <b>player</b> to be set)</td>
+        <td>false</td>
     </tr>
     <tr></tr>
     <tr>
         <td>progress</td>
         <td>true / false</td>
-        <td>Show/hide autoplay progress bar</td>
+        <td>Show/hide the animated autoplay progress bar</td>
+        <td>true</td>
     </tr>
     <tr></tr>
     <tr>
         <td>infinite</td>
         <td>true / false</td>
         <td>Restart from beginning when no slides left</td>
+        <td>false</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>fit</td>
+        <td>"contain"<br>"cover"</td>
+        <td>Auto-fit the media either as "contain" or as "cover"</td>
+        <td>contain</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>autohide</td>
+        <td>true / false / number</td>
+        <td>Enable/disable automatically hide controls when inactive, also set cooldown time in seconds.</td>
+        <td>7</td>
     </tr>
     <tr></tr>
     <tr>
         <td>theme</td>
-        <td>"white"<br>"dark"</td>
-        <td>Change the default theme</td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>page</td>
-        <td>true / false</td>
-        <td>Show/hide page</td>
+        <td>string<br>"white"</td>
+        <td>The classname of your custom theme. The theme "white" is a built-in theme.</td>
+        <td>null</td>
     </tr>
     <tr></tr>
     <tr>
         <td>title</td>
         <td>string / false</td>
-        <td>Set image title or hide it<br><br><b>Note:</b> When using image elements, this attribute will also inherit automatically from <code>&lt;img alt=&quot;...&quot;&gt;</code>. To prevent this behavior you can set <code>data-title="false"</code>. This will hide the title regardless of any image alt-attributes.</td>
+        <td>Set image title or hide it<br><b>Note:</b> When using image elements, this attribute will also inherit automatically from <code>&lt;img alt=&quot;...&quot;&gt;</code> as well as from <code>&lt;img title=&quot;...&quot;&gt;</code>. To prevent this behavior you can set <code>data-title="false"</code> explicitly. This will hide the title regardless of any image alt-attributes.</td>
+        <td>null</td>
     </tr>
     <tr></tr>
     <tr>
         <td>description</td>
         <td>string / false</td>
         <td>Set image description or hide it</td>
+        <td>null</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>preloader</td>
+        <td>spinner</td>
         <td>true / false</td>
-        <td>Enable/disable preloading of the current image (also hides spinner)</td>
+        <td>Enable/disable the spinner. When disabled the image will not hide until it is fully loaded, that could be useful for progressive jpeg.</td>
+        <td>true</td>
     </tr>
     <tr></tr>
     <tr>
-        <td>prefetch</td>
+        <td>preload</td>
         <td>true / false</td>
         <td>Enable/disable preloading of the next image</td>
+        <td>true</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>button</td>
+        <td>str</td>
+        <td>Enable/disable a button in the footer section, also set button text.<br><b>Note:</b> When using as markup you have to provide a click target for the button or you can assign an <code>onclick</code> callback via options when used programmatically.</td>
+        <td>null</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>button-href</td>
+        <td>str</td>
+        <td>When using a button as markup you can provide a click target for the button, e.g. <code>&lt;a button=&quot;click me&quot; button-href="https://domain.com"&gt;</code>.</td>
+        <td>null</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>onchange</td>
+        <td>
+            function(index, options)
+        </td>
+        <td>
+            Pass a callback function which is get fired every time when a page/slide has changed. The first parameter holds the new page index, the second parameter provides the inherited option payload for this page.<br>
+            <b>Note:</b> The image may not have been fully loaded when the event is fired (preloading phase). The index starts from 1.
+        </td>
+        <td>null</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>onshow<br>onclose</td>
+        <td>
+            function(index)
+        </td>
+        <td>
+            These callback functions are called when opening or closing the gallery (the first parameter holds the current page index).
+        </td>
+        <td>null</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>onclick</td>
+        <td>
+            function(index, options)
+        </td>
+        <td>
+            A callback function which is getting fired when the optional button in the footer sections was clicked. The first parameter holds the current page index, the second parameter provides the inherited option payload for this page.
+        </td>
+        <td>null</td>
     </tr>
 </table>
 
-<a name="example" id="example"></a>
-##### Example:
+<a name="example"></a>
+##### Group Option Inheritance
 
 ```html
-<div class="spotlight-group" data-title="Untitled" data-animation="fade"
-     data-fullscreen="false" data-maximize="false" data-minimize="false">
-    <a class="spotlight" href="cat1.jpg" data-title="This is a title.">
+<div class="spotlight-group" data-title="Group title" data-animation="fade" data-control="autofit,close">
+    <a class="spotlight" href="cat1.jpg" data-title="This is a title." data-theme="white">
         <img src="cat1-thumb.jpg">
     </a>
     <a class="spotlight" href="cat2.jpg" data-description="This is a description.">
         <img src="cat2-thumb.jpg">
     </a>
-    <a class="spotlight" href="cat3.jpg">
-        <img src="cat3-thumb.jpg" alt="This is a title.">
+    <a class="spotlight" href="cat3.jpg" data-button="Click me" data-button-href="javascript:alert('clicked')">
+        <img src="cat3-thumb.jpg" alt="This is also a title.">
+    </a>
+    <a class="spotlight" href="cat4.jpg" data-title="false" data-fit="cover">
+      <img src="cat4-thumb.jpg" alt="This is a hidden title.">
     </a>
 </div>
 ```
 
-__Hint:__ The 2nd image gets the title "Untitled" from the group attributes.
+__Note:__ The 2nd image gets the title "Group title" from the group attributes, on the last image the title is explicitly set to be hidden.
 
-Control elements could also __whitelisted__ as a comma-separated list, e.g.:
+Control elements and animations has to be __whitelisted__ as a comma-separated list.
 
+## Adaptive Responsive Images
+
+> This feature will improve overall performance of your page/application a lot, especially for mobile devices and bad internet connections.
+
+You can declare a set of the same image in multiple dimensions and quality. Spotlight will pick the optimal version by taking into account:
+
+1. The browsers max resolution
+2. The device screen pixel ration
+3. The available internet connection bandwidth
+
+Save your images in several sizes and resolutions and assign the __longest__ dimension of both sides (width, height) like this:
 ```html
-<div class="spotlight-group" data-control="fullscreen,autofit,theme">
+<a class="spotlight" href="cat1.jpg" 
+                     data-src-800="cat1_800.jpg" 
+                     data-src-1200="cat1_1200.jpg" 
+                     data-src-2400="cat1_2400.jpg" 
+                     data-src-3800="cat1_3800.jpg">
+    <img src="cat1-thumb.jpg">
+</a>
 ```
 
-> Use a whitelist to enable controls gets priority over other ambiguous options.
+When clicked on it Spotlight will pick the optimum choice.
 
-The same from above as __explicitly__:
-
-```html
-<div class="spotlight-group" data-fullscreen="true" data-contrast="true"
-     data-zoomin="false" data-zoomout="false" data-autofit="true">
-```
-
-> When control attributes are not specified they are automatically enabled by default.
-
-Therefore the example above could be shortened to:
-
-```html
-<div class="spotlight-group" data-zoomin="false" data-zoomout="false">
-```
-
-Since "zoom" is a shorthand for both zoom buttons, this is the same:
-
-```html
-<div class="spotlight-group" data-zoom="false">
-```
+This markup completely falls back to standard browser behavior when something goes wrong, also it is SEO friendly.
 
 <a name="api" id="api"></a>
 ## Spotlight API
@@ -664,77 +742,30 @@ Spotlight.show(
 );
 ```
 
-> __Note:__ You may need to perform `npm run build` initially to make pre-compiled files available.
-
 <a name="styling" id="styling"></a>
 ## Custom Styling
 
 To add custom styling just override CSS classes accordingly: 
 
 ```css
-#spotlight {
-    /* font styles, background */
-}
-```
-```css
-#spotlight .title{
-    /* image title */
-}
-```
-```css
-#spotlight .description{
-    /* image description */
-}
-```
-```css
-#spotlight .page{
-    /* current page */
-}
-```
-```css
-#spotlight .fullscreen{
-    /* button fullscreen */
-}
-```
-```css
-#spotlight .autofit{
-    /* button autofit */
-}
-```
-```css
-#spotlight .zoom-out{
-    /* button zoom out */
-}
-```
-```css
-#spotlight .zoom-in{
-    /* button zoom in */
-}
-```
-```css
-#spotlight .theme{
-    /* button theme */
-}
-```
-```css
-#spotlight .player{
-    /* button autoplay */
-}
-```
-```css
-#spotlight .close{
-    /* button close */
-}
-```
-```css
-#spotlight .arrow-left{
-    /* button arrow left */
-}
-```
-```css
-#spotlight .arrow-right{
-    /* button arrow right */
-}
+#spotlight { /* main font styles, background */ }
+.spl-page { /* current page (toolbar) */ }
+.spl-fullscreen { /* button fullscreen (toolbar) */ }
+.spl-autofit { /* button autofit (toolbar) */ }
+.spl-zoom-out { /* button zoom out (toolbar) */ }
+.spl-zoom-in { /* button zoom in (toolbar) */ }
+.spl-theme { /* button theme (toolbar) */ }
+.spl-player { /* button autoplay (toolbar) */ }
+.spl-download { /* button download (toolbar) */ }
+.spl-close { /* button close (toolbar) */ }
+.spl-arrow-left { /* button page previous */ }
+.spl-arrow-right { /* button page next */ }
+.spl-spinner { /* preloading spinner */ }
+.spl-title { /* image title */ }
+.spl-description { /* image description */ }
+.spl-button { /* button footer */ }
+.spl-header { /* the header wrapping element */ }
+.spl-footer { /* the footer wrapping element */ }
 ```
 
 <a name="themes" id="themes"></a>
@@ -745,13 +776,13 @@ __Customize builtin themes__
 Use the same classes as above:
 
 ```css
-#spotlight.white .title{
+#spotlight.white .spl-title{
     /* image title in white theme */
 }
 ```
 
 ```css
-#spotlight.dark{
+#spotlight{
     /* main background in dark theme */
 }
 ```
@@ -761,10 +792,10 @@ __Create New Themes__
 Define styles, e.g. for the custom theme name "my-theme":
 
 ```css
-#spotlight.my-theme .title{
+.my-theme .spl-title{
     /* image title in custom theme */
 }
-#spotlight.my-theme{
+.my-theme{
     /* main background in custom theme */
 }
 ```
@@ -797,7 +828,7 @@ You can define your own custom animation by:
 <b>1.</b> Extending the default styles (when image is shown) and corresponding transitions as follows:
 
 ```css
-#spotlight .scene img{
+.spl-scene > *{
     filter: grayscale(0);
     transition: filter 1s ease-out,
                 opacity 0.5s ease-out;
@@ -807,7 +838,7 @@ You can define your own custom animation by:
 <b>2.</b> Providing styles for the __hidden state__ of the transition by adding a custom animation name as a class:
 
 ```css
-#spotlight .scene img.my-animation{
+.spl-scene .my-animation{
     opacity: 0 !important;
     filter: grayscale(1);
 }
@@ -829,49 +860,20 @@ Spotlight.show([ /* Gallery */ ],{
 });
 ```
 
-<a name="notes" id="notes"></a>
-## Preload Library / Async Load
-
-> If you like to override css classes for custom styling you may need to add ___!important___ flag to the css property value.
-
-```html
-<html>
-<head>
-    <title></title>
-    <link rel="preload" href="spotlight.bundle.js" as="script">
-</head>
-<body>
-    <!-- 
-    CONTENT 
-    -->
-    <script src="spotlight.bundle.js" async></script>
-</body>
-</html>
-```
-
-Initialize library manually (once):
-
-```js
-Spotlight.init();
-```
-
-When using Spotlight exclusively through the API it is recommended to follow this practice. But there are some important facts you might need to know:
-
-1. When loading the library before loading other stylesheets (which modifies the Spotlight default theme) you do not have to add a "!important" flag to the styles.
-2. When using Spotlight with anchors it is recommended to load the library in the head section of the document to prevent executing the default anchor behavior when the user has clicked during page load. 
-3. In rare situations it also might produce a short flashing/reflow after page load, depending on your stack. Moving the script tag into the head section will solve this issue.
-
 <a name="builds" id="builds"></a>
 ## Custom Builds
 
-> __Note:__ You can modify all source files e.g. stylesheets, template and also the icon files located in _/src/img/_. Providing a more handy way to pass custom icons is coming soon.
+Go to the root directory of Spotlight and run:
+```cmd
+npm install
+```
 
-Perform a full build:
-```bash
+Perform a build:
+```cmd
 npm run build
 ```
 
-The destination folder of the build is: _/dist/_
+The final build is located in the `dist/` folder.
 
 ---
 

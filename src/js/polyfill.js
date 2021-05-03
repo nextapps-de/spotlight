@@ -2,7 +2,7 @@ Object.assign || (Object.assign =
 
     function(target, source){
 
-        console.log("assign", target, source);
+        //console.log("assign", target, source);
 
         const keys = Object.keys(/** @type {!Object} */(source));
 
@@ -18,7 +18,7 @@ Object.assign || (Object.assign =
 
 Element.prototype.closest || (Element.prototype.closest = function(classname){
 
-    console.log("closest", classname);
+    //console.log("closest", classname);
 
     classname = classname.substring(1);
 

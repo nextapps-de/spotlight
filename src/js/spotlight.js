@@ -6,7 +6,7 @@
  * https://github.com/nextapps-de/spotlight
  */
 
-import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag, setText, addListener, removeListener, cancelEvent } from "./helper.js";
+import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag, setText, addListener, removeListener, cancelEvent, createElement } from "./helper.js";
 import widget from "./template.js";
 
 const controls = [
@@ -36,8 +36,7 @@ const controls_default = {
     "fullscreen": 1
 };
 
-const tpl_video = document.createElement("video");
-const tpl_control = document.createElement("div");
+const tpl_video = /** @type {HTMLVideoElement} */ (createElement("video"));
 const controls_dom = {};
 const video_support = {};
 
@@ -225,7 +224,7 @@ function setup(){
 
 export function addControl(classname, fn){
 
-    const div = tpl_control.cloneNode(false);
+    const div = createElement("div");
 
     div.className = "spl-" + classname;
     addListener(div, "click", fn);
@@ -522,7 +521,7 @@ function init_slide(index, direction){
 
         if(type === "video"){
 
-            media = document.createElement("video");
+            media = /** @type {HTMLVideoElement} */ (createElement("video"));
 
             media.onloadedmetadata = /** @this {HTMLVideoElement} */ function(e){
 
@@ -543,7 +542,7 @@ function init_slide(index, direction){
             media.muted = parse_option("muted");
             media.src = gallery.src; //files[i].src;
 
-            // const source = document.createElement("source");
+            // const source = createElement("source");
             // source.type = "video/" + files[i].type;
             // source.src = files[i].src;
             // media.appendChild(source);
@@ -569,7 +568,7 @@ function init_slide(index, direction){
         }
         else{
 
-            media = new Image();
+            media = createElement("img");
 
             media.onload = /** @this {Image} */ function(){
 
@@ -605,7 +604,7 @@ function prefetch(direction){
 
     if(direction && gallery_next){
 
-        (new Image()).src = gallery_next;
+        (createElement("img")).src = gallery_next;
     }
 }
 
@@ -632,6 +631,24 @@ function resize_listener(){
     if(media){
 
         update_media_viewport();
+    }
+
+    if(prefix_request){
+
+        if(has_fullscreen()){
+
+            addClass(maximize, "on");
+        }
+        else{
+
+            removeClass(maximize, "on");
+
+            // handle when user toggles the fullscreen state manually
+            // entering the fullscreen state manually needs to be hide the fullscreen icon, because
+            // the exit fullscreen handler will not work due to a browser restriction
+
+            display_state(maximize, (screen.availHeight - window.outerHeight) >= 0);
+        }
     }
 
     //update_scroll();
@@ -708,8 +725,6 @@ function history_listener(event) {
     if(panel && /*event.state &&*/ event.state["spl"]) {
 
         close(true);
-        //history.back();
-        //cancelEvent(event, true);
     }
 }
 
@@ -1021,24 +1036,20 @@ export function fullscreen(init){
 
     //console.log("fullscreen", init);
 
-    const isFullscreen = (
+    const is_fullscreen = has_fullscreen();
 
-        typeof init === "boolean" ?
+    if((typeof init !== "boolean") || (init !== !!is_fullscreen)){
 
-            init
-        :
-            has_fullscreen()
-    );
+        if(is_fullscreen){
 
-    if(isFullscreen){
+            document[prefix_exit]();
+            //removeClass(maximize, "on");
+        }
+        else{
 
-        document[prefix_exit]();
-        removeClass(maximize, "on");
-    }
-    else{
-
-        widget[prefix_request]();
-        addClass(maximize, "on");
+            widget[prefix_request]();
+            //addClass(maximize, "on");
+        }
     }
 }
 
@@ -1223,7 +1234,7 @@ function show_gallery(){
 
 export function download(){
 
-    const link = document.createElement("a");
+    const link = createElement("a");
     link.href = media.src;
     link.download = media.src.substring(media.src.lastIndexOf("/") + 1);
     body.appendChild(link);
@@ -1249,6 +1260,7 @@ export function close(hashchange){
     removeClass(body, "hide-scrollbars");
     removeClass(widget, "show");
 
+    fullscreen(false);
     toggle_listener();
 
     history.go(hashchange === true ? -1 : -2);
@@ -1438,11 +1450,9 @@ function prepare(){
 
         media: options["media"],
         src: determine_src(anchor, size, options),
-        title: (
-            parse_option("title") ||
-            anchor["title"] ||
-            anchor["alt"] ||
-            ((tmp = getByTag("img", anchor)[0]) && tmp["alt"])
+        title: parse_option("title",
+            anchor["alt"] || anchor["title"] ||
+            ((tmp = getByTag("img", anchor)[0]) && (tmp["alt"] || tmp["title"]))
         )
     };
 

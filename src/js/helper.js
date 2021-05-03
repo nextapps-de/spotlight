@@ -134,3 +134,13 @@ export function cancelEvent(event, prevent){
 
     //return false;
 }
+
+/**
+ * @param {!string} element
+ * @return {Element}
+ */
+
+export function createElement(element){
+
+    return document.createElement(element);
+}
