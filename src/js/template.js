@@ -28,13 +28,13 @@ template.innerHTML = (
          */
     '</div>' +
     '<div class=spl-progress></div>' +
-    '<div class=spl-arrow-left></div>' +
-    '<div class=spl-arrow-right></div>' +
     '<div class=spl-footer>' +
         '<div class=spl-title> </div>' +
         '<div class=spl-description> </div>' +
         '<div class=spl-button> </div>' +
-    '</div>'
+    '</div>' +
+    '<div class=spl-prev></div>' +
+    '<div class=spl-next></div>'
 );
 
 export default template;

@@ -19,8 +19,8 @@ const controls = [
     "autofit",
     "zoom-in",
     "zoom-out",
-    "arrow-left",
-    "arrow-right",
+    "prev",
+    "next",
     "fullscreen"
 ];
 
@@ -31,8 +31,8 @@ const controls_default = {
     "autofit": 1,
     "zoom-in": 1,
     "zoom-out": 1,
-    "arrow-left": 1,
-    "arrow-right": 1,
+    "prev": 1,
+    "next": 1,
     "fullscreen": 1
 };
 
@@ -89,8 +89,8 @@ let footer;
 let title;
 let description;
 let button;
-let arrow_left;
-let arrow_right;
+let page_prev;
+let page_next;
 let maximize;
 let page;
 let player;
@@ -125,7 +125,7 @@ const keycodes = {
 
 addListener(document, "click", dispatch);
 
-function setup(){
+export function init(){
 
     //console.log("init");
 
@@ -136,8 +136,8 @@ function setup(){
     title = getOneByClass("title");
     description = getOneByClass("description");
     button = getOneByClass("button");
-    arrow_left = getOneByClass("arrow-left");
-    arrow_right = getOneByClass("arrow-right");
+    page_prev = getOneByClass("prev");
+    page_next = getOneByClass("next");
     page = getOneByClass("page");
     progress = getOneByClass("progress");
     panes = [getOneByClass("pane")];
@@ -173,8 +173,8 @@ function setup(){
     player = addControl("play", play);
     addControl("download", download);
 
-    addListener(arrow_left, "click", prev);
-    addListener(arrow_right, "click", next);
+    addListener(page_prev, "click", prev);
+    addListener(page_next, "click", next);
 
     /*
      * binding the tracking listeners to the "widget" will prevent all click listeners to be fired
@@ -290,7 +290,6 @@ export function show(gallery, group, index){
         options_onshow = group["onshow"];
         options_onchange = group["onchange"];
         options_onclose = group["onclose"];
-        options_click = group["onclick"];
         index = index || group["index"];
     }
 
@@ -305,7 +304,7 @@ function init_gallery(index){
 
     if(slide_count){
 
-        body || setup();
+        body || init();
         options_onshow && options_onshow(index);
 
         const pane = panes[0];
@@ -367,17 +366,16 @@ function apply_options(anchor){
     // apply theme before controls (including control "theme") applies to the options
     theme(options["theme"]);
 
+    options_click = options["onclick"];
     options_autohide = parse_option("autohide", 3);
     options_infinite = parse_option("infinite");
     options_progress = parse_option("progress", true);
     options_autoplay = parse_option("autoplay");
     options_preload = parse_option("preload", true);
     options_href = parse_option("buttonHref");
+    delay = (options_autoplay && parseFloat(options_autoplay)) || 7;
 
-    if(options_autoplay){
 
-        delay = parseFloat(options_autoplay) || 7;
-    }
 
     const control = options["control"];
 
@@ -481,7 +479,7 @@ function prepare_animation(prepare){
 
         (animation_slide ? enable_animation : disable_animation)(slider);
         setStyle(media, "opacity", animation_fade ? 0 : 1);
-        setStyle(media, "transform", "translate(-50%, -50%)" + (animation_scale ? " scale(0.8)" : ""));
+        update_scroll(animation_scale && 0.8);
         animation_custom && addClass(media, animation_custom);
     }
 }
@@ -660,11 +658,15 @@ function update_media_viewport(){
     media_h = media.clientHeight;
 }
 
-function update_scroll(){
+/**
+ * @param {number=} force_scale
+ */
+
+function update_scroll(force_scale){
 
     //console.log("update_scroll");
 
-    setStyle(media, "transform", "translate(-50%, -50%) scale(" + scale + ")");
+    setStyle(media, "transform", "translate(-50%, -50%) scale(" + (force_scale || scale) + ")");
 }
 
 /**
@@ -862,7 +864,7 @@ function autohide(){
     }
 }
 
-function schedule(delay){
+function schedule(cooldown){
 
     //console.log("schedule", delay);
 
@@ -880,7 +882,7 @@ function schedule(delay){
             schedule(hide_cooldown - now);
         }
 
-    }, delay);
+    }, cooldown);
 }
 
 /**
@@ -1234,7 +1236,7 @@ function show_gallery(){
 
 export function download(){
 
-    const link = createElement("a");
+    const link = /** @type {HTMLAnchorElement} */ (createElement("a"));
     link.href = media.src;
     link.download = media.src.substring(media.src.lastIndexOf("/") + 1);
     body.appendChild(link);
@@ -1536,11 +1538,13 @@ function setup_page(direction){
         display_state(title, str_title);
         display_state(description, str_description);
         display_state(button, str_button);
+
+        setStyle(footer, "transform", options_autohide === "all" ? "" : "none");
     }
 
     visibility_state(footer, has_content);
-    visibility_state(arrow_left, options_infinite || (current_slide > 1));
-    visibility_state(arrow_right, options_infinite || (current_slide < slide_count));
+    visibility_state(page_prev, options_infinite || (current_slide > 1));
+    visibility_state(page_next, options_infinite || (current_slide < slide_count));
     setText(page, slide_count > 1 ? current_slide + " / " + slide_count : "");
 
     options_onchange && options_onchange(current_slide, options);
@@ -1568,6 +1572,7 @@ function enable_animation(node){
 
 export default {
 
+    init: init,
     theme: theme,
     fullscreen: fullscreen,
     download: download,

@@ -27,8 +27,8 @@
   background-color: #fff;
 }
 #spotlight.white .spl-spinner,
-#spotlight.white .spl-arrow-left,
-#spotlight.white .spl-arrow-right,
+#spotlight.white .spl-prev,
+#spotlight.white .spl-next,
 #spotlight.white .spl-page ~ * {
   filter: invert(1);
 }
@@ -98,7 +98,6 @@
   border: 0;
   transform: translate(-50%, -50%) scale(1);
   transition: transform 0.65s cubic-bezier(0.3, 1, 0.3, 1), opacity 0.65s ease;
-  /*pointer-events: none;*/
   contain: layout style;
   will-change: transform, opacity;
   visibility: hidden;
@@ -110,7 +109,7 @@
   height: 100%;
   transition: transform 0.65s cubic-bezier(0.3, 1, 0.3, 1);
   contain: layout size;
-  will-change: transform;
+  will-change: transform, contents;
 }
 .spl-header {
   position: absolute;
@@ -122,6 +121,7 @@
   transform: translateY(-100px);
   transition: transform 0.35s ease;
   overflow: hidden;
+  will-change: transform;
 }
 #spotlight.menu .spl-header,
 .spl-header:hover {
@@ -156,6 +156,13 @@
   text-align: left;
   font-size: 15px;
   font-weight: 400;
+  transform: translateY(100%);
+  transition: transform 0.35s ease;
+  will-change: transform;
+}
+#spotlight.menu .spl-footer,
+.spl-footer:hover {
+  transform: translateY(0);
 }
 .spl-title {
   font-size: 22px;
@@ -218,8 +225,8 @@
 .spl-close {
   background-image: url("../img/close.svg");
 }
-.spl-arrow-left,
-.spl-arrow-right {
+.spl-prev,
+.spl-next {
   position: absolute;
   top: 50%;
   left: 20px;
@@ -236,16 +243,17 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: 30px;
+  will-change: transform;
 }
-.spl-arrow-right {
+.spl-next {
   left: auto;
   right: 20px;
   transform: translateX(100px) scaleX(-1);
 }
-#spotlight.menu .spl-arrow-left {
+#spotlight.menu .spl-prev {
   transform: translateX(0);
 }
-#spotlight.menu .spl-arrow-right {
+#spotlight.menu .spl-next {
   transform: translateX(0) scaleX(-1);
 }
 @media (hover: hover) {
@@ -254,8 +262,8 @@
     transition: opacity 0.2s ease;
   }
   .spl-page ~ div:hover,
-  .spl-arrow-left:hover,
-  .spl-arrow-right:hover {
+  .spl-prev:hover,
+  .spl-next:hover {
     opacity: 1;
   }
 }
@@ -269,8 +277,8 @@
   .spl-footer {
     font-size: 14px;
   }
-  .spl-arrow-left,
-  .spl-arrow-right {
+  .spl-prev,
+  .spl-next {
     width: 35px;
     height: 35px;
     margin-top: -17.5px;

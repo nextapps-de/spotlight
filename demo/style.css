@@ -75,8 +75,9 @@ label, button{
 button{
     border:0;
     outline: 0;
-    padding: 10px 15px;
-    font-weight: 500;
+    padding: 7px 15px;
+    font-weight: 400;
+    font-size: 15px;
     background-color: #6c757d;
     color: #fff;
 }
