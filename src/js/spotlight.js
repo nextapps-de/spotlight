@@ -562,13 +562,16 @@ function init_slide(index, direction){
                 media = document.querySelector(media);
             }
 
-            media._root || (media._root = media.parentNode);
-            update_media_viewport();
+            if(media){
 
-            options_spinner && removeClass(widget, "spinner");
-            panel.appendChild(media);
+                media._root || (media._root = media.parentNode);
+                update_media_viewport();
 
-            init_slide(index, direction);
+                options_spinner && removeClass(widget, "spinner");
+                panel.appendChild(media);
+
+                init_slide(index, direction);
+            }
         }
         else{
 
@@ -1273,21 +1276,10 @@ export function close(hashchange){
 
     history.go(hashchange === true ? -1 : -2);
 
-    if(playing){
-
-        play(false);
-    }
-
-    if(media){
-
-        checkout(media);
-    }
-
-    if(hide){
-
-        hide = clearTimeout(hide);
-    }
-
+    playing && play();
+    media && checkout(media);
+    hide && menu(true);
+    toggle_theme && theme();
     options_onclose && options_onclose();
 }
 
@@ -1356,7 +1348,7 @@ export function next(e){
         }
         else if(playing){
 
-            play(false);
+            play();
         }
     }
 }
@@ -1367,19 +1359,13 @@ export function goto(slide){
 
     if(slide !== current_slide){
 
-        playing || autohide();
-
-        if(playing){
-
-            playing = clearInterval(playing);
-            play();
-        }
+        playing ? play() : autohide();
 
         const direction = slide > current_slide;
 
         current_slide = slide;
-
         setup_page(direction);
+        options_autoplay && play();
 
         return true;
     }
@@ -1469,7 +1455,7 @@ function prepare(){
         src: determine_src(anchor, size, options),
         title: parse_option("title",
             anchor["alt"] || anchor["title"] ||
-            ((tmp = getByTag("img", anchor)[0]) && (tmp["alt"] || tmp["title"]))
+            ((anchor.nodeType === 1) && (tmp = getByTag("img", anchor)[0]) && (tmp["alt"] || tmp["title"]))
         )
     };
 

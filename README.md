@@ -958,7 +958,7 @@ That is the same custom like button from above example, just shorter but also no
 
 You can use this feature completely by markup by providing a query selector as "src" which points to a node in your document.
 
-#### Using Auto-Mount / Auto-Unmount
+### Using Auto-Mount / Auto-Unmount
 
 You can use a hidden backstore optionally which holds the fragments to be inserted as a slide, e.g.:
 
@@ -979,6 +979,39 @@ Provide a __dom query selector__ as "src" which points to a node in your documen
 ```
 
 When closing the gallery or change the page to another slide, the fragment will automatically move back to its original position (the hidden backstore in this example).
+
+### Custom Elements (API-only)
+
+You can add nodes as slide which are not part of the document also via the API (e.g. fragments, templates, offscreen nodes). This way you can create your own full customized slides with its own interactions inside them. Also, you can create an iframe to load extern contents.
+
+#### Example: Youtube Video
+
+You can create your own fragments/templates and add the root node directly as "src":
+
+```js
+Spotlight.show([{
+    media: "node",
+    src: (function(){
+        const iframe = document.createElement("iframe");
+        iframe.src = "https://www.youtube.com/embed/tgbNymZ7vqY";
+        iframe.height = "auto";
+        return iframe;
+    }())
+}]);
+```
+
+#### Example: Templating Engine
+
+Or use your preferred templating engine and add the root node as "src":
+
+```js
+Mikado(template).mount(root).render(data);
+
+Spotlight.show([{
+    media: "node",
+    src: root
+}]);
+```
 
 <a name="api" id="api"></a>
 ## Spotlight API

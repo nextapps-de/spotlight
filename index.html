@@ -164,7 +164,16 @@
             button: "Close Gallery",
             onclick: Spotlight.close,
             like: false
-        }];
+        }/*,{
+            media: "node",
+            control: "next,prev,close",
+            src: (function(){
+                const iframe = document.createElement("iframe");
+                iframe.src = "https://www.youtube.com/embed/tgbNymZ7vqY";
+                iframe.height = "auto";
+                return iframe;
+            }())
+        }*/];
 
         window.showGallery = function(index){
 
