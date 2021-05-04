@@ -76,10 +76,16 @@
   background-size: 42px;
   opacity: 0;
 }
-#spotlight.spinner .spl-spinner {
+.spl-spinner.spin {
   background-image: url("../img/preloader.svg");
   transition: opacity 0.2s linear 0.25s;
   opacity: 1;
+}
+.spl-spinner.error {
+  background-image: url("../img/error.svg");
+  background-size: 128px;
+  transition: none;
+  opacity: 0.5;
 }
 .spl-scene {
   position: absolute;

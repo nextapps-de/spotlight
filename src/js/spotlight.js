@@ -96,6 +96,7 @@ let maximize;
 let page;
 let player;
 let progress;
+let spinner;
 
 let gallery;
 let gallery_next;
@@ -146,6 +147,7 @@ export function init(){
     page_next = getOneByClass("next");
     page = getOneByClass("page");
     progress = getOneByClass("progress");
+    spinner = getOneByClass("spinner");
     panes = [getOneByClass("pane")];
 
     addControl("close", close);
@@ -521,20 +523,17 @@ function init_slide(index, direction){
         const type = gallery.media;
         const options_spinner = parse_option("spinner", true);
 
-        options_spinner && addClass(widget, "spinner");
-
         if(type === "video"){
 
+            toggle_spinner(options_spinner, true);
             media = /** @type {HTMLVideoElement} */ (createElement("video"));
 
-            media.onloadedmetadata = /** @this {HTMLVideoElement} */ function(e){
+            media.onloadedmetadata = function(){
 
                 media.width = media.videoWidth;
                 media.height = media.videoHeight;
                 update_media_viewport();
-
-                options_spinner && removeClass(widget, "spinner");
-
+                toggle_spinner(options_spinner);
                 init_slide(index, direction);
             };
 
@@ -567,41 +566,54 @@ function init_slide(index, direction){
                 media._root || (media._root = media.parentNode);
                 update_media_viewport();
 
-                options_spinner && removeClass(widget, "spinner");
                 panel.appendChild(media);
-
                 init_slide(index, direction);
             }
+
+            return;
         }
         else{
 
-            media = createElement("img");
+            toggle_spinner(options_spinner, true);
+            media = /** @type {HTMLVideoElement|Image} */ (createElement("img"));
 
-            media.onload = /** @this {Image} */ function(){
+            media.onload = function(){
 
-                options_spinner && removeClass(widget, "spinner");
-
+                toggle_spinner(options_spinner);
                 init_slide(index, direction);
                 update_media_viewport();
-
-            };
-
-            media.onerror = /** @this {Image} */ function(){
-
-                panel.removeChild(this);
             };
 
             //media.crossOrigin = "anonymous";
             media.src = gallery.src;
-
             panel.appendChild(media);
         }
 
         if(media){
 
             options_spinner || setStyle(media, "visibility", "visible");
+
+            media.onerror = function(){
+
+                panel.removeChild(media);
+                media = null;
+
+                addClass(spinner, "error");
+                toggle_spinner(options_spinner);
+            };
         }
     }
+}
+
+/**
+ *
+ * @param {boolean=} options_spinner
+ * @param {boolean=} is_on
+ */
+
+function toggle_spinner(options_spinner, is_on){
+
+    options_spinner && (is_on ? addClass : removeClass)(spinner, "spin");
 }
 
 function prefetch(direction){
@@ -1517,6 +1529,11 @@ function setup_page(direction){
         prepare_animation();
         //disable_animation(panel);
         update_panel();
+    }
+    else{
+
+        //removeClass(spinner, "spin");
+        removeClass(spinner, "error");
     }
 
     init_slide(current_slide, direction);
