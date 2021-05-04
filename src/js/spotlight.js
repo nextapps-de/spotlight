@@ -587,7 +587,7 @@ function init_slide(index, direction){
                 panel.removeChild(this);
             };
 
-            media.crossOrigin = "anonymous";
+            //media.crossOrigin = "anonymous";
             media.src = gallery.src;
 
             panel.appendChild(media);
