@@ -34,8 +34,8 @@ Alternatively you can:
 - Mounting HTML node fragments as slides (you can add just everything as a slide!)
 - Gallery groups:
   - group images to specific galleries
-  - smart inheritance of group config
-- Gallery tools:
+  - group options inheritance
+- Toolbar & Gallery tools:
   - Fullscreen
   - Zoom in/out
   - Toggle resize
@@ -53,17 +53,15 @@ Alternatively you can:
 - Fully configurable via markup
 - Loading Spinner
 - Prefetch next image
-- Custom options
+- Customize via standard options
 - Simply customize via markup (data-attributes)
-- Arrange built-in animations
+- Built-in animations
 - Custom themes
 - Custom animations
-- Controls:
+- Supported controls:
   - Keyboard
   - Touch
-  - Mousemove
-  - Mousewheel
-- Browser history detection
+  - Mouse (Move + Wheel)
 - Back-Button (Android)
 - Callbacks (onclick, onshow, onclose, onchange)
 - Global API for programmatic usage
@@ -75,7 +73,7 @@ __Technical properties:__
 - Event capturing (just one single global event listener)
 - Bind additional global event listener dynamically:
   - install when gallery opens
-  - fully cleanup when gallery was closed
+  - cleanup when gallery was closed
 - No dependencies, no jQuery
 - Fully Responsive
 - Touch-friendly mobile support
@@ -95,8 +93,8 @@ __Get Latest Stable Build (Recommended):__
     </tr>
     <tr>
         <td>spotlight.bundle.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.4/dist/spotlight.bundle.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.4/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.4/dist/spotlight.bundle.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.5/dist/spotlight.bundle.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/spotlight.bundle.js</a></td>
     </tr>
     <tr>
         <td colspan=3">
@@ -105,14 +103,14 @@ __Get Latest Stable Build (Recommended):__
     </tr>
     <tr>
         <td>spotlight.min.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.4/dist/js/spotlight.min.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.4/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.4/dist/js/spotlight.min.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.5/dist/js/spotlight.min.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/js/spotlight.min.js</a></td>
     </tr>
     <tr></tr>
     <tr>
         <td>spotlight.min.css</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.4/dist/css/spotlight.min.css" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.4/dist/css/spotlight.min.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.4/dist/css/spotlight.min.css</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.5/dist/css/spotlight.min.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/css/spotlight.min.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/css/spotlight.min.css</a></td>
     </tr>
     <tr>
         <td colspan=3">
@@ -121,25 +119,25 @@ __Get Latest Stable Build (Recommended):__
     </tr>
     <tr>
         <td>ES6 Modules</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.4/src/js" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.5/src/js" target="_blank">Download</a></td>
         <td>The <i>/src/js</i> folder of this Github repository</td>
     </tr>
     <tr></tr>
     <tr>
         <td>LESS Files (source)</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.4/src/css" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.5/src/css" target="_blank">Download</a></td>
         <td>The <i>/src/css</i> folder of this Github repository</td>
     </tr>
     <tr></tr>
     <tr>
         <td>spotlight.css (compiled)</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.4/src/css/spotlight.css" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.4/src/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.4/src/css/spotlight.css</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.5/src/css/spotlight.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/src/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/src/css/spotlight.css</a></td>
     </tr>
     <tr></tr>
     <tr>
         <td>src.zip</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.4/dist" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.5/dist" target="_blank">Download</a></td>
         <td>Download all source files including image original resources.</td>
     </tr>
 </table>
@@ -152,7 +150,7 @@ npm install spotlight.js
 
 __Get Latest Nightly (Do not use for production!):__
 
-Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/__0.7.4__/dist/" into "/spotlight/__master__/dist".
+Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/__0.7.5__/dist/" into "/spotlight/__master__/dist".
 
 ### Use Bundled Version
 
@@ -229,7 +227,7 @@ You can also load modules via CDN, e.g.:
 
 ```html
 <script type="module">
-  import Spotlight from "https://unpkg.com/spotlight@0.7.4/src/js/spotlight.js";
+  import Spotlight from "https://unpkg.com/spotlight@0.7.5/src/js/spotlight.js";
 </script>
 ```
 
@@ -444,7 +442,7 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     <tr>
         <td>autoplay</td>
         <td>true / false</td>
-        <td>Autoplay when opening gallery (also requires the option <b>player</b> to be set)</td>
+        <td>Autoplay when opening gallery (also requires the option <b>play</b> to be set)</td>
         <td>false</td>
     </tr>
     <tr></tr>
@@ -954,11 +952,13 @@ That is the same custom like button from above example, just shorter but also no
 
 ## Embedding Node Fragments
 
-> With node fragments you can simply add everything as a slide.
+> With node fragments you can simply add everything as a slide. This way you can create your own full customized slides with its own interactions inside them.
 
 You can use this feature completely by markup by providing a query selector as "src" which points to a node in your document.
 
 ### Using Auto-Mount / Auto-Unmount
+
+> This workaround is also compatible if you are using server-side rendering.
 
 You can use a hidden backstore optionally which holds the fragments to be inserted as a slide, e.g.:
 
@@ -980,9 +980,9 @@ Provide a __dom query selector__ as "src" which points to a node in your documen
 
 When closing the gallery or change the page to another slide, the fragment will automatically move back to its original position (the hidden backstore in this example).
 
-### Custom Elements (API-only)
+### Custom Slides (API-only)
 
-You can add nodes as slide which are not part of the document also via the API (e.g. fragments, templates, offscreen nodes). This way you can create your own full customized slides with its own interactions inside them. Also, you can create an iframe to load extern contents.
+You can add nodes as slide which are not part of the document via the API (e.g. fragments, templates, offscreen nodes). Also, you can create an iframe to load extern contents.
 
 #### Example: Youtube Video
 
@@ -994,7 +994,6 @@ Spotlight.show([{
     src: (function(){
         const iframe = document.createElement("iframe");
         iframe.src = "https://www.youtube.com/embed/tgbNymZ7vqY";
-        iframe.height = "auto";
         return iframe;
     }())
 }]);
@@ -1167,12 +1166,14 @@ To add custom styling just override CSS classes accordingly:
 .spl-zoom-out { /* button zoom out (toolbar) */ }
 .spl-zoom-in { /* button zoom in (toolbar) */ }
 .spl-theme { /* button theme (toolbar) */ }
-.spl-player { /* button autoplay (toolbar) */ }
+.spl-play { /* button autoplay (toolbar) */ }
 .spl-download { /* button download (toolbar) */ }
 .spl-close { /* button close (toolbar) */ }
 .spl-prev { /* button page prev */ }
 .spl-next { /* button page next */ }
 .spl-spinner { /* preloading spinner */ }
+.spl-spinner.spin { /* show spinner */ }
+.spl-spinner.error { /* show loading error */ }
 .spl-title { /* image title */ }
 .spl-description { /* image description */ }
 .spl-button { /* button footer */ }
