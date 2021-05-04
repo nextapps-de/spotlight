@@ -84,6 +84,7 @@ let body;
 let panel;
 let panes;
 let media;
+let media_next;
 let slider;
 let header;
 let footer;
@@ -629,9 +630,15 @@ function prefetch(direction){
 
     //console.log("prefetch");
 
+    // TODO: create next image as normal and append to pane
+
     if(direction && gallery_next){
 
-        (createElement("img")).src = gallery_next;
+        (media_next = createElement("img")).src = gallery_next;
+    }
+    else{
+
+        media_next = null;
     }
 }
 
@@ -1318,6 +1325,11 @@ function checkout(media){
         const parent = media.parentNode;
         parent && parent.removeChild(media);
         media = media.src = media.onerror = "";
+    }
+
+    if(media_next){
+
+        media_next = media_next.src = "";
     }
 }
 
