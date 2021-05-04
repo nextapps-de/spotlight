@@ -531,7 +531,7 @@ function init_slide(index, direction){
 
                 media.width = media.videoWidth;
                 media.height = media.videoHeight;
-                update_media_viewport()
+                update_media_viewport();
 
                 options_spinner && removeClass(widget, "spinner");
 
@@ -563,7 +563,7 @@ function init_slide(index, direction){
             }
 
             media._root || (media._root = media.parentNode);
-            update_media_viewport()
+            update_media_viewport();
 
             options_spinner && removeClass(widget, "spinner");
             panel.appendChild(media);
@@ -578,8 +578,9 @@ function init_slide(index, direction){
 
                 options_spinner && removeClass(widget, "spinner");
 
-                update_media_dimension()
+                update_media_viewport();
                 init_slide(index, direction);
+
             };
 
             media.onerror = /** @this {Image} */ function(){
@@ -661,6 +662,12 @@ function update_media_viewport(){
 
     media_w = media.clientWidth;
     media_h = media.clientHeight;
+}
+
+function update_media_dimension(){
+
+    media_w = media.width;
+    media_h = media.height;
 }
 
 /**
@@ -1115,7 +1122,7 @@ export function autofit(init){
     x = 0;
     y = 0;
 
-    update_media_dimension()
+    update_media_viewport();
     disable_animation(panel);
     update_panel();
     //autohide();
@@ -1212,12 +1219,6 @@ function disable_autoresizer(){
 
         autofit();
     }
-}
-
-function update_media_dimension(){
-
-    media_w = media.width;
-    media_h = media.height;
 }
 
 function show_gallery(){
@@ -1528,15 +1529,17 @@ function setup_page(direction){
         // animate out the old image
 
         prepare_animation();
+        //disable_animation(panel);
+        update_panel();
     }
 
     init_slide(current_slide, direction);
 
-    if(panel){
+    //if(panel){
 
         disable_animation(panel);
         update_panel();
-    }
+    //}
 
     const str_title = gallery.title;
     const str_description = parse_option("description");
