@@ -530,8 +530,9 @@ function init_slide(index, direction){
 
             media.onloadedmetadata = function(){
 
-                if(media){
+                if(media === this){
 
+                    media.onerror = null;
                     media.width = media.videoWidth;
                     media.height = media.videoHeight;
                     update_media_viewport();
@@ -582,8 +583,9 @@ function init_slide(index, direction){
 
             media.onload = function(){
 
-                if(media){
+                if(media === this){
 
+                    media.onerror = null;
                     toggle_spinner(options_spinner);
                     init_slide(index, direction);
                     update_media_viewport();
@@ -601,11 +603,12 @@ function init_slide(index, direction){
 
             media.onerror = function(){
 
-                panel.removeChild(media);
-                media = null;
+                if(media === this){
 
-                addClass(spinner, "error");
-                toggle_spinner(options_spinner);
+                    checkout(media);
+                    addClass(spinner, "error");
+                    toggle_spinner(options_spinner);
+                }
             };
         }
     }
@@ -1314,6 +1317,7 @@ function checkout(media){
 
         const parent = media.parentNode;
         parent && parent.removeChild(media);
+        media = media.src = media.onerror = "";
     }
 }
 
@@ -1518,29 +1522,35 @@ function setup_page(direction){
 
     if(media){
 
-        let ref = media;
+        // Note: the onerror callback was removed when the image was fully loaded (also for video)
 
-        setTimeout(function(){
+        if(media.onerror){
 
-            if(ref && (media !== ref)){
+            checkout(media);
+        }
+        else{
 
-                checkout(ref);
-                ref = null;
-            }
+            let ref = media;
 
-        }, 650);
+            setTimeout(function(){
 
-        // animate out the old image
+                if(ref && (media !== ref)){
 
-        prepare_animation();
-        //disable_animation(panel);
-        update_panel();
+                    checkout(ref);
+                    ref = null;
+                }
+
+            }, 650);
+
+            // animate out the old image
+
+            prepare_animation();
+            //disable_animation(panel);
+            update_panel();
+        }
     }
-    else{
 
-        //removeClass(spinner, "spin");
-        removeClass(spinner, "error");
-    }
+    removeClass(spinner, "error");
 
     init_slide(current_slide, direction);
 
