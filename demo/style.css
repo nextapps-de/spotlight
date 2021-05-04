@@ -26,6 +26,7 @@ b{
 button{
     padding: 5px 10px;
 }
+
 .spotlight img,
 .image{
     width: 29vw;
@@ -47,11 +48,6 @@ button{
     max-height: 200px;
     object-fit: cover;
 }
-/*
-video{
-    object-fit: cover;
-}
-*/
 .spotlight{
     cursor: pointer;
     display: inline-block;
@@ -125,6 +121,7 @@ a[data-media="node"] img{
     padding: 0;
 }
 
+/*
 .hljs{
     color: #000;
 }
@@ -155,3 +152,4 @@ a[data-media="node"] img{
 .hljs-regexp {
     color: #d2a8ff
 }
+*/

@@ -578,8 +578,8 @@ function init_slide(index, direction){
 
                 options_spinner && removeClass(widget, "spinner");
 
-                update_media_viewport();
                 init_slide(index, direction);
+                update_media_viewport();
 
             };
 
