@@ -316,7 +316,7 @@ Pass options declarative via data-attributes in the HTML markup or use the <a hr
 
 > When using markup follow these style: `data-option="value"` (change _option_ and _value_ accordingly), e.g.: `<a class="spotlight" data-preload="false"></a>`.
 
-You can either apply the following data-attributes to the ___spotlight-group___ wrapper element or apply them separately to each ___spotlight___ anchor element (that also overrides group definition inheritance).
+You can either apply the following data-attributes to the ___spotlight-group___ wrapper element or apply them separately to each ___spotlight___ anchor element (that also overrides inherited group definitions).
 
 <table>
     <tr></tr>
@@ -335,6 +335,19 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
             Sets the starting index when showing the gallery by using the <a href="#api">Spotlight API</a>. The index starts from 1.
         </td>
         <td>1</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>media</td>
+        <td>
+            "image"<br>
+            "video"<br>
+            "node"
+        </td>
+        <td>
+            Sets the the type of the media which should be added to the page.
+        </td>
+        <td>image</td>
     </tr>
     <tr></tr>
     <tr>
@@ -408,13 +421,6 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     </tr>
     <tr></tr>
     <tr>
-        <td>download</td>
-        <td>true / false</td>
-        <td>Show/hide the download icon in the toolbar</td>
-        <td>false</td>
-    </tr>
-    <tr></tr>
-    <tr>
         <td>close</td>
         <td>true / false</td>
         <td>Show/hide the close icon in the toolbar</td>
@@ -429,9 +435,9 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     </tr>
     <tr></tr>
     <tr>
-        <td>player</td>
+        <td>play</td>
         <td>true / false / number</td>
-        <td>Show/hide player button, also set delay in seconds between each tick</td>
+        <td>Show/hide play button, also set delay in seconds between each tick</td>
         <td>false</td>
     </tr>
     <tr></tr>
@@ -454,13 +460,6 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
         <td>true / false</td>
         <td>Restart from beginning when no slides left</td>
         <td>false</td>
-    </tr>
-    <tr></tr>
-    <tr>
-        <td>fit</td>
-        <td>"contain"<br>"cover"</td>
-        <td>Auto-fit the media either as "contain" or as "cover"</td>
-        <td>contain</td>
     </tr>
     <tr></tr>
     <tr>
@@ -499,13 +498,6 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
     </tr>
     <tr></tr>
     <tr>
-        <td>preload</td>
-        <td>true / false</td>
-        <td>Enable/disable preloading of the next image</td>
-        <td>true</td>
-    </tr>
-    <tr></tr>
-    <tr>
         <td>button</td>
         <td>str</td>
         <td>Enable/disable a button in the footer section, also set button text.<br><b>Note:</b> When using as markup you have to provide a click target for the button or you can assign an <code>onclick</code> callback via options when used programmatically.</td>
@@ -518,7 +510,171 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
         <td>When using a button as markup you can provide a click target for the button, e.g. <code>&lt;a button=&quot;click me&quot; button-href="https://domain.com"&gt;</code>.</td>
         <td>null</td>
     </tr>
+</table>
+
+### Additional Image Options
+
+Most of these options for a video are inherited by the attributes of a standard video element.
+
+<table>
     <tr></tr>
+    <tr>
+        <td>Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>Values</td>
+        <td>Description</td>
+        <td>Default</td>
+    </tr>
+    <tr>
+        <td>src-{size}</td>
+        <td>
+            src-1200<br>
+            src-2400<br>
+            src-3800<br>
+            ...
+        </td>
+        <td>
+            The tag/key represents the size of the image <b>longest</b> side. The content contains the path or url to the image (e.g. <code>data-src-800="image_800x400.jpg"</code>).
+        </td>
+        <td>null</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>preload</td>
+        <td>true / false</td>
+        <td>Enable/disable preloading of the next image</td>
+        <td>true</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>fit</td>
+        <td>"contain"<br>"cover"</td>
+        <td>Auto-fit the media either as "contain" or as "cover"</td>
+        <td>contain</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>download</td>
+        <td>true / false</td>
+        <td>Show/hide the download icon in the toolbar</td>
+        <td>false</td>
+    </tr>
+</table>
+
+### Additional Video Options
+
+Most of these options for a video are inherited by the attributes of a standard video element.
+
+<table>
+    <tr></tr>
+    <tr>
+        <td>Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>Values</td>
+        <td>Description</td>
+        <td>Default</td>
+    </tr>
+    <tr>
+        <td>src-{format}</td>
+        <td>
+            src-webm<br>
+            src-ogg<br>
+            src-mp4<br>
+            ...
+        </td>
+        <td>
+            The tag/key represents the format of the video. The content contains the path or url to the video (e.g. <code>data-src-webm="video.webm"</code>).
+        </td>
+        <td>null</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>fit</td>
+        <td>"contain"<br>"cover"</td>
+        <td>Auto-fit the media either as "contain" or as "cover"</td>
+        <td>contain</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>autoplay</td>
+        <td>
+            true<br>
+            false
+        </td>
+        <td>
+            Start the video immediately. 
+        </td>
+        <td>false</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>muted</td>
+        <td>
+            true<br>
+            false
+        </td>
+        <td>
+            Start playing as muted. 
+        </td>
+        <td>false</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>preload</td>
+        <td>
+            true<br>
+            false
+        </td>
+        <td>
+            Preload the video. 
+        </td>
+        <td>false</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>controls</td>
+        <td>
+            true<br>
+            false
+        </td>
+        <td>
+            Show/hide the video controls. 
+        </td>
+        <td>true</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>playsinline</td>
+        <td>
+            true<br>
+            false
+        </td>
+        <td>
+            Make the video player inline. 
+        </td>
+        <td>false</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>poster</td>
+        <td>
+            string
+        </td>
+        <td>
+            The path or URL to the preview image. 
+        </td>
+        <td>null</td>
+    </tr>
+</table>
+
+### API-only Options
+
+<table>
+    <tr></tr>
+    <tr>
+        <td>Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>Values</td>
+        <td>Description</td>
+        <td>Default</td>
+    </tr>
     <tr>
         <td>onchange</td>
         <td>
@@ -576,7 +732,7 @@ You can either apply the following data-attributes to the ___spotlight-group___ 
 
 __Note:__ The 2nd image gets the title "Group title" from the group attributes, on the last image the title is explicitly set to be hidden.
 
-Control elements and animations has to be __whitelisted__ as a comma-separated list.
+> Control elements and animations has to be __whitelisted__ as a comma-separated list when specified. Do not forget to add the "close" control, otherwise you need to provide another way to close the gallery, e.g. via the button in the footer (see the demo page bottom example).
 
 ## Adaptive Responsive Images
 
@@ -585,7 +741,7 @@ Control elements and animations has to be __whitelisted__ as a comma-separated l
 You can declare a set of the same image in multiple dimensions and quality. Spotlight will pick the optimal version by taking into account:
 
 1. The browsers max resolution
-2. The device screen pixel ration
+2. The device screen pixel ratio
 3. The available internet connection bandwidth
 
 Save your images in several sizes and resolutions and assign the __longest__ dimension of both sides (width, height) like this:
@@ -674,7 +830,7 @@ Spotlight.removeControl("my-control");
 
 ### Advanced Example (Like Button)
 
-Let's take a useful example like adding a "like button" in the toolbar. You can see a live demo of this example on the demo page (bottom section).
+Let's take a useful example of dynamically adding a "like button" in the toolbar. You can see a live demo of this example on the demo page (bottom section).
 
 Providing a gallery as normal and add a custom attribute "like", which stores the current like state of each image.
 ```js

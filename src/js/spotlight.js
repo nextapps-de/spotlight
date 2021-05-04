@@ -54,6 +54,7 @@ let is_down;
 let dragged;
 let slidable;
 let toggle_autofit;
+let toggle_theme;
 
 let current_slide;
 let slide_count;
@@ -327,7 +328,8 @@ function init_gallery(index){
         if(!panel){
 
             body.appendChild(widget);
-            resize_listener();
+            update_widget_viewport();
+            //resize_listener();
         }
 
         current_slide = index || 1;
@@ -369,9 +371,9 @@ function apply_options(anchor){
     Object.assign(options, anchor.dataset || anchor);
 
     // apply theme before controls (including control "theme") applies to the options
-    theme(options["theme"]);
 
     options_click = options["onclick"];
+    options_theme = parse_option("theme");
     options_autohide = parse_option("autohide", true);
     options_infinite = parse_option("infinite");
     options_progress = parse_option("progress", true);
@@ -379,6 +381,7 @@ function apply_options(anchor){
     options_preload = parse_option("preload", true);
     options_href = parse_option("buttonHref");
     delay = (options_autoplay && parseFloat(options_autoplay)) || 7;
+    toggle_theme || (options_theme && theme(options_theme));
 
     const control = options["control"];
 
@@ -575,9 +578,7 @@ function init_slide(index, direction){
 
                 options_spinner && removeClass(widget, "spinner");
 
-                media_w = this.width;
-                media_h = this.height;
-
+                update_media_dimension()
                 init_slide(index, direction);
             };
 
@@ -626,13 +627,8 @@ function resize_listener(){
 
     //console.log("resize_listener");
 
-    viewport_w = widget.clientWidth;
-    viewport_h = widget.clientHeight;
-
-    if(media){
-
-        update_media_viewport();
-    }
+    update_widget_viewport()
+    media && update_media_viewport();
 
     if(prefix_request){
 
@@ -653,6 +649,12 @@ function resize_listener(){
     }
 
     //update_scroll();
+}
+
+function update_widget_viewport(){
+
+    viewport_w = widget.clientWidth;
+    viewport_h = widget.clientHeight;
 }
 
 function update_media_viewport(){
@@ -1066,28 +1068,20 @@ export function theme(theme){
 
     //console.log("theme", theme);
 
-    if(typeof theme === "object"){
+    if(typeof theme !== "string"){
 
         // toggle:
 
-        theme = options_theme ? "" : "white";
+        theme = toggle_theme ? "" : options_theme || "white";
     }
 
-    // set:
+    if(toggle_theme !== theme){
 
-    if(options_theme !== theme){
+        // set:
 
-        if(options_theme){
-
-            removeClass(widget, options_theme);
-        }
-
-        if(theme){
-
-            addClass(widget, theme);
-        }
-
-        options_theme = theme;
+        toggle_theme && removeClass(widget, toggle_theme);
+        theme && addClass(widget, theme);
+        toggle_theme = theme;
     }
 }
 
@@ -1117,15 +1111,14 @@ export function autofit(init){
 
     setStyle(media, "transform", "");
 
-    media_w = media.width;
-    media_h = media.height;
     scale = 1;
     x = 0;
     y = 0;
 
+    update_media_dimension()
     disable_animation(panel);
     update_panel();
-    autohide();
+    //autohide();
 }
 
 /**
@@ -1156,7 +1149,7 @@ function zoom_in(e){
         zoom(value);
     }
 
-    e || autohide();
+    //e && autohide();
 }
 
 /**
@@ -1192,7 +1185,7 @@ function zoom_out(e){
         zoom(value);
     }
 
-    e || autohide();
+    //e && autohide();
 }
 
 /**
@@ -1210,6 +1203,8 @@ export function zoom(factor){
 
 function disable_autoresizer(){
 
+    //update_media_dimension();
+
     if(toggle_autofit){
 
         // removeClass(media, "autofit");
@@ -1217,6 +1212,12 @@ function disable_autoresizer(){
 
         autofit();
     }
+}
+
+function update_media_dimension(){
+
+    media_w = media.width;
+    media_h = media.height;
 }
 
 function show_gallery(){
@@ -1231,7 +1232,8 @@ function show_gallery(){
     addClass(widget, "show");
 
     toggle_listener(true);
-    resize_listener();
+    update_widget_viewport();
+    //resize_listener();
     autohide();
 
     options_autoplay && play();
@@ -1278,6 +1280,11 @@ export function close(hashchange){
     if(media){
 
         checkout(media);
+    }
+
+    if(hide){
+
+        hide = clearTimeout(hide);
     }
 
     options_onclose && options_onclose();
@@ -1384,7 +1391,7 @@ function determine_src(anchor, size, options){
 
     let src, diff;
 
-    if((media === "video") || !(src = options["src"] || options["href"] || anchor["src"] || anchor["href"])){
+    if(options["media"] !== "node"){
 
         const keys = Object.keys(/** @type {!Object} */ (options));
 
@@ -1392,9 +1399,9 @@ function determine_src(anchor, size, options){
 
             key = keys[x];
 
-            if(key.indexOf("src") === 0){
+            if((key.length > 3) && (key.indexOf("src") === 0)){
 
-                if(media === "video"){
+                if(options["media"] === "video"){
 
                     const cache = video_support[key];
 
@@ -1420,19 +1427,23 @@ function determine_src(anchor, size, options){
                 else{
 
                     const res = parseInt(key.substring(4), 10);
-                    const abs = Math.abs(size - res);
 
-                    if(!diff || (abs < diff)){
+                    if(res){
 
-                        diff = abs;
-                        src = options[key];
+                        const abs = Math.abs(size - res);
+
+                        if(!diff || (abs < diff)){
+
+                            diff = abs;
+                            src = options[key];
+                        }
                     }
                 }
             }
         }
     }
 
-    return src;
+    return src || options["src"] || options["href"] || anchor["src"] || anchor["href"];
 }
 
 function prepare(){

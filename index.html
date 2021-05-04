@@ -44,7 +44,7 @@
     <br>
     <b>Anchors &amp; Images</b>
     <div class="spotlight-group" data-fit="cover" data-autohide="all">
-        <a class="spotlight" href="demo/gallery/brooklyn-bridge-1791001.jpg" data-fullscreen="false" data-button="Click Me!" data-button-href="javascript:alert('You can open an URL or execute some Javascript here.')" data-description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">
+        <a class="spotlight" href="demo/gallery/brooklyn-bridge-1791001.jpg" data-button="Click Me!" data-button-href="javascript:alert('You can open an URL or execute some Javascript here.')" data-description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">
             <img src="demo/gallery/brooklyn-bridge-1791001-thumb.jpg" alt="Lorem ipsum dolor sit amet">
         </a>
         <a class="spotlight" href="demo/gallery/california-1751455.jpg" data-description="Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">
@@ -60,7 +60,7 @@
         <div class="spotlight" data-media="image" data-src="demo/gallery/godafoss-1840758.jpg" data-description="In hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim.">
             <img src="demo/gallery/canada-2340312-thumb.jpg" alt="Duis autem vel eum iriure dolor">
         </div>
-        <a class="spotlight" data-media="video" data-src-webm="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@gh-pages/gallery/big_buck_bunny.webm" data-src-ogg="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@gh-pages/demo/gallery/big_buck_bunny.ogv" data-src-mp4="https://cdn.jsdelivr.net/gh/nextapps-de/spotlight@gh-pages/demo/gallery/VfE_html5.mp4" data-autoplay="false" data-poster="demo/gallery/poster.jpg">
+        <a class="spotlight" data-media="video" data-src-webm="https://nextapps.de/video/spotlight/big_buck_bunny.webm" data-src-ogg="https://nextapps.de/video/spotlight/big_buck_bunny.ogv" data-src-mp4="https://nextapps.de/video/spotlight/big_buck_bunny.mp4" data-autoplay="false" data-poster="demo/gallery/poster.jpg">
             <img src="demo/gallery/poster.jpg">
         </a>
         <a class="spotlight" data-media="node" data-src="#fragment">
@@ -74,9 +74,9 @@
     <div style="display: none">
         <div id="fragment" style="width: 100%">
             <b>Embedded Node Fragment</b><br><br>
-            <img src="demo/gallery/brooklyn-bridge-1791001-thumb.jpg" width="500" height="334">
-            <img src="demo/gallery/california-1751455-thumb.jpg" width="500" height="333">
-            <img src="demo/gallery/montana-1829251-thumb.jpg" width="500" height="331">
+            <img class="image" src="demo/gallery/brooklyn-bridge-1791001-thumb.jpg" width="500" height="334">
+            <img class="image" src="demo/gallery/california-1751455-thumb.jpg" width="500" height="333">
+            <img class="image" src="demo/gallery/montana-1829251-thumb.jpg" width="500" height="331">
         </div>
     </div>
     <br>
@@ -100,7 +100,7 @@
     <br>
     Choose Modifier:<br><br>
     <div id="modifier">
-        <label><input type="checkbox" value="autoplay">Autoplay</label>
+        <label><input type="checkbox" value="autoplay" checked>Autoplay</label>
         <label><input type="checkbox" value="infinite" checked>Infinite Slide</label>
         <label><input type="checkbox" value="spinner" checked>Spinner</label>
         <label><input type="checkbox" value="preload" checked>Preload Next</label><br>
@@ -109,7 +109,7 @@
         <label><input type="radio" name="autohide" value="all">Autohide: All</label><br>
         <label><input type="radio" name="fit" value="cover" checked>Autofit: Cover</label>
         <label><input type="radio" name="fit" value="contain">Autofit: Contain</label><br>
-        <label><input type="radio" name="theme" value="default" checked>Theme: default</label>
+        <label><input type="radio" name="theme" value="" checked>Theme: default</label>
         <label><input type="radio" name="theme" value="white">Theme: white</label>
     </div>
     <br>
