@@ -60,6 +60,7 @@ let current_slide;
 let slide_count;
 let anchors;
 let options;
+let options_media;
 let options_group;
 let options_infinite;
 let options_progress;
@@ -84,7 +85,7 @@ let body;
 let panel;
 let panes;
 let media;
-let media_next;
+let media_next = createElement("img");
 let slider;
 let header;
 let footer;
@@ -373,16 +374,17 @@ function apply_options(anchor){
     options_group && Object.assign(options, options_group);
     Object.assign(options, anchor.dataset || anchor);
 
-    // apply theme before controls (including control "theme") applies to the options
+    // TODO: theme is icon and option field!
 
+    options_media = options["media"];
     options_click = options["onclick"];
-    options_theme = parse_option("theme");
+    options_theme = options["theme"];
     options_autohide = parse_option("autohide", true);
     options_infinite = parse_option("infinite");
     options_progress = parse_option("progress", true);
     options_autoplay = parse_option("autoplay");
     options_preload = parse_option("preload", true);
-    options_href = parse_option("buttonHref");
+    options_href = options["buttonHref"];
     delay = (options_autoplay && parseFloat(options_autoplay)) || 7;
     toggle_theme || (options_theme && theme(options_theme));
 
@@ -493,7 +495,7 @@ function prepare_animation(prepare){
     }
 }
 
-function init_slide(index, direction){
+function init_slide(index){
 
     //console.log("init_slide", index);
 
@@ -517,7 +519,7 @@ function init_slide(index, direction){
         animation_scale && setStyle(media, "transform", "");
         setStyle(media, "visibility", "visible");
 
-        prefetch(direction);
+        gallery_next && (media_next.src = gallery_next);
     }
     else{
 
@@ -538,7 +540,7 @@ function init_slide(index, direction){
                     media.height = media.videoHeight;
                     update_media_viewport();
                     toggle_spinner(options_spinner);
-                    init_slide(index, direction);
+                    init_slide(index);
                 }
             };
 
@@ -572,7 +574,7 @@ function init_slide(index, direction){
                 update_media_viewport();
 
                 panel.appendChild(media);
-                init_slide(index, direction);
+                init_slide(index);
             }
 
             return;
@@ -588,7 +590,7 @@ function init_slide(index, direction){
 
                     media.onerror = null;
                     toggle_spinner(options_spinner);
-                    init_slide(index, direction);
+                    init_slide(index);
                     update_media_viewport();
                 }
             };
@@ -626,21 +628,14 @@ function toggle_spinner(options_spinner, is_on){
     options_spinner && (is_on ? addClass : removeClass)(spinner, "spin");
 }
 
-function prefetch(direction){
-
-    //console.log("prefetch");
-
-    // TODO: create next image as normal and append to pane
-
-    if(direction && gallery_next){
-
-        (media_next = createElement("img")).src = gallery_next;
-    }
-    else{
-
-        media_next = null;
-    }
-}
+// function prefetch(){
+//
+//     console.log("prefetch", gallery_next);
+//
+//     // TODO: create next image as normal and append to pane
+//
+//     media_next.src = gallery_next;
+// }
 
 function has_fullscreen(){
 
@@ -1304,6 +1299,9 @@ export function close(hashchange){
 
     history.go(hashchange === true ? -1 : -2);
 
+    // teardown
+
+    gallery_next && (media_next.src = "");
     playing && play();
     media && checkout(media);
     hide && menu(true);
@@ -1325,11 +1323,6 @@ function checkout(media){
         const parent = media.parentNode;
         parent && parent.removeChild(media);
         media = media.src = media.onerror = "";
-    }
-
-    if(media_next){
-
-        media_next = media_next.src = "";
     }
 }
 
@@ -1412,7 +1405,7 @@ function determine_src(anchor, size, options){
 
     let src, diff;
 
-    if(options["media"] !== "node"){
+    if(options_media !== "node"){
 
         const keys = Object.keys(/** @type {!Object} */ (options));
 
@@ -1422,7 +1415,7 @@ function determine_src(anchor, size, options){
 
             if((key.length > 3) && (key.indexOf("src") === 0)){
 
-                if(options["media"] === "video"){
+                if(options_media === "video"){
 
                     const cache = video_support[key];
 
@@ -1467,7 +1460,7 @@ function determine_src(anchor, size, options){
     return src || options["src"] || options["href"] || anchor["src"] || anchor["href"];
 }
 
-function prepare(){
+function prepare(direction){
 
     let anchor = anchors[current_slide - 1];
 
@@ -1485,24 +1478,24 @@ function prepare(){
 
     gallery = {
 
-        media: options["media"],
+        media: options_media,
         src: determine_src(anchor, size, options),
         title: parse_option("title",
             anchor["alt"] || anchor["title"] ||
-            ((anchor.nodeType === 1) && (tmp = getByTag("img", anchor)[0]) && (tmp["alt"] || tmp["title"]))
+            (/*(anchor.nodeType === 1) &&*/ (tmp = /*getByTag("img", anchor)[0]*/ anchor.firstElementChild) && (tmp["alt"] || tmp["title"]))
         )
     };
 
-    gallery_next = "";
+    gallery_next && (media_next.src = gallery_next = "");
 
-    if(options_preload){
+    if(options_preload && direction){
 
         if((anchor = anchors[current_slide])){
 
             const options_next = anchor.dataset || anchor;
-            const next_is_image = !options_next["media"] || (options_next["media"] === "image");
+            const next_is_image = options_next["media"];
 
-            if(next_is_image){
+            if(!next_is_image || (next_is_image === "image")){
 
                 gallery_next = determine_src(anchor, size, options_next);
             }
@@ -1529,7 +1522,7 @@ function setup_page(direction){
     y = 0;
     scale = 1;
 
-    prepare();
+    prepare(direction);
     update_slider(current_slide - 1);
 
     if(media){
@@ -1564,7 +1557,7 @@ function setup_page(direction){
 
     removeClass(spinner, "error");
 
-    init_slide(current_slide, direction);
+    init_slide(current_slide);
 
     //if(panel){
 

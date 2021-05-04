@@ -640,13 +640,13 @@ Most of these options for a video are inherited by the attributes of a standard 
     </tr>
     <tr></tr>
     <tr>
-        <td>playsinline</td>
+        <td>inline</td>
         <td>
             true<br>
             false
         </td>
         <td>
-            Make the video player inline. 
+            Make the video player inline (equal to "playsinline"). 
         </td>
         <td>false</td>
     </tr>
@@ -782,7 +782,7 @@ You need a markup like this to represent the video from above:
                      data-muted="true"
                      data-preload="true"
                      data-controls="true"
-                     data-playsinline="false"
+                     data-inline="false"
                      data-poster="preview.jpg">
   <img src="preview.jpg">
 </a>
