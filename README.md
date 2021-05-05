@@ -1306,8 +1306,8 @@ Define styles, e.g. for the custom theme name "my-theme":
 Apply custom theme via markdown:
 
 ```html
-<a class="spotlight" href="img.jpg" data-theme="my-theme">
-    <img src="thumb.jpg">
+<a class="spotlight" href="cat.jpg" data-theme="my-theme">
+    <img src="cat_thumb.jpg">
 </a>
 ```
 
@@ -1317,6 +1317,16 @@ Or apply custom theme via API:
 Spotlight.show([ /* Gallery */ ],{
     theme: "my-theme"
 });
+```
+
+You could also set themes per image separately:
+
+```js
+Spotlight.show(
+    { src: "cat1.jpg" }, // default theme
+    { src: "cat2.jpg", theme: "my-theme" },
+    { src: "cat3.jpg", theme: "white" }
+);
 ```
 
 <a name="animation" id="animation"></a>
@@ -1348,8 +1358,8 @@ You can define your own custom animation by:
 Apply custom animation via markdown:
 
 ```html
-<a class="spotlight" href="img.jpg" data-animation="my-animation">
-    <img src="thumb.jpg">
+<a class="spotlight" href="cat.jpg" data-animation="my-animation">
+    <img src="cat_thumb.jpg">
 </a>
 ```
 
@@ -1359,6 +1369,16 @@ Or apply custom animation via API:
 Spotlight.show([ /* Gallery */ ],{
     animation: "my-animation"
 });
+```
+
+You could also set animations per image separately:
+
+```js
+Spotlight.show(
+    { src: "cat1.jpg" }, // default animation
+    { src: "cat2.jpg", animation: "my-animation" },
+    { src: "cat3.jpg", animation: "slide,fade" }
+);
 ```
 
 <a name="builds" id="builds"></a>
