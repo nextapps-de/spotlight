@@ -362,6 +362,17 @@ When using API the ___spotlight-group___ is represented by the options payload, 
     </tr>
     <tr></tr>
     <tr>
+        <td>class</td>
+        <td>
+            string
+        </td>
+        <td>
+            Set a classname to this gallery instance to apply custom styles besides themes independently.
+        </td>
+        <td>null</td>
+    </tr>
+    <tr></tr>
+    <tr>
         <td>media</td>
         <td>
             "image"<br>
@@ -1232,6 +1243,12 @@ Spotlight.menu(true);
 Spotlight.menu(false);
 ```
 
+Download current image:
+
+```js
+Spotlight.download();
+```
+
 #### Example ES6:
 
 ```js
@@ -1322,11 +1339,32 @@ Spotlight.show([ /* Gallery */ ],{
 You could also set themes per image separately:
 
 ```js
-Spotlight.show(
+Spotlight.show([
     { src: "cat1.jpg" }, // default theme
     { src: "cat2.jpg", theme: "my-theme" },
     { src: "cat3.jpg", theme: "white" }
-);
+]);
+```
+
+#### CSS Class
+
+If you like to apply styles independently besides themes you can simply do that by adding a class during initialization:
+```js
+Spotlight.show([
+    { src: "cat1.jpg" }, // default theme
+    { src: "cat2.jpg", theme: "my-theme" },
+    { src: "cat3.jpg", theme: "white" }
+],{
+    class: "custom"
+});
+```
+
+In your stylesheet you can apply you custom styles, .e.g.:
+
+```css
+#spotlight.custom .spl-title{
+    font-size: 15px;
+}
 ```
 
 <a name="animation" id="animation"></a>
@@ -1374,12 +1412,38 @@ Spotlight.show([ /* Gallery */ ],{
 You could also set animations per image separately:
 
 ```js
-Spotlight.show(
+Spotlight.show([
     { src: "cat1.jpg" }, // default animation
     { src: "cat2.jpg", animation: "my-animation" },
     { src: "cat3.jpg", animation: "slide,fade" }
-);
+]);
 ```
+
+#### Use different animations for galleries
+
+The example above will apply the animation to all instances of your gallery. When you want to add specific animation to each gallery you need to add a `class` in your options:
+```js
+Spotlight.show([
+    { src: "cat1.jpg" },
+    { src: "cat2.jpg" },
+    { src: "cat3.jpg" }
+],{
+  animation: "my-animation",
+  class: "custom"
+});
+```
+
+Then, add your classname (context selector) to your CSS for the ___visible___ state of the animation:
+
+```css
+.custom .spl-pane > *{
+    filter: grayscale(0);
+    transition: filter 1s ease-out,
+                opacity 0.5s ease-out;
+}
+```
+
+Now you can assign different animations to each gallery.
 
 <a name="builds" id="builds"></a>
 ## Custom Builds

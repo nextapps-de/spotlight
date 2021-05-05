@@ -5,7 +5,7 @@
 
 export function addClass(node, class_name){
 
-    node.classList.add(class_name);
+    toggleClass(node, class_name, true);
 }
 
 /**
@@ -15,7 +15,18 @@ export function addClass(node, class_name){
 
 export function removeClass(node, class_name){
 
-    node.classList.remove(class_name);
+    toggleClass(node, class_name);
+}
+
+/**
+ * @param node
+ * @param class_name
+ * @param {?=} state
+ */
+
+export function toggleClass(node, class_name, state){
+
+    node.classList[state ? "add" : "remove"](class_name);
 }
 
 /**
@@ -100,7 +111,7 @@ export function getByTag(tag, context){
 
 export function addListener(node, event, fn, mode){
 
-    node.addEventListener(event, fn, mode || (mode === false) ? mode : true);
+    toggleListener(true, node, event, fn, mode);
 }
 
 /**
@@ -112,7 +123,20 @@ export function addListener(node, event, fn, mode){
 
 export function removeListener(node, event, fn, mode){
 
-    node.removeEventListener(event, fn, mode || (mode === false) ? mode : true);
+    toggleListener(false, node, event, fn, mode);
+}
+
+/**
+ * @param {boolean|undefined} state
+ * @param {!Window|Document|Element} node
+ * @param {string} event
+ * @param {Function} fn
+ * @param {EventListenerOptions|boolean=} mode
+ */
+
+export function toggleListener(state, node, event, fn, mode){
+
+    node[(state ? "add" : "remove") + "EventListener"](event, fn, mode || (mode === false) ? mode : true);
 }
 
 /**
@@ -122,17 +146,9 @@ export function removeListener(node, event, fn, mode){
 
 export function cancelEvent(event, prevent){
 
-    //event || (event = window.event);
-
-    //if(event){
-
     event.stopPropagation();
     //event.stopImmediatePropagation();
     prevent && event.preventDefault();
-        //passive || (event.returnValue = false);
-    //}
-
-    //return false;
 }
 
 export function downloadImage(body, image){

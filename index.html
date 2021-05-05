@@ -18,6 +18,14 @@
         .spl-like.on{
             background-image: url(demo/gallery/heart.svg);
         }
+        .custom .spl-pane > *{
+            clip-path: circle(100% at center);
+            transition: all 0.65s ease,
+                        clip-path 1s ease;
+        }
+        .spl-pane .custom {
+            clip-path: circle(0px at center);
+        }
     </style>
     <link rel="stylesheet" href="demo/style.css">
     <meta name="format-detection" content="telephone=no">
@@ -211,6 +219,7 @@
 
                 const options = {
 
+                    class: "custom",
                     index: index,
                     control: control,
                     animation: animation,

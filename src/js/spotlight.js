@@ -10,12 +10,13 @@ import {
 
     addClass,
     removeClass,
+    toggleClass,
     setStyle,
     prepareStyle,
     getByClass,
     setText,
     addListener,
-    removeListener,
+    toggleListener,
     cancelEvent,
     createElement,
     toggleDisplay,
@@ -67,6 +68,7 @@ let options_theme;
 let options_preload;
 let options_href;
 let options_click;
+let options_class;
 let delay;
 
 let animation_scale;
@@ -355,10 +357,12 @@ function apply_options(anchor){
     Object.assign(options, anchor.dataset || anchor);
 
     // TODO: theme is icon and option field!
+    // TODO: autoplay option collision
 
     options_media = options["media"];
     options_click = options["onclick"];
     options_theme = options["theme"];
+    options_class = options["class"];
     options_autohide = parse_option("autohide", true);
     options_infinite = parse_option("infinite");
     options_progress = parse_option("progress", true);
@@ -367,6 +371,7 @@ function apply_options(anchor){
     options_href = options["buttonHref"];
     delay = (options_autoplay && parseFloat(options_autoplay)) || 7;
     toggle_theme || (options_theme && theme(options_theme));
+    options_class && addClass(widget, options_class);
 
     const control = options["control"];
 
@@ -609,7 +614,7 @@ function toggle_spinner(options_spinner, is_on){
 
     //console.log("toggle_spinner", options_spinner, is_on);
 
-    options_spinner && (is_on ? addClass : removeClass)(spinner, "spin");
+    options_spinner && toggleClass(spinner, "spin", is_on);
 }
 
 function has_fullscreen(){
@@ -634,20 +639,15 @@ function resize_listener(){
 
     if(prefix_request){
 
-        if(has_fullscreen()){
+        const is_fullscreen = has_fullscreen();
 
-            addClass(maximize, "on");
-        }
-        else{
+        toggleClass(maximize, "on", is_fullscreen)
 
-            removeClass(maximize, "on");
+        // handle when user toggles the fullscreen state manually
+        // entering the fullscreen state manually needs to be hide the fullscreen icon, because
+        // the exit fullscreen handler will not work due to a browser restriction
 
-            // handle when user toggles the fullscreen state manually
-            // entering the fullscreen state manually needs to be hide the fullscreen icon, because
-            // the exit fullscreen handler will not work due to a browser restriction
-
-            toggleDisplay(maximize, (screen.availHeight - window.outerHeight) >= 0);
-        }
+        is_fullscreen || toggleDisplay(maximize, (screen.availHeight - window.outerHeight) >= 0);
     }
 
     //update_scroll();
@@ -729,12 +729,10 @@ function toggle_listener(install){
 
     //console.log("toggle_listener", install);
 
-    const fn = install ? addListener : removeListener;
-
-    fn(window, "keydown", key_listener);
-    fn(window, "wheel", wheel_listener);
-    fn(window, "resize", resize_listener);
-    fn(window, "popstate", history_listener);
+    toggleListener(install, window, "keydown", key_listener);
+    toggleListener(install, window, "wheel", wheel_listener);
+    toggleListener(install, window, "resize", resize_listener);
+    toggleListener(install, window, "popstate", history_listener);
 }
 
 function history_listener(event) {
@@ -820,31 +818,15 @@ export function play(init){
 
     const state = (typeof init === "boolean" ? init : !playing);
 
-    if(state){
+    if(state === !playing){
 
-        if(!playing){
-
-            playing = setInterval(next, delay * 1000);
-            addClass(player, "on");
-            options_progress && animate_bar(true);
-        }
-    }
-    else{
-
-        if(playing){
-
-            playing = clearInterval(playing);
-            removeClass(player, "on");
-            options_progress && animate_bar();
-        }
+        playing = playing ? clearInterval(playing) : setInterval(next, delay * 1000);
+        toggleClass(player, "on", playing);
+        options_progress && animate_bar();
     }
 }
 
-/**
- * @param {boolean=} start
- */
-
-function animate_bar(start){
+function animate_bar(){
 
     //console.log("animate_bar", start);
 
@@ -858,7 +840,7 @@ function animate_bar(start){
 
     // start animation
 
-    if(start){
+    if(playing){
 
         setStyle(progress, "transition-duration", delay + "s");
         setStyle(progress, "transform", "translateX(0)");
@@ -1112,15 +1094,7 @@ export function autofit(init){
 
     toggle_autofit = (scale === 1) && !toggle_autofit;
 
-    if(toggle_autofit){
-
-        addClass(media, "autofit");
-    }
-    else{
-
-        removeClass(media, "autofit");
-    }
-
+    toggleClass(media, "autofit", toggle_autofit);
     setStyle(media, "transform", "");
 
     scale = 1;
@@ -1284,6 +1258,7 @@ export function close(hashchange){
     media && checkout(media);
     hide && menu(true);
     toggle_theme && theme();
+    options_class && removeClass(widget, options_class);
     options_onclose && options_onclose();
 }
 
