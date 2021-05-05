@@ -372,6 +372,7 @@ function apply_options(anchor){
     delay = (options_autoplay && parseFloat(options_autoplay)) || 7;
     toggle_theme || (options_theme && theme(options_theme));
     options_class && addClass(widget, options_class);
+    options_class && prepareStyle(widget)
 
     const control = options["control"];
 
@@ -816,6 +817,8 @@ export function play(init){
 
     //console.log("play", init);
 
+    // TODO: stop playing until finished loading
+
     const state = (typeof init === "boolean" ? init : !playing);
 
     if(state === !playing){
@@ -1256,7 +1259,7 @@ export function close(hashchange){
     gallery_next && (media_next.src = "");
     playing && play();
     media && checkout(media);
-    hide && menu(true);
+    hide && clearTimeout(hide); //menu(true);
     toggle_theme && theme();
     options_class && removeClass(widget, options_class);
     options_onclose && options_onclose();

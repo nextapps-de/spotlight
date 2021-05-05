@@ -60,19 +60,21 @@ let tmp = 0;
 
 /**
  * @param node
- * @param fn
+ * @param {Function=} fn
  */
 
 export function prepareStyle(node, fn){
 
-    setStyle(node, "transition", "none");
+    if(fn){
 
-    fn();
+        setStyle(node, "transition", "none");
+        fn();
+    }
 
     // force applying styles (quick-fix for closure compiler):
     tmp || (tmp = node.clientTop && 0); // clientWidth
 
-    setStyle(node, "transition", "");
+    fn && setStyle(node, "transition", "");
 }
 
 export function setText(node, text){

@@ -8,6 +8,7 @@
     <script src="dist/spotlight.bundle.js"></script>
     <!--<script src="dist/js/spotlight.min.js"></script>-->
     <!--<link rel="stylesheet" href="dist/css/spotlight.min.css">-->
+    <!-- Custom Control: -->
     <style>
         /* custom classes are always prefixed by "spl-" automatically */
         .spl-like{
@@ -18,13 +19,28 @@
         .spl-like.on{
             background-image: url(demo/gallery/heart.svg);
         }
-        .custom .spl-pane > *{
+    </style>
+    <!-- Custom Animation: -->
+    <style>
+        /* custom animation "visible state" (css context by custom classname "only-this-gallery" to apply these animation just on a specific gallery) */
+        .only-this-gallery.show .spl-pane > *{
             clip-path: circle(100% at center);
             transition: all 0.65s ease,
                         clip-path 1s ease;
         }
+        /* custom animation "hidden state" ("custom" is the name of the animation you pass as gallery option) */
         .spl-pane .custom {
             clip-path: circle(0px at center);
+        }
+        /* custom animation when gallery is hidden */
+        #spotlight.only-this-gallery{
+            clip-path: circle(0px at center);
+        }
+        /* custom animation gallery will open */
+        #spotlight.only-this-gallery.show{
+            clip-path: circle(100% at center);
+            transition: all 0.65s ease,
+                        clip-path 1s ease;
         }
     </style>
     <link rel="stylesheet" href="demo/style.css">
@@ -219,7 +235,7 @@
 
                 const options = {
 
-                    class: "custom",
+                    class: "only-this-gallery",
                     index: index,
                     control: control,
                     animation: animation,
