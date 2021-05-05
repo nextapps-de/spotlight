@@ -135,6 +135,17 @@ export function cancelEvent(event, prevent){
     //return false;
 }
 
+export function downloadImage(body, image){
+
+    const link = /** @type {HTMLAnchorElement} */ (createElement("a"));
+    const src = image.src;
+    link.href = src;
+    link.download = src.substring(src.lastIndexOf("/") + 1);
+    body.appendChild(link);
+    link.click();
+    body.removeChild(link);
+}
+
 /**
  * @param {!string} element
  * @return {Element}
@@ -143,4 +154,34 @@ export function cancelEvent(event, prevent){
 export function createElement(element){
 
     return document.createElement(element);
+}
+
+/**
+ * @param node
+ * @param {boolean=} state
+ */
+
+export function toggleDisplay(node, state){
+
+    setStyle(node, "display", state ? "" : "none");
+}
+
+/**
+ * @param node
+ * @param {boolean=} state
+ */
+
+export function toggleVisibility(node, state){
+
+    setStyle(node, "visibility", state ? "" : "hidden");
+}
+
+/**
+ * @param node
+ * @param {boolean=} state
+ */
+
+export function toggleAnimation(node, state){
+
+    setStyle(node, "transition", state ? "" : "none");
 }

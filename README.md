@@ -22,11 +22,6 @@ Spotlight runs out of the box:
 - No additional icons/assets
 - No additional handling of dynamic content and event listener
 
-Alternatively you can:
-
-1. use the non-bundled version of this library (classically contains css files, image files, js files)
-2. use the source files (compatible for the ES6 module system)
-
 <a name="features" id="features"></a>
 ## Features
 
@@ -52,7 +47,7 @@ Alternatively you can:
 - Custom Controls
 - Fully configurable via markup
 - Loading Spinner
-- Prefetch next image
+- Smart Preloading (prefetch next image including cancellation)
 - Customize via standard options
 - Simply customize via markup (data-attributes)
 - Built-in animations
@@ -80,6 +75,13 @@ __Technical properties:__
 - Super-lightweight, all in all just 9kb gzip (js + css + html + icons)
 - Support for ES6 module system
 
+#### Pending Feature Suggestions:
+
+- Inline Gallery
+- Pinch Zoom Support
+- 2-Panel-Paging Strategy
+- Swipe down to close
+
 <a name="started"></a>
 ## Getting Started
 
@@ -93,8 +95,8 @@ __Get Latest Stable Build (Recommended):__
     </tr>
     <tr>
         <td>spotlight.bundle.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.5/dist/spotlight.bundle.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/spotlight.bundle.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.6/dist/spotlight.bundle.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.6/dist/spotlight.bundle.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.6/dist/spotlight.bundle.js</a></td>
     </tr>
     <tr>
         <td colspan=3">
@@ -103,14 +105,14 @@ __Get Latest Stable Build (Recommended):__
     </tr>
     <tr>
         <td>spotlight.min.js</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.5/dist/js/spotlight.min.js" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/js/spotlight.min.js</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.6/dist/js/spotlight.min.js" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.6/dist/js/spotlight.min.js" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.6/dist/js/spotlight.min.js</a></td>
     </tr>
     <tr></tr>
     <tr>
         <td>spotlight.min.css</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.5/dist/css/spotlight.min.css" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/css/spotlight.min.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/dist/css/spotlight.min.css</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.6/dist/css/spotlight.min.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.6/dist/css/spotlight.min.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.6/dist/css/spotlight.min.css</a></td>
     </tr>
     <tr>
         <td colspan=3">
@@ -119,25 +121,25 @@ __Get Latest Stable Build (Recommended):__
     </tr>
     <tr>
         <td>ES6 Modules</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.5/src/js" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.6/src/js" target="_blank">Download</a></td>
         <td>The <i>/src/js</i> folder of this Github repository</td>
     </tr>
     <tr></tr>
     <tr>
         <td>LESS Files (source)</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.5/src/css" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.6/src/css" target="_blank">Download</a></td>
         <td>The <i>/src/css</i> folder of this Github repository</td>
     </tr>
     <tr></tr>
     <tr>
         <td>spotlight.css (compiled)</td>
-        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.5/src/css/spotlight.css" target="_blank">Download</a></td>
-        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/src/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.5/src/css/spotlight.css</a></td>
+        <td><a href="https://github.com/nextapps-de/spotlight/raw/0.7.6/src/css/spotlight.css" target="_blank">Download</a></td>
+        <td><a href="https://rawcdn.githack.com/nextapps-de/spotlight/0.7.6/src/css/spotlight.css" target="_blank">https://rawcdn.githack.com/nextapps-de/spotlight/0.7.6/src/css/spotlight.css</a></td>
     </tr>
     <tr></tr>
     <tr>
         <td>src.zip</td>
-        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.5/dist" target="_blank">Download</a></td>
+        <td><a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/nextapps-de/spotlight/tree/0.7.6/dist" target="_blank">Download</a></td>
         <td>Download all source files including image original resources.</td>
     </tr>
 </table>
@@ -150,7 +152,7 @@ npm install spotlight.js
 
 __Get Latest Nightly (Do not use for production!):__
 
-Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/__0.7.5__/dist/" into "/spotlight/__master__/dist".
+Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/__0.7.6__/dist/" into "/spotlight/__master__/dist".
 
 ### Use Bundled Version
 
@@ -227,7 +229,7 @@ You can also load modules via CDN, e.g.:
 
 ```html
 <script type="module">
-  import Spotlight from "https://unpkg.com/spotlight@0.7.5/src/js/spotlight.js";
+  import Spotlight from "https://unpkg.com/spotlight@0.7.6/src/js/spotlight.js";
 </script>
 ```
 
@@ -270,7 +272,7 @@ Alternatively you can use non-anchor elements also:
 Pretty much the same like anchors but uses ___data-src___ instead of ___href___.
 
 <a name="groups" id="groups"></a>
-## Gallery-Groups
+### Gallery-Groups
 
 Grouping galleries is useful when you have multiple images on your page which should be separated into groups, instead of adding all images to one single gallery when opened.
 
@@ -307,6 +309,26 @@ Each of these groups now opens in its own gallery.
 
 Gallery-Groups are also useful to declare global configuration as markup just once (group options inheritance).
 
+## Basic Usage (API)
+
+Also you can programmatically use Spotlight via the library API. This way does not require any dependant HTML elements (e.g. the classname "spotlight").
+
+Define a gallery group as follows:
+
+```js
+var gallery = [
+    { src: "cat1.jpg" },
+    { src: "cat2.jpg" },
+    { src: "cat3.jpg" }
+];
+```
+
+Show gallery with default options:
+
+```js
+Spotlight.show(gallery /*, options */);
+```
+
 <a name="options"></a>
 ## Options
 
@@ -314,7 +336,11 @@ Pass options declarative via data-attributes in the HTML markup or use the <a hr
 
 > When using markup follow these style: `data-option="value"` (change _option_ and _value_ accordingly), e.g.: `<a class="spotlight" data-preload="false"></a>`.
 
+> When using API follow thse style `{ option: value }` (change _option_ and _value_ accordingly), e.g.: `{ preload: false }`.
+
 You can either apply the following data-attributes to the ___spotlight-group___ wrapper element or apply them separately to each ___spotlight___ anchor element (that also overrides inherited group definitions).
+
+When using API the ___spotlight-group___ is represented by the options payload, also you can assign attributes separately to each gallery entry (that also overrides inherited group definitions).
 
 <table>
     <tr></tr>
@@ -708,22 +734,21 @@ Most of these options for a video are inherited by the attributes of a standard 
     </tr>
 </table>
 
-<a name="example"></a>
-##### Group Option Inheritance
+### Example: Options & Group Inheritance (Markup)
 
 ```html
 <div class="spotlight-group" data-title="Group title" data-animation="fade" data-control="autofit,close">
-    <a class="spotlight" href="cat1.jpg" data-title="This is a title." data-theme="white">
+    <a class="spotlight" href="cat1.jpg" data-title="This is a title" data-theme="white">
         <img src="cat1-thumb.jpg">
     </a>
-    <a class="spotlight" href="cat2.jpg" data-description="This is a description.">
+    <a class="spotlight" href="cat2.jpg" data-description="This is a description">
         <img src="cat2-thumb.jpg">
     </a>
     <a class="spotlight" href="cat3.jpg" data-button="Click me" data-button-href="javascript:alert('clicked')">
-        <img src="cat3-thumb.jpg" alt="This is also a title.">
+        <img src="cat3-thumb.jpg" alt="This is also a title">
     </a>
     <a class="spotlight" href="cat4.jpg" data-title="false" data-fit="cover">
-      <img src="cat4-thumb.jpg" alt="This is a hidden title.">
+      <img src="cat4-thumb.jpg" alt="This title is hidden">
     </a>
 </div>
 ```
@@ -731,6 +756,35 @@ Most of these options for a video are inherited by the attributes of a standard 
 __Note:__ The 2nd image gets the title "Group title" from the group attributes, on the last image the title is explicitly set to be hidden.
 
 > Control elements and animations has to be __whitelisted__ as a comma-separated list when specified. Do not forget to add the "close" control, otherwise you need to provide another way to close the gallery, e.g. via the button in the footer (see the demo page bottom example).
+
+### Example: Options & Group Inheritance (API)
+
+Same result as above but as code:
+
+```js
+Spotlight.show([{
+    src: "cat1.jpg",
+    title: "This is a title",
+    theme: "white"
+},{
+    src: "cat2.jpg",
+    description: "This is a description",
+},{
+    src: "cat3.jpg",
+    button: "Click me",
+    onclick: function(){ alert("clicked"); },
+    title: "This is also a title"
+},{
+    src: "cat4.jpg",
+    title: false,
+    fit: "cover"
+}],{
+    // Group Definitions:
+    title: "Group title",
+    animation: "fade",
+    control: "autofit,close"
+});
+```
 
 ## Adaptive Responsive Images
 
@@ -741,6 +795,8 @@ You can declare a set of the same image in multiple dimensions and quality. Spot
 1. The browsers max resolution
 2. The device screen pixel ratio
 3. The available internet connection bandwidth
+
+### Example: Markup
 
 Save your images in several sizes and resolutions and assign the __longest__ dimension of both sides (width, height) like this:
 ```html
@@ -757,6 +813,20 @@ When clicked on it Spotlight will pick the optimum choice.
 
 This markup completely falls back to standard browser behavior when something goes wrong, also it is SEO friendly.
 
+### Example: API
+
+Same result as above but as code:
+
+```js
+Spotlight.show([{
+    // the default "href" version as fallback isn't required here
+    "src-800": "cat1_800.jpg",
+    "src-1200": "cat1_1200.jpg",
+    "src-2400": "cat1_2400.jpg",
+    "src-3800": "cat1_3800.jpg"
+}]);
+```
+
 ## Support Video
 
 > All data-attributes for markup a video is inherited by the attributes of a standard video element.
@@ -771,6 +841,8 @@ Considering you want to add a standard video element like this as a slide:
 </video>
 ```
 
+### Example: Markup
+
 You need a markup like this to represent the video from above:
 
 ```html
@@ -778,14 +850,34 @@ You need a markup like this to represent the video from above:
                      data-src-webm="video.webm"
                      data-src-ogg="video.ogv"
                      data-src-mp4="video.mp4"
+                     data-poster="preview.jpg"
                      data-autoplay="true"
                      data-muted="true"
                      data-preload="true"
                      data-controls="true"
-                     data-inline="false"
-                     data-poster="preview.jpg">
+                     data-inline="false">
   <img src="preview.jpg">
 </a>
+```
+
+### Example: API
+
+Same result as above but as code:
+
+```js
+Spotlight.show([{
+  
+  "media": "video",
+  "src-webm": "video.webm",
+  "src-ogg": "video.ogv",
+  "src-mp4": "video.mp4",
+  "poster": "preview.jpg",
+  "autoplay": true,
+  "muted": true,
+  "preload": true,
+  "controls": true,
+  "inline": false
+}]);
 ```
 
 ## Custom Controls
@@ -980,7 +1072,7 @@ Provide a __dom query selector__ as "src" which points to a node in your documen
 
 When closing the gallery or change the page to another slide, the fragment will automatically move back to its original position (the hidden backstore in this example).
 
-### Custom Slides (API-only)
+### Custom Slides (API)
 
 You can add nodes as slide which are not part of the document via the API (e.g. fragments, templates, offscreen nodes). Also, you can create an iframe to load extern contents.
 
@@ -1015,8 +1107,6 @@ Spotlight.show([{
 <a name="api" id="api"></a>
 ## Spotlight API
 
-Also you can programmatically use Spotlight via the library API. This way does not require any dependant HTML elements (e.g. the classname "spotlight").
-
 Define a gallery group as follows:
 
 ```js
@@ -1048,7 +1138,7 @@ Spotlight.show(gallery, {
     index: 2,
     theme: "white",
     autohide: false,
-    control: ["autofit", "zoom"]
+    control: ["autofit", "zoom", "close"]
 });
 ```
 
@@ -1142,7 +1232,7 @@ Spotlight.menu(true);
 Spotlight.menu(false);
 ```
 
-__Example ES6:__
+#### Example ES6:
 
 ```js
 import Spotlight from "./spotlight.js";
@@ -1232,28 +1322,26 @@ Spotlight.show([ /* Gallery */ ],{
 <a name="animation" id="animation"></a>
 ## Custom Animations
 
-> When you pass a custom animation, all other ambiguous animation settings will be overridden (also when mixed with built-ins).
-
-> The style class for a custom animation describes the __hidden state__ of an image.
+> Important: The style class for a custom animation describes the __<u>hidden state</u>__ of an image.
 
 You can define your own custom animation by:
 
-<b>1.</b> Extending the default styles (when image is shown) and corresponding transitions as follows:
+<b>1.</b> Define the styles in default state (when image is shown), e.g.:
 
 ```css
-.spl-scene > *{
+.spl-pane > *{
     filter: grayscale(0);
     transition: filter 1s ease-out,
                 opacity 0.5s ease-out;
 }
 ```
 
-<b>2.</b> Providing styles for the __hidden state__ of the transition by adding a custom animation name as a class:
+<b>2.</b> Define styles for the __<u>hidden state</u>__ of the transition by adding a custom classname:
 
 ```css
-.spl-scene .my-animation{
-    opacity: 0 !important;
+.spl-pane .my-animation{
     filter: grayscale(1);
+    opacity: 0;
 }
 ```
 

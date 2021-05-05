@@ -6,39 +6,32 @@
  * https://github.com/nextapps-de/spotlight
  */
 
-import { addClass, removeClass, setStyle, prepareStyle, getByClass, getByTag, setText, addListener, removeListener, cancelEvent, createElement } from "./helper.js";
+import {
+
+    addClass,
+    removeClass,
+    setStyle,
+    prepareStyle,
+    getByClass,
+    setText,
+    addListener,
+    removeListener,
+    cancelEvent,
+    createElement,
+    toggleDisplay,
+    toggleAnimation,
+    toggleVisibility,
+    downloadImage
+
+} from "./helper.js";
+
+import { controls, controls_default, keycodes } from "./config.js";
 import widget from "./template.js";
+import parse_src from "./parser.js";
 
-const controls = [
-
-    "theme",
-    "download",
-    "play",
-    "page",
-    "close",
-    "autofit",
-    "zoom-in",
-    "zoom-out",
-    "prev",
-    "next",
-    "fullscreen"
-];
-
-const controls_default = {
-
-    "page": 1,
-    "close": 1,
-    "autofit": 1,
-    "zoom-in": 1,
-    "zoom-out": 1,
-    "prev": 1,
-    "next": 1,
-    "fullscreen": 1
-};
-
-const tpl_video = /** @type {HTMLVideoElement} */ (createElement("video"));
 const controls_dom = {};
-const video_support = {};
+const connection = navigator["connection"];
+const dpr = window["devicePixelRatio"] || 1;
 
 let x;
 let y;
@@ -107,25 +100,6 @@ let hide;
 let hide_cooldown;
 
 let prefix_request, prefix_exit;
-
-/**
- * @enum {number}
- */
-
-const keycodes = {
-
-    BACKSPACE: 8,
-    ESCAPE: 27,
-    SPACEBAR: 32,
-    LEFT: 37,
-    RIGHT: 39,
-    UP: 38,
-    NUMBLOCK_PLUS : 107,
-    PLUS: 187,
-    DOWN: 40,
-    NUMBLOCK_MINUS: 109,
-    MINUS: 189
-};
 
 addListener(document, "click", dispatch);
 
@@ -234,6 +208,8 @@ export function init(){
 
 export function addControl(classname, fn){
 
+    //console.log("addControl", classname, fn);
+
     const div = createElement("div");
 
     div.className = "spl-" + classname;
@@ -244,6 +220,8 @@ export function addControl(classname, fn){
 }
 
 export function removeControl(classname){
+
+    //console.log("dispatch", classname);
 
     const div = controls_dom[classname];
 
@@ -337,7 +315,7 @@ function init_gallery(index){
         }
 
         current_slide = index || 1;
-        disable_animation(slider);
+        toggleAnimation(slider);
         setup_page(true);
         show_gallery();
     }
@@ -349,6 +327,8 @@ function init_gallery(index){
  */
 
 function parse_option(key, is_default){
+
+    //console.log("parse_option", key, is_default);
 
     let val = options[key];
 
@@ -482,13 +462,15 @@ function apply_options(anchor){
 
 function prepare_animation(prepare){
 
+    //console.log("prepare_animation", prepare);
+
     if(prepare){
 
         prepareStyle(media, prepare_animation);
     }
     else{
 
-        (animation_slide ? enable_animation : disable_animation)(slider);
+        toggleAnimation(slider, animation_slide);
         setStyle(media, "opacity", animation_fade ? 0 : 1);
         update_scroll(animation_scale && 0.8);
         animation_custom && addClass(media, animation_custom);
@@ -625,17 +607,10 @@ function init_slide(index){
 
 function toggle_spinner(options_spinner, is_on){
 
+    //console.log("toggle_spinner", options_spinner, is_on);
+
     options_spinner && (is_on ? addClass : removeClass)(spinner, "spin");
 }
-
-// function prefetch(){
-//
-//     console.log("prefetch", gallery_next);
-//
-//     // TODO: create next image as normal and append to pane
-//
-//     media_next.src = gallery_next;
-// }
 
 function has_fullscreen(){
 
@@ -671,7 +646,7 @@ function resize_listener(){
             // entering the fullscreen state manually needs to be hide the fullscreen icon, because
             // the exit fullscreen handler will not work due to a browser restriction
 
-            display_state(maximize, (screen.availHeight - window.outerHeight) >= 0);
+            toggleDisplay(maximize, (screen.availHeight - window.outerHeight) >= 0);
         }
     }
 
@@ -680,21 +655,25 @@ function resize_listener(){
 
 function update_widget_viewport(){
 
+    //console.log("update_widget_viewport");
+
     viewport_w = widget.clientWidth;
     viewport_h = widget.clientHeight;
 }
 
 function update_media_viewport(){
 
+    //console.log("update_media_viewport");
+
     media_w = media.clientWidth;
     media_h = media.clientHeight;
 }
 
-function update_media_dimension(){
-
-    media_w = media.width;
-    media_h = media.height;
-}
+// function update_media_dimension(){
+//
+//     media_w = media.width;
+//     media_h = media.height;
+// }
 
 /**
  * @param {number=} force_scale
@@ -702,7 +681,7 @@ function update_media_dimension(){
 
 function update_scroll(force_scale){
 
-    //console.log("update_scroll");
+    //console.log("update_scroll", force_scale);
 
     setStyle(media, "transform", "translate(-50%, -50%) scale(" + (force_scale || scale) + ")");
 }
@@ -727,7 +706,7 @@ function update_panel(x, y){
 
 function update_slider(index, prepare, offset){
 
-    //console.log("update_slider", prepare, value);
+    //console.log("update_slider", prepare, offset);
 
     if(prepare){
 
@@ -748,7 +727,7 @@ function update_slider(index, prepare, offset){
 
 function toggle_listener(install){
 
-    //console.log("toggle_listener", listener, install);
+    //console.log("toggle_listener", install);
 
     const fn = install ? addListener : removeListener;
 
@@ -867,7 +846,7 @@ export function play(init){
 
 function animate_bar(start){
 
-    //console.log("animate_bar");
+    //console.log("animate_bar", start);
 
     // reset bar
 
@@ -904,7 +883,7 @@ function autohide(){
 
 function schedule(cooldown){
 
-    //console.log("schedule", delay);
+    //console.log("schedule", cooldown);
 
     hide = setTimeout(function(){
 
@@ -963,11 +942,11 @@ function start(e){
         e = touches;
     }
 
-    slidable = /*!toggle_autofit &&*/ (media_w * scale) <= viewport_w;
+    slidable = /* !toggle_autofit && */ (media_w * scale) <= viewport_w;
     startX = e.pageX;
     startY = e.pageY;
 
-    disable_animation(panel);
+    toggleAnimation(panel);
 }
 
 function end(e){
@@ -1002,7 +981,7 @@ function end(e){
                 update_panel();
             }
 
-            enable_animation(panel);
+            toggleAnimation(panel, true);
         }
 
         is_down = false;
@@ -1149,7 +1128,7 @@ export function autofit(init){
     y = 0;
 
     update_media_viewport();
-    disable_animation(panel);
+    toggleAnimation(panel);
     update_panel();
     //autohide();
 }
@@ -1160,7 +1139,7 @@ export function autofit(init){
 
 function zoom_in(e){
 
-    //console.log("zoom_in", prevent_autohide);
+    //console.log("zoom_in");
 
     let value = scale / 0.65;
 
@@ -1191,7 +1170,7 @@ function zoom_in(e){
 
 function zoom_out(e){
 
-    //console.log("zoom_out", prevent_autohide);
+    //console.log("zoom_out");
 
     let value = scale * 0.65;
 
@@ -1236,6 +1215,8 @@ export function zoom(factor){
 
 function disable_autoresizer(){
 
+    //console.log("disable_autoresizer");
+
     //update_media_dimension();
 
     if(toggle_autofit){
@@ -1254,7 +1235,7 @@ function show_gallery(){
     history.pushState({ "spl": 1 }, "");
     history.pushState({ "spl": 2 }, "");
 
-    enable_animation(widget);
+    toggleAnimation(widget, true);
     addClass(body, "hide-scrollbars");
     addClass(widget, "show");
 
@@ -1268,12 +1249,9 @@ function show_gallery(){
 
 export function download(){
 
-    const link = /** @type {HTMLAnchorElement} */ (createElement("a"));
-    link.href = media.src;
-    link.download = media.src.substring(media.src.lastIndexOf("/") + 1);
-    body.appendChild(link);
-    link.click();
-    body.removeChild(link);
+    //console.log("download", media);
+
+    downloadImage(body, media);
 }
 
 /**
@@ -1398,69 +1376,9 @@ export function goto(slide){
     }
 }
 
-const connection = navigator["connection"];
-const dpr = window["devicePixelRatio"] || 1;
-
-function determine_src(anchor, size, options){
-
-    let src, diff;
-
-    if(options_media !== "node"){
-
-        const keys = Object.keys(/** @type {!Object} */ (options));
-
-        for(let x = 0, key; x < keys.length; x++){
-
-            key = keys[x];
-
-            if((key.length > 3) && (key.indexOf("src") === 0)){
-
-                if(options_media === "video"){
-
-                    const cache = video_support[key];
-
-                    if(cache){
-
-                        if(cache > 0){
-
-                            src = options[key];
-                            break;
-                        }
-                    }
-                    else if(tpl_video.canPlayType("video/" + key.substring(3).toLowerCase())){
-
-                        video_support[key] = 1;
-                        src = options[key];
-                        break;
-                    }
-                    else{
-
-                        video_support[key] = -1;
-                    }
-                }
-                else{
-
-                    const res = parseInt(key.substring(4), 10);
-
-                    if(res){
-
-                        const abs = Math.abs(size - res);
-
-                        if(!diff || (abs < diff)){
-
-                            diff = abs;
-                            src = options[key];
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    return src || options["src"] || options["href"] || anchor["src"] || anchor["href"];
-}
-
 function prepare(direction){
+
+    //console.log("prepare", direction);
 
     let anchor = anchors[current_slide - 1];
 
@@ -1479,10 +1397,11 @@ function prepare(direction){
     gallery = {
 
         media: options_media,
-        src: determine_src(anchor, size, options),
+        src: parse_src(anchor, size, options, options_media),
         title: parse_option("title",
             anchor["alt"] || anchor["title"] ||
-            (/*(anchor.nodeType === 1) &&*/ (tmp = /*getByTag("img", anchor)[0]*/ anchor.firstElementChild) && (tmp["alt"] || tmp["title"]))
+            // inherit title from a direct child only
+            ((tmp = anchor.firstElementChild) && (tmp["alt"] || tmp["title"]))
         )
     };
 
@@ -1493,11 +1412,11 @@ function prepare(direction){
         if((anchor = anchors[current_slide])){
 
             const options_next = anchor.dataset || anchor;
-            const next_is_image = options_next["media"];
+            const next_media = options_next["media"];
 
-            if(!next_is_image || (next_is_image === "image")){
+            if(!next_media || (next_media === "image")){
 
-                gallery_next = determine_src(anchor, size, options_next);
+                gallery_next = parse_src(anchor, size, options_next, next_media);
             }
         }
     }
@@ -1510,7 +1429,7 @@ function prepare(direction){
 
         //console.log(option + ": ", options[option]);
 
-        display_state(controls_dom[option], parse_option(option, controls_default[option]));
+        toggleDisplay(controls_dom[option], parse_option(option, controls_default[option]));
     }
 }
 
@@ -1550,7 +1469,7 @@ function setup_page(direction){
             // animate out the old image
 
             prepare_animation();
-            //disable_animation(panel);
+            //toggleAnimation(panel);
             update_panel();
         }
     }
@@ -1561,7 +1480,7 @@ function setup_page(direction){
 
     //if(panel){
 
-        disable_animation(panel);
+        toggleAnimation(panel);
         update_panel();
     //}
 
@@ -1576,41 +1495,21 @@ function setup_page(direction){
         str_description && setText(description, str_description);
         str_button && setText(button, str_button);
 
-        display_state(title, str_title);
-        display_state(description, str_description);
-        display_state(button, str_button);
+        toggleDisplay(title, str_title);
+        toggleDisplay(description, str_description);
+        toggleDisplay(button, str_button);
 
         setStyle(footer, "transform", options_autohide === "all" ? "" : "none");
     }
 
     options_autohide || addClass(widget, "menu");
 
-    visibility_state(footer, has_content);
-    visibility_state(page_prev, options_infinite || (current_slide > 1));
-    visibility_state(page_next, options_infinite || (current_slide < slide_count));
+    toggleVisibility(footer, has_content);
+    toggleVisibility(page_prev, options_infinite || (current_slide > 1));
+    toggleVisibility(page_next, options_infinite || (current_slide < slide_count));
     setText(page, slide_count > 1 ? current_slide + " / " + slide_count : "");
 
     options_onchange && options_onchange(current_slide, options);
-}
-
-function display_state(node, state){
-
-    setStyle(node, "display", state ? "" : "none");
-}
-
-function visibility_state(node, state){
-
-    setStyle(node, "visibility", state ? "" : "hidden");
-}
-
-function disable_animation(node){
-
-    setStyle(node, "transition", "none");
-}
-
-function enable_animation(node){
-
-    setStyle(node, "transition", "");
 }
 
 export default {
