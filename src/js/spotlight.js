@@ -319,6 +319,7 @@ function init_gallery(index){
         current_slide = index || 1;
         toggleAnimation(slider);
         setup_page(true);
+        prefix_request && detect_fullscreen();
         show_gallery();
     }
 }
@@ -649,10 +650,15 @@ function resize_listener(){
         // entering the fullscreen state manually needs to be hide the fullscreen icon, because
         // the exit fullscreen handler will not work due to a browser restriction
 
-        is_fullscreen || toggleDisplay(maximize, (screen.availHeight - window.innerHeight) > 0);
+        is_fullscreen || detect_fullscreen();
     }
 
     //update_scroll();
+}
+
+function detect_fullscreen(){
+
+    toggleDisplay(maximize, (screen.availHeight - window.innerHeight) > 0);
 }
 
 function update_widget_viewport(){
