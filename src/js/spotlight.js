@@ -649,7 +649,7 @@ function resize_listener(){
         // entering the fullscreen state manually needs to be hide the fullscreen icon, because
         // the exit fullscreen handler will not work due to a browser restriction
 
-        is_fullscreen || toggleDisplay(maximize, (screen.availHeight - window.outerHeight) >= 0);
+        is_fullscreen || toggleDisplay(maximize, (screen.availHeight - window.innerHeight) > 0);
     }
 
     //update_scroll();
