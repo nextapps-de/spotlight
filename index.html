@@ -10,6 +10,10 @@
     <!--<link rel="stylesheet" href="dist/css/spotlight.min.css">-->
     <!-- Custom Control: -->
     <style>
+        /*
+         * Custom Control:
+         * ---------------
+         */
         /* custom classes are always prefixed by "spl-" automatically */
         .spl-like{
             background-image: url(demo/gallery/heart-outline.svg);
@@ -19,9 +23,10 @@
         .spl-like.on{
             background-image: url(demo/gallery/heart.svg);
         }
-    </style>
-    <!-- Custom Animation: -->
-    <style>
+        /*
+         * Custom Animation:
+         * -----------------
+         */
         /* custom scene transition (slide effect) */
         .only-this-gallery.show .spl-scene{
             transition: transform 0.2s ease;
@@ -39,11 +44,11 @@
             transition: transform 0.65s ease,
                         opacity 0.65s ease;
         }
-        /* custom animation when gallery is hidden */
+        /* animation state when gallery is hidden */
         #spotlight.only-this-gallery{
             clip-path: circle(0px at center);
         }
-        /* custom animation gallery will open */
+        /* animation state when gallery will open */
         #spotlight.only-this-gallery.show{
             clip-path: circle(100% at center);
             transition: clip-path 0.65s ease 0.15s;
@@ -88,7 +93,7 @@
     <b>Custom Elements, Videos &amp; Node Fragments</b>
     <div class="spotlight-group">
         <div class="spotlight" data-media="image" data-src="demo/gallery/godafoss-1840758.jpg" data-description="In hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim.">
-            <img src="demo/gallery/canada-2340312-thumb.jpg" alt="Duis autem vel eum iriure dolor">
+            <img src="demo/gallery/godafoss-1840758-thumb.jpg" alt="Duis autem vel eum iriure dolor">
         </div>
         <a class="spotlight" data-media="video" data-src-webm="https://nextapps.de/video/spotlight/big_buck_bunny.webm" data-src-ogg="https://nextapps.de/video/spotlight/big_buck_bunny.ogv" data-src-mp4="https://nextapps.de/video/spotlight/big_buck_bunny.mp4" data-autoplay="false" data-poster="demo/gallery/poster.jpg">
             <img src="demo/gallery/poster.jpg">

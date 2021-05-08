@@ -299,11 +299,7 @@
   }
 }
 .hide-scrollbars {
-  overflow: -moz-hidden-unscrollable;
-  -ms-overflow-style: none;
-}
-.hide-scrollbars::-webkit-scrollbar {
-  width: 0;
+  overflow: hidden;
 }
 @keyframes pulsate {
   0% {

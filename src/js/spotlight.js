@@ -508,6 +508,7 @@ function init_slide(index){
         setStyle(media, "visibility", "visible");
 
         gallery_next && (media_next.src = gallery_next);
+        options_autoplay && animate_bar(playing);
     }
     else{
 
@@ -811,42 +812,49 @@ function wheel_listener(event){
 
 /**
  * @param {Event|boolean=} init
+ * @param {boolean=} _skip_animation
  */
 
-export function play(init){
+export function play(init, _skip_animation){
 
     //console.log("play", init);
-
-    // TODO: stop playing until finished loading
 
     const state = (typeof init === "boolean" ? init : !playing);
 
     if(state === !playing){
 
-        playing = playing ? clearInterval(playing) : setInterval(next, delay * 1000);
+        playing = playing ? clearTimeout(playing) : 1;
         toggleClass(player, "on", playing);
-        options_progress && animate_bar();
+        _skip_animation || animate_bar(playing);
     }
 }
 
-function animate_bar(){
+/**
+ * @param {?=} start
+ */
+
+function animate_bar(start){
 
     //console.log("animate_bar", start);
 
-    // reset bar
+    if(options_progress){
 
-    prepareStyle(progress, function(){
+        prepareStyle(progress, function(){
 
-        setStyle(progress, "transition-duration", "");
-        setStyle(progress, "transform", "");
-    });
+            setStyle(progress, "transition-duration", "");
+            setStyle(progress, "transform", "");
+        });
 
-    // start animation
+        if(start){
 
-    if(playing){
+            setStyle(progress, "transition-duration", delay + "s");
+            setStyle(progress, "transform", "translateX(0)");
+        }
+    }
 
-        setStyle(progress, "transition-duration", delay + "s");
-        setStyle(progress, "transform", "translateX(0)");
+    if(start){
+
+        playing = setTimeout(next, delay * 1000);
     }
 }
 
@@ -1221,7 +1229,7 @@ function show_gallery(){
     //resize_listener();
     autohide();
 
-    options_autoplay && play();
+    options_autoplay && play(true, true);
 }
 
 export function download(){
@@ -1259,7 +1267,7 @@ export function close(hashchange){
     gallery_next && (media_next.src = "");
     playing && play();
     media && checkout(media);
-    hide && clearTimeout(hide); //menu(true);
+    hide && (hide = clearTimeout(hide));
     toggle_theme && theme();
     options_class && removeClass(widget, options_class);
     options_onclose && options_onclose();
@@ -1342,13 +1350,23 @@ export function goto(slide){
 
     if(slide !== current_slide){
 
-        playing ? play() : autohide();
+        if(playing){
+
+            clearTimeout(playing);
+            animate_bar();
+        }
+        else{
+
+            autohide();
+        }
+
+        //playing ? animate_bar() : autohide();
 
         const direction = slide > current_slide;
 
         current_slide = slide;
         setup_page(direction);
-        options_autoplay && play();
+        //options_autoplay && play(true, true);
 
         return true;
     }
@@ -1419,9 +1437,6 @@ function setup_page(direction){
     y = 0;
     scale = 1;
 
-    prepare(direction);
-    update_slider(current_slide - 1);
-
     if(media){
 
         // Note: the onerror callback was removed when the image was fully loaded (also for video)
@@ -1447,20 +1462,16 @@ function setup_page(direction){
             // animate out the old image
 
             prepare_animation();
-            //toggleAnimation(panel);
             update_panel();
         }
     }
 
+    prepare(direction);
+    update_slider(current_slide - 1);
     removeClass(spinner, "error");
-
     init_slide(current_slide);
-
-    //if(panel){
-
-        toggleAnimation(panel);
-        update_panel();
-    //}
+    toggleAnimation(panel);
+    update_panel();
 
     const str_title = gallery.title;
     const str_description = parse_option("description");

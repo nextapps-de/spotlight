@@ -154,6 +154,8 @@ __Get Latest Nightly (Do not use for production!):__
 
 Just exchange the version number from the URLs above with "master", e.g.: "/spotlight/__0.7.6__/dist/" into "/spotlight/__master__/dist".
 
+> If you are using markup on anchor elements to inject the library, then it is recommended to load the lib inside your head section of the document. Because that will better prevent the original behavior of the anchor tag (e.g. when library wasn't fully loaded on page start).
+
 ### Use Bundled Version
 
 The bundled version includes all assets like js, css, html and icon images as base64.
@@ -181,7 +183,9 @@ The non-bundled version needs to load js and css separately (css also includes i
 </html>
 ```
 
-### Preload Library / Async Load (Recommended)
+### Preload Library / Async Load
+
+> If you are using markup on anchor elements to inject the library, then it is recommended to load the lib inside your head section of the document. Read example above.
 
 Just add a link tag to the header sections which indicated to preload the script. Right before the body is closing add your site scripts. Depending on your code you may need to load them in the right order.
 
@@ -350,17 +354,6 @@ When using API the ___spotlight-group___ is represented by the options payload, 
         <td>Description</td>
         <td>Default</td>
     </tr>
-    <tr>
-        <td>index</td>
-        <td>
-            number
-        </td>
-        <td>
-            Sets the starting index when showing the gallery by using the <a href="#api">Spotlight API</a>. The index starts from 1.
-        </td>
-        <td>1</td>
-    </tr>
-    <tr></tr>
     <tr>
         <td>class</td>
         <td>
@@ -549,8 +542,6 @@ When using API the ___spotlight-group___ is represented by the options payload, 
 
 ### Additional Image Options
 
-Most of these options for a video are inherited by the attributes of a standard video element.
-
 <table>
     <tr></tr>
     <tr>
@@ -710,6 +701,17 @@ Most of these options for a video are inherited by the attributes of a standard 
         <td>Description</td>
         <td>Default</td>
     </tr>
+    <tr>
+        <td>index</td>
+        <td>
+            number
+        </td>
+        <td>
+            Sets the starting index when showing the gallery by using the <a href="#api">Spotlight API</a>. The index starts from 1.
+        </td>
+        <td>1</td>
+    </tr>
+    <tr></tr>
     <tr>
         <td>onchange</td>
         <td>
@@ -1259,6 +1261,20 @@ Spotlight.show(
     { /* Options */ }
 );
 ```
+
+You can also import any of the Spotlight methods just as you need:
+
+```js
+import { show, close, goto } from "./spotlight.js";
+
+show([/* Gallery */], {/* Options */});
+// ....
+goto(5);
+// ....
+close();
+```
+
+> Modern build tools will apply dead code elimination when just importing methods your application needs.
 
 <a name="styling" id="styling"></a>
 ## Custom Styling
