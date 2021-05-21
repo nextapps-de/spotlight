@@ -759,10 +759,12 @@ function key_listener(event){
 
     if(panel){
 
+        const zoom_enabled = options["zoom-in"] !== false;
+
         switch(event.keyCode){
 
             case keycodes.BACKSPACE:
-                autofit();
+                zoom_enabled && autofit();
                 break;
 
             case keycodes.ESCAPE:
@@ -784,13 +786,13 @@ function key_listener(event){
             case keycodes.UP:
             case keycodes.NUMBLOCK_PLUS:
             case keycodes.PLUS:
-                zoom_in();
+                zoom_enabled && zoom_in();
                 break;
 
             case keycodes.DOWN:
             case keycodes.NUMBLOCK_MINUS:
             case keycodes.MINUS:
-                zoom_out();
+                zoom_enabled && zoom_out();
                 break;
         }
     }
@@ -800,7 +802,7 @@ function wheel_listener(event){
 
     //console.log("wheel_listener");
 
-    if(panel){
+    if(panel && (options["zoom-in"] !== false)){
 
         let delta = event["deltaY"];
         delta = (delta < 0 ? 1 : delta ? -1 : 0) * 0.5;
