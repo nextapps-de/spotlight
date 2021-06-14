@@ -1,6 +1,6 @@
 /**
  * Spotlight.js
- * Copyright 2019 Nextapps GmbH
+ * Copyright 2019-2021 Nextapps GmbH
  * Author: Thomas Wilkerling
  * Licence: Apache-2.0
  * https://github.com/nextapps-de/spotlight
@@ -63,7 +63,7 @@ let options_onchange;
 let options_onclose;
 let options_fit;
 let options_autohide;
-let options_autoplay;
+let options_autoslide;
 let options_theme;
 let options_preload;
 let options_href;
@@ -358,7 +358,6 @@ function apply_options(anchor){
     Object.assign(options, anchor.dataset || anchor);
 
     // TODO: theme is icon and option field!
-    // TODO: autoplay option collision
 
     options_media = options["media"];
     options_click = options["onclick"];
@@ -367,10 +366,10 @@ function apply_options(anchor){
     options_autohide = parse_option("autohide", true);
     options_infinite = parse_option("infinite");
     options_progress = parse_option("progress", true);
-    options_autoplay = parse_option("autoplay");
+    options_autoslide = parse_option("autoslide");
     options_preload = parse_option("preload", true);
     options_href = options["buttonHref"];
-    delay = (options_autoplay && parseFloat(options_autoplay)) || 7;
+    delay = (options_autoslide && parseFloat(options_autoslide)) || 7;
     toggle_theme || (options_theme && theme(options_theme));
     options_class && addClass(widget, options_class);
     options_class && prepareStyle(widget)
@@ -509,7 +508,7 @@ function init_slide(index){
         setStyle(media, "visibility", "visible");
 
         gallery_next && (media_next.src = gallery_next);
-        options_autoplay && animate_bar(playing);
+        options_autoslide && animate_bar(playing);
     }
     else{
 
@@ -537,7 +536,7 @@ function init_slide(index){
             media.poster = options["poster"];
             media.preload = options_preload ? "auto" : "metadata";
             media.controls = parse_option("controls", true);
-            media.autoplay = options_autoplay;
+            media.autoplay = options["autoplay"];
             media.playsinline = parse_option("inline");
             media.muted = parse_option("muted");
             media.src = gallery.src; //files[i].src;
@@ -772,7 +771,7 @@ function key_listener(event){
                 break;
 
             case keycodes.SPACEBAR:
-                options_autoplay && play();
+                options_autoslide && play();
                 break;
 
             case keycodes.LEFT:
@@ -1237,7 +1236,7 @@ function show_gallery(){
     //resize_listener();
     autohide();
 
-    options_autoplay && play(true, true);
+    options_autoslide && play(true, true);
 }
 
 export function download(){
@@ -1374,7 +1373,7 @@ export function goto(slide){
 
         current_slide = slide;
         setup_page(direction);
-        //options_autoplay && play(true, true);
+        //options_autoslide && play(true, true);
 
         return true;
     }

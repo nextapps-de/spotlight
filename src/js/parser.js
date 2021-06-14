@@ -29,7 +29,7 @@ export default function(anchor, size, options, media){
                             break;
                         }
                     }
-                    else if(tpl_video.canPlayType("video/" + key.substring(3).toLowerCase())){
+                    else if(tpl_video.canPlayType("video/" + key.substring(3).replace("-", "").toLowerCase())){
 
                         video_support[key] = 1;
                         src = options[key];
@@ -41,6 +41,8 @@ export default function(anchor, size, options, media){
                     }
                 }
                 else{
+
+                    // Image Media:
 
                     const res = parseInt(key.substring(4), 10);
 

@@ -299,7 +299,7 @@
   }
 }
 .hide-scrollbars {
-  overflow: hidden;
+  overflow: hidden !important;
 }
 @keyframes pulsate {
   0% {
