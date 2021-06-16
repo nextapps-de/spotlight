@@ -1,5 +1,6 @@
 export const controls = [
 
+    "info",
     "theme",
     "download",
     "play",
@@ -15,6 +16,7 @@ export const controls = [
 
 export const controls_default = {
 
+    "info": 1,
     "page": 1,
     "close": 1,
     "autofit": 1,
@@ -41,5 +43,6 @@ export const keycodes = {
     PLUS: 187,
     DOWN: 40,
     NUMBLOCK_MINUS: 109,
-    MINUS: 189
+    MINUS: 189,
+    INFO: 73
 };

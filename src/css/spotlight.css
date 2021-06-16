@@ -235,6 +235,9 @@
 .spl-close {
   background-image: url("../img/close.svg");
 }
+.spl-info {
+  background-image: url("../img/info.svg");
+}
 .spl-prev,
 .spl-next {
   position: absolute;
