@@ -84,6 +84,7 @@ let media_next = createElement("img");
 let slider;
 let header;
 let footer;
+let footer_visible = 0;
 let title;
 let description;
 let button;
@@ -152,6 +153,7 @@ export function init(){
         controls.pop(); // => "fullscreen"
     }
 
+    addControl("info", info);
     addControl("autofit", autofit);
     addControl("zoom-in", zoom_in);
     addControl("zoom-out", zoom_out);
@@ -202,7 +204,7 @@ export function init(){
 
     function getOneByClass(classname){
 
-        //console.log("getOneByClass", class_name);
+        //console.log("getOneByClass", classname);
 
         return controls_dom[classname] = getByClass("spl-" + classname, widget)[0];
     }
@@ -701,7 +703,7 @@ function update_scroll(force_scale){
 
 function update_panel(x, y){
 
-    ////console.log("update_panel", x, y);
+    //console.log("update_panel", x, y);
 
     setStyle(panel, "transform", x || y ? "translate(" + x + "px, " + y + "px)" : "");
 }
@@ -794,6 +796,11 @@ function key_listener(event){
             case keycodes.MINUS:
                 zoom_enabled && zoom_out();
                 break;
+
+            case keycodes.INFO:
+                info();
+                break;
+
         }
     }
 }
@@ -991,7 +998,7 @@ function end(e){
 
 function move(e){
 
-    ////console.log("move");
+    //console.log("move");
 
     cancelEvent(e);
 
@@ -1204,6 +1211,15 @@ export function zoom(factor){
     scale = factor || 1;
 
     update_scroll();
+}
+
+export function info(){
+
+    //console.log("info");
+
+    footer_visible = !footer_visible;
+    toggleVisibility(footer, footer_visible);
+
 }
 
 function disable_autoresizer(){
@@ -1474,6 +1490,8 @@ function setup_page(direction){
         }
     }
 
+    footer && toggleVisibility(footer, 0);
+
     prepare(direction);
     update_slider(current_slide - 1);
     removeClass(spinner, "error");
@@ -1501,7 +1519,7 @@ function setup_page(direction){
 
     options_autohide || addClass(widget, "menu");
 
-    toggleVisibility(footer, has_content);
+    toggleVisibility(footer, footer_visible && has_content);
     toggleVisibility(page_prev, options_infinite || (current_slide > 1));
     toggleVisibility(page_next, options_infinite || (current_slide < slide_count));
     setText(page, slide_count > 1 ? current_slide + " / " + slide_count : "");
