@@ -232,7 +232,7 @@ You can also load modules via CDN, e.g.:
 
 ```html
 <script type="module">
-  import Spotlight from "https://unpkg.com/spotlight@0.7.8/src/js/spotlight.js";
+  import Spotlight from "https://unpkg.com/spotlight.js@0.7.8/src/js/spotlight.js";
 </script>
 ```
 
@@ -267,7 +267,7 @@ This also works with dynamically loaded content. There is no need to inject list
 Alternatively you can use non-anchor elements also:
 
 ```html
-<div class="spotlight" data-src="img1.jpg">
+<a class="spotlight" data-src="img1.jpg">
     <!-- image or any other elements -->
 </a>
 ```
