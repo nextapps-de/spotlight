@@ -267,9 +267,9 @@ This also works with dynamically loaded content. There is no need to inject list
 Alternatively you can use non-anchor elements also:
 
 ```html
-<a class="spotlight" data-src="img1.jpg">
+<div class="spotlight" data-src="img1.jpg">
     <!-- image or any other elements -->
-</a>
+</div>
 ```
 
 Pretty much the same like anchors but uses ___data-src___ instead of ___href___.
