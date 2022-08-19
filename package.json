@@ -1,8 +1,8 @@
 {
   "name": "spotlight.js",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "description": "Modern HTML5 Image Gallery",
-  "homepage": "https://github.com/nextapps-de/spotlight/",
+  "homepage": "https://github.com/sanzstez/spotlight",
   "author": "Thomas Wilkerling",
   "copyright": "Nextapps GmbH",
   "license": "Apache-2.0",
@@ -23,22 +23,18 @@
     "gallery-simple",
     "lightbox-plugin"
   ],
-  "bugs": {
-    "url": "https://github.com/nextapps-de/spotlight/issues",
-    "email": "info@nextapps.de"
-  },
   "main": "src/js/spotlight.js",
   "browser": "dist/spotlight.bundle.js",
   "preferGlobal": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/nextapps-de/spotlight.git"
+    "url": "https://github.com/sanzstez/spotlight.git"
   },
   "scripts": {
     "copy": "cpx \"src/img/*.*\" dist/img/",
-    "clean": "if exist dist rmdir dist /s /q && mkdir dist && if exist dist rmdir tmp /s /q && mkdir tmp",
+    "clean": "rm -rf dist && mkdir dist && rm -rf tmp && mkdir tmp",
     "build:css": "lessc src/css/spotlight.less src/css/spotlight.css",
-    "build:css:bundle": "node task/bundle --image && lessc --autoprefix=\">=1%\" --csswring=\"--sourcemap --preserve-hacks\" --clean-css=\"--s1 --advanced --rebase\" tmp/bundle.less dist/css/spotlight.min.css && csso dist/css/spotlight.min.css --output dist/css/spotlight.min.css",
+    "build:css:bundle": "node task/bundle --image && lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" tmp/bundle.less dist/css/spotlight.min.css && csso dist/css/spotlight.min.css --output dist/css/spotlight.min.css",
     "build:js": "node task/build",
     "build:bundle": "node task/build --bundle",
     "build:svg": "node task/svgo",

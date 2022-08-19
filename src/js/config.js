@@ -1,5 +1,4 @@
 export const controls = [
-
     "info",
     "theme",
     "download",
@@ -15,7 +14,6 @@ export const controls = [
 ];
 
 export const controls_default = {
-
     "info": 1,
     "page": 1,
     "close": 1,
@@ -32,7 +30,6 @@ export const controls_default = {
  */
 
 export const keycodes = {
-
     BACKSPACE: 8,
     ESCAPE: 27,
     SPACEBAR: 32,

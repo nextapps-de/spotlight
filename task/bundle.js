@@ -12,7 +12,6 @@ const style = process.argv[2] === "--style";
         // TODO provide custom filenames
 
         const compressed = {
-
             preloader: base64Sync('src/img/preloader.svg'),
             pixel: base64Sync('src/img/pixel.gif'),
             arrow: base64Sync('src/img/arrow.svg'),
@@ -26,7 +25,8 @@ const style = process.argv[2] === "--style";
             play: base64Sync('src/img/play.svg'),
             pause: base64Sync('src/img/pause.svg'),
             download: base64Sync('src/img/download.svg'),
-            error: base64Sync('src/img/error.svg')
+            error: base64Sync('src/img/error.svg'),
+            info: base64Sync('src/img/info.svg')
         };
 
         let tmp = "";

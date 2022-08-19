@@ -7,7 +7,6 @@
  */
 
 import {
-
     addClass,
     removeClass,
     toggleClass,
@@ -23,10 +22,10 @@ import {
     toggleAnimation,
     toggleVisibility,
     downloadImage
-
 } from "./helper.js";
 
 import { controls, controls_default, keycodes } from "./config.js";
+
 import widget from "./template.js";
 import parse_src from "./parser.js";
 
@@ -104,14 +103,8 @@ let hide_cooldown;
 
 let prefix_request, prefix_exit;
 
-addListener(document, "click", dispatch);
-
 export function init(){
-
-    if(body){
-
-        return;
-    }
+    if (body) return;
 
     //console.log("init");
 
@@ -233,34 +226,6 @@ export function removeControl(classname){
 
         header.removeChild(div);
         controls_dom[classname] = null;
-    }
-}
-
-function dispatch(event){
-
-    //console.log("dispatch");
-
-    const target = event.target.closest(".spotlight");
-
-    if(target){
-
-        cancelEvent(event, true);
-
-        const group = target.closest(".spotlight-group");
-
-        anchors = getByClass("spotlight", group);
-
-        // determine current selected index
-
-        for(let i = 0; i < anchors.length; i++){
-
-            if(anchors[i] === target){
-
-                options_group = group && group.dataset;
-                init_gallery(i + 1);
-                break;
-            }
-        }
     }
 }
 
@@ -1489,7 +1454,7 @@ function setup_page(direction){
         }
     }
 
-    footer && toggleVisibility(footer, 0);
+    if (footer) toggleVisibility(footer, false);
 
     prepare(direction);
     update_slider(current_slide - 1);
@@ -1527,7 +1492,6 @@ function setup_page(direction){
 }
 
 export default {
-
     init: init,
     theme: theme,
     fullscreen: fullscreen,
