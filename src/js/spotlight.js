@@ -106,10 +106,9 @@ let prefix_request, prefix_exit;
 
 addListener(document, "click", dispatch);
 
-export function init(){
+export function init({ force = false }){
 
-    if(body){
-
+    if (body && !force) {
         return;
     }
 
