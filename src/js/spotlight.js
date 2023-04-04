@@ -83,7 +83,6 @@ let media_next = createElement("img");
 let slider;
 let header;
 let footer;
-let footer_visible = 0;
 let title;
 let description;
 let button;
@@ -106,7 +105,7 @@ let prefix_request, prefix_exit;
 export function init(){
     if (body) return;
 
-    //console.log("init");
+    // console.log("init");
 
     body = document.body;
     slider = getOneByClass("scene");
@@ -146,7 +145,6 @@ export function init(){
         controls.pop(); // => "fullscreen"
     }
 
-    addControl("info", info);
     addControl("autofit", autofit);
     addControl("zoom-in", zoom_in);
     addControl("zoom-out", zoom_out);
@@ -761,10 +759,6 @@ function key_listener(event){
                 zoom_enabled && zoom_out();
                 break;
 
-            case keycodes.INFO:
-                info();
-                break;
-
         }
     }
 }
@@ -1177,15 +1171,6 @@ export function zoom(factor){
     update_scroll();
 }
 
-export function info(){
-
-    //console.log("info");
-
-    footer_visible = !footer_visible;
-    toggleVisibility(footer, footer_visible);
-
-}
-
 function disable_autoresizer(){
 
     //console.log("disable_autoresizer");
@@ -1454,8 +1439,6 @@ function setup_page(direction){
         }
     }
 
-    if (footer) toggleVisibility(footer, false);
-
     prepare(direction);
     update_slider(current_slide - 1);
     removeClass(spinner, "error");
@@ -1483,7 +1466,7 @@ function setup_page(direction){
 
     options_autohide || addClass(widget, "menu");
 
-    toggleVisibility(footer, footer_visible && has_content);
+    toggleVisibility(footer, has_content);
     toggleVisibility(page_prev, options_infinite || (current_slide > 1));
     toggleVisibility(page_next, options_infinite || (current_slide < slide_count));
     setText(page, slide_count > 1 ? current_slide + " / " + slide_count : "");
