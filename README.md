@@ -29,3 +29,29 @@ npm run build
 ```
 
 The final build is located in the `dist/` folder.
+
+## Debug package
+
+In "spotlight.js" forder execute command:
+```cmd
+yarn link
+```
+
+It actually tells yarn, if others want to link this folder.
+
+After that, in you project folder execute command:
+```cmd
+yarn link "spotlight.js"
+```
+
+This will create a symlink folder, that links to your local copy of the source package.
+
+After debugging finished, run command in "spotlight.js" folder:
+```cmd
+yarn unlink
+```
+
+And next, in yours project folder:
+```cmd
+yarn unlink "spotlight.js"
+```
