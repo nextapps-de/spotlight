@@ -34,20 +34,34 @@ const controls_dom = {};
 const connection = navigator["connection"];
 const dpr = window["devicePixelRatio"] || 1;
 
+/** @type {number} */
 let x;
+/** @type {number} */
 let y;
+/** @type {number} */
 let startX;
+/** @type {number} */
 let startY;
+/** @type {number} */
 let viewport_w;
+/** @type {number} */
 let viewport_h;
+/** @type {number} */
 let media_w;
+/** @type {number} */
 let media_h;
+/** @type {number} */
 let scale;
 
+/** @type {boolean} */
 let is_down;
+/** @type {boolean} */
 let dragged;
+/** @type {boolean} */
 let slidable;
+/** @type {boolean} */
 let toggle_autofit;
+/** @type {boolean} */
 let toggle_theme;
 
 let current_slide;
@@ -76,24 +90,43 @@ let animation_fade;
 let animation_slide;
 let animation_custom;
 
+/** @type {HTMLBodyElement} */
 let body;
+/** @type {HTMLDivElement=} */
 let panel;
+/** @type {HTMLDivElement[]} */
 let panes;
+/** @type {Image|HTMLVideoElement|HTMLElement} */
 let media;
+/** @type {HTMLImageElement} */
 let media_next = createElement("img");
+/** @type {HTMLDivElement} */
 let slider;
+/** @type {HTMLDivElement} */
 let header;
+/** @type {HTMLDivElement} */
 let footer;
+/** @type {number} */
 let footer_visible = 0;
+/** @type {HTMLDivElement} */
 let title;
+/** @type {HTMLDivElement} */
 let description;
+/** @type {HTMLDivElement} */
 let button;
+/** @type {HTMLDivElement} */
 let page_prev;
+/** @type {HTMLDivElement} */
 let page_next;
+/** @type {HTMLDivElement=} */
 let maximize;
+/** @type {HTMLDivElement} */
 let page;
+/** @type {HTMLDivElement} */
 let player;
+/** @type {HTMLDivElement} */
 let progress;
+/** @type {HTMLDivElement} */
 let spinner;
 
 let gallery;
@@ -210,6 +243,12 @@ export function init(){
     }
 }
 
+/**
+ * @param {string} classname
+ * @param {Function} fn
+ * @returns {HTMLDivElement}
+ */
+
 export function addControl(classname, fn){
 
     //console.log("addControl", classname, fn);
@@ -222,6 +261,10 @@ export function addControl(classname, fn){
 
     return controls_dom[classname] = div;
 }
+
+/**
+ * @param {string} classname
+ */
 
 export function removeControl(classname){
 
@@ -236,10 +279,15 @@ export function removeControl(classname){
     }
 }
 
+/**
+ * @param {Event} event
+ */
+
 function dispatch(event){
 
     //console.log("dispatch");
 
+    /** @type {HTMLDivElement=} */
     const target = event.target.closest(".spotlight");
 
     if(target){
@@ -287,6 +335,10 @@ export function show(gallery, group, index){
 
     init_gallery(index);
 }
+
+/**
+ * @param {number} index
+ */
 
 function init_gallery(index){
 
@@ -485,6 +537,10 @@ function prepare_animation(prepare){
     }
 }
 
+/**
+ * @param {number} index
+ */
+
 function init_slide(index){
 
     //console.log("init_slide", index);
@@ -621,6 +677,10 @@ function toggle_spinner(options_spinner, is_on){
     options_spinner && toggleClass(spinner, "spin", is_on);
 }
 
+/**
+ * @returns {boolean}
+ */
+
 function has_fullscreen(){
 
     //console.log("has_fullscreen");
@@ -744,6 +804,10 @@ function toggle_listener(install){
     toggleListener(install, window, "popstate", history_listener);
 }
 
+/**
+ * @param {PopStateEvent} event
+ */
+
 function history_listener(event) {
 
     //console.log("history_listener");
@@ -753,6 +817,10 @@ function history_listener(event) {
         close(true);
     }
 }
+
+/**
+ * @param {KeyboardEvent} event
+ */
 
 function key_listener(event){
 
@@ -803,6 +871,10 @@ function key_listener(event){
         }
     }
 }
+
+/**
+ * @param {WheelEvent} event
+ */
 
 function wheel_listener(event){
 
@@ -888,6 +960,10 @@ function autohide(){
     }
 }
 
+/**
+ * @param {number} cooldown
+ */
+
 function schedule(cooldown){
 
     //console.log("schedule", cooldown);
@@ -933,6 +1009,10 @@ export function menu(state){
     }
 }
 
+/**
+ * @param {TouchEvent|MouseEvent} e
+ */
+
 function start(e){
 
     //console.log("start");
@@ -955,6 +1035,10 @@ function start(e){
 
     toggleAnimation(panel);
 }
+
+/**
+ * @param {TouchEvent|MouseEvent} e
+ */
 
 function end(e){
 
@@ -994,6 +1078,10 @@ function end(e){
         is_down = false;
     }
 }
+
+/**
+ * @param {TouchEvent|MouseEvent} e
+ */
 
 function move(e){
 
@@ -1296,6 +1384,10 @@ export function close(hashchange){
     options_onclose && options_onclose();
 }
 
+/**
+ * @param {Image|HTMLVideoElement|HTMLElement} media
+ */
+
 function checkout(media){
 
     //console.log("checkout");
@@ -1367,6 +1459,11 @@ export function next(e){
     }
 }
 
+/**
+ * @param {number} slide
+ * @returns {boolean=}
+ */
+
 export function goto(slide){
 
     //console.log("goto", slide);
@@ -1394,6 +1491,10 @@ export function goto(slide){
         return true;
     }
 }
+
+/**
+ * @param {boolean} direction
+ */
 
 function prepare(direction){
 
@@ -1451,6 +1552,10 @@ function prepare(direction){
         toggleDisplay(controls_dom[option], parse_option(option, controls_default[option]));
     }
 }
+
+/**
+ * @param {boolean} direction
+ */
 
 function setup_page(direction){
 
