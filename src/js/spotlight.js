@@ -62,6 +62,8 @@ let dragged;
 /** @type {boolean} */
 let slidable;
 /** @type {boolean} */
+let is_sliding_up;
+/** @type {boolean} */
 let toggle_autofit;
 /** @type {string} */
 let toggle_theme;
@@ -1022,6 +1024,7 @@ function start(e){
 
     is_down = true;
     dragged = false;
+    is_sliding_up = false;
 
     /** @type {TouchEvent|MouseEvent|Touch}  */
     let touch = e;
@@ -1073,7 +1076,15 @@ function end(e){
                     (has_prev && prev());
                 }
 
-                x = 0;
+                if(is_sliding_up && y < -(viewport_h / 4)){
+
+                    close();
+                }
+                else{
+
+                    x = 0;
+                    y = 0;
+                }
 
                 update_panel();
             }
@@ -1144,13 +1155,27 @@ function move(e){
             e = touches;
         }
 
-        // handle x-axis in slide mode and in drag mode
+        if(!dragged){
 
-        let diff = (media_w * scale - viewport_w) / 2;
-        x -= startX - (startX = e.pageX);
+            const dx = startX - e.pageX;
+            const dy = startY - e.pageY;
+            is_sliding_up = slidable && dy > Math.abs(dx) * 1.15;
+        }
+
+        if(is_sliding_up){
+
+            // handle y-axis in y-slide mode
+            y -= startY - (startY = e.pageY);
+        }
+        else{
+
+            // handle x-axis in x-slide mode and in drag mode
+            x -= startX - (startX = e.pageX);
+        }
 
         if(!slidable){
 
+            let diff = (media_w * scale - viewport_w) / 2;
             if(x > diff){
 
                 x = diff;
