@@ -290,8 +290,12 @@ function dispatch(event){
 
     //console.log("dispatch");
 
-    const target = /** @type {HTMLDivElement?} */ (event.target.closest(".spotlight"));
+    if(is_sliding_up){
 
+        return;
+    }
+
+    const target = /** @type {HTMLDivElement?} */ (event.target.closest(".spotlight"));
 
     if(target){
 
@@ -621,6 +625,8 @@ function init_slide(index){
             if(media){
 
                 media._root || (media._root = media.parentNode);
+                media._style || (media._style = media.getAttribute("style"));
+                media.setAttribute("style", media._spl_style || "");
                 update_media_viewport();
 
                 panel.appendChild(media);
@@ -1449,6 +1455,7 @@ export function close(hashchange){
 
         body.removeChild(widget);
         panel = media = gallery = options = options_group = anchors = options_onshow = options_onchange = options_onclose = options_click = null;
+        is_sliding_up = false;
 
     }, 200);
 
@@ -1481,8 +1488,10 @@ function checkout(media){
 
     if(media._root){
 
+        media._spl_style = media.getAttribute("style");
+        media.setAttribute("style", media._style || "");
         media._root.appendChild(media);
-        media._root = null;
+        media._root = media._style = null;
     }
     else{
 
