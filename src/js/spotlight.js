@@ -887,11 +887,11 @@ function wheel_listener(event){
 
         if(delta < 0){
 
-            zoom_out();
+            zoom_out(event, event.clientX, event.clientY);
         }
         else{
 
-            zoom_in();
+            zoom_in(event, event.clientX, event.clientY);
         }
     }
 }
@@ -1224,7 +1224,7 @@ export function autofit(init){
  * @param {Event=} e
  */
 
-function zoom_in(e){
+function zoom_in(e, cx, cy){
 
     //console.log("zoom_in");
 
@@ -1241,9 +1241,19 @@ function zoom_in(e){
         //     removeClass(media, options_fit);
         // }
 
-        x /= 0.65;
-        y /= 0.65;
+        if(cy){
 
+            const half_w = window.innerWidth / 2, half_h = window.innerHeight / 2;
+            x = cx - (cx - x - half_w) / 0.65 - half_w;
+            y = cy - (cy - y - half_h) / 0.65 - half_h;
+        }
+        else{
+
+            x /= 0.65;
+            y /= 0.65;
+        }
+
+        toggleAnimation(panel, true);
         update_panel(x, y);
         zoom(value);
     }
@@ -1253,9 +1263,11 @@ function zoom_in(e){
 
 /**
  * @param {Event=} e
+ * @param {number=} cx
+ * @param {number=} cy
  */
 
-function zoom_out(e){
+function zoom_out(e, cx, cy){
 
     //console.log("zoom_out");
 
@@ -1276,10 +1288,20 @@ function zoom_out(e){
         }
         else{
 
-            x *= 0.65;
-            y *= 0.65;
+            if(cy){
+
+                const half_w = window.innerWidth / 2, half_h = window.innerHeight / 2;
+                x = cx - (cx - x - half_w) * 0.65 - half_w;
+                y = cy - (cy - y - half_h) * 0.65 - half_h;
+            }
+            else{
+
+                x *= 0.65;
+                y *= 0.65;
+            }
         }
 
+        toggleAnimation(panel, true);
         update_panel(x, y);
         zoom(value);
     }
