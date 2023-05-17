@@ -13,6 +13,7 @@ import {
     toggleClass,
     setStyle,
     prepareStyle,
+    restoreStyle,
     getByClass,
     setText,
     addListener,
@@ -626,7 +627,7 @@ function init_slide(index){
 
                 media._root || (media._root = media.parentNode);
                 media._style || (media._style = media.getAttribute("style"));
-                media.setAttribute("style", media._spl_style || "");
+                restoreStyle(media);
                 update_media_viewport();
 
                 panel.appendChild(media);
@@ -898,7 +899,7 @@ function wheel_listener(event){
 
             zoom_out(event, event.clientX, event.clientY);
         }
-        else{
+        else if(delta > 0){
 
             zoom_in(event, event.clientX, event.clientY);
         }
@@ -1131,7 +1132,7 @@ function center_of(touches){
  */
 
 function scale_touches(touches){
-    if(touches && touches.length === 2 && prev_touches && prev_touches.length === 2){
+    if(options["zoom-in"] !== false && touches && touches.length === 2 && prev_touches && prev_touches.length === 2){
 
         const relative_scale = distance(touches) / distance(prev_touches);
         const center = center_of(touches);
@@ -1488,7 +1489,6 @@ function checkout(media){
 
     if(media._root){
 
-        media._spl_style = media.getAttribute("style");
         media.setAttribute("style", media._style || "");
         media._root.appendChild(media);
         media._root = media._style = null;

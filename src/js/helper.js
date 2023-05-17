@@ -48,6 +48,20 @@ export function hasClass(node, class_name){
 
 /**
  * @param {HTMLElement} node
+ */
+
+export function restoreStyle(node){
+    for(var key in node){
+
+        if(key.startsWith("_s_")){
+
+            node.style.setProperty(key.substring(3), node[key]);
+        }
+    }
+}
+
+/**
+ * @param {HTMLElement} node
  * @param {string} style
  * @param {string|number} value
  */
