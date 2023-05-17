@@ -1277,9 +1277,9 @@ function centered_zoom(relative, cx, cy, animated){
 
     let value = scale * relative;
 
-    disable_autoresizer();
     toggleAnimation(panel, animated);
     toggleAnimation(media, animated);
+    disable_autoresizer();
 
     if(value <= 1){
 

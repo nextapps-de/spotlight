@@ -34,6 +34,10 @@
         /* custom animation "visible state" (css context by custom classname "only-this-gallery" to apply these animation just on a specific gallery) */
         .only-this-gallery.show .spl-pane > *{
             clip-path: circle(100% at center);
+        }
+        .only-this-gallery.show .spl-pane, .only-this-gallery.show .spl-pane > *{
+            /* setting custom transition duration might mess up zoom animations */
+            /* one should set an identical transition duration for ".spl-pane" and ".spl-pane > *" */
             transition: transform 0.35s ease,
                         opacity 0.65s ease,
                         clip-path 0.8s ease;
