@@ -5,7 +5,7 @@
 
 export function addClass(node, class_name){
 
-    toggleClass(node, class_name, true);
+    node.classList.add(class_name);
 }
 
 /**
@@ -15,18 +15,25 @@ export function addClass(node, class_name){
 
 export function removeClass(node, class_name){
 
-    toggleClass(node, class_name);
+    node.classList.remove(class_name);
 }
 
 /**
  * @param {HTMLElement} node
  * @param {string} class_name
- * @param {boolean=} state
+ * @param state
  */
 
 export function toggleClass(node, class_name, state){
 
-    node.classList[state ? "add" : "remove"](class_name);
+    if(state){
+
+        addClass(node, class_name);
+    }
+    else{
+
+        removeClass(node, class_name);
+    }
 }
 
 /**
@@ -160,7 +167,7 @@ export function cancelEvent(event, prevent){
 
 /**
  * @param {HTMLBodyElement} body
- * @param {HTMLImageElement} image
+ * @param {HTMLElement} image
  */
 
 export function downloadImage(body, image){
@@ -181,7 +188,7 @@ export function downloadImage(body, image){
 
 export function createElement(element){
 
-    return document.createElement(element);
+    return /** @type {HTMLElement} */ (document.createElement(element));
 }
 
 /**

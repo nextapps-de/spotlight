@@ -7,8 +7,8 @@ const tpl_video = /** @type {HTMLVideoElement} */ (createElement("video"));
  *
  * @param {HTMLAnchorElement} anchor
  * @param {number} size
- * @param {!Object} options
- * @param {"node"|"video"|any} media
+ * @param options
+ * @param {string} media
  * @returns {string}
  */
 
