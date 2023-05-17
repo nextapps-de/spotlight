@@ -52,6 +52,8 @@ let media_w;
 let media_h;
 /** @type {number} */
 let scale;
+/** @type {TouchList=} */
+let prev_touches;
 
 /** @type {boolean} */
 let is_down;
@@ -1023,6 +1025,7 @@ function start(e){
     dragged = false;
 
     let touches = e.touches;
+    prev_touches = touches;
 
     if(touches && (touches = touches[0])){
 
@@ -1045,6 +1048,8 @@ function end(e){
     //console.log("end");
 
     cancelEvent(e);
+
+    prev_touches = null;
 
     if(is_down){
 
@@ -1080,6 +1085,46 @@ function end(e){
 }
 
 /**
+ * @param {TouchList} touches
+ * @returns {number}
+ */
+
+function distance(touches){
+
+    return Math.sqrt(
+        Math.pow(touches[0].clientX - touches[1].clientX, 2)
+        + Math.pow(touches[0].clientY - touches[1].clientY, 2)
+    );
+}
+
+/**
+ * @param {TouchList} touches
+ */
+function center_of(touches){
+
+    return [
+        (touches[0].clientX + touches[1].clientX) * 0.5,
+        (touches[0].clientY + touches[1].clientY) * 0.5,
+    ]
+}
+
+/**
+ * @param {TouchList=} touches
+ */
+
+function scale_touches(touches){
+    if(touches && touches.length === 2 && prev_touches && prev_touches.length === 2){
+
+        const relative_scale = distance(touches) / distance(prev_touches);
+        const center = center_of(touches);
+        centered_zoom(relative_scale, center[0], center[1], false);
+    }
+
+    prev_touches = touches;
+    return touches && touches[0];
+}
+
+/**
  * @param {TouchEvent|MouseEvent} e
  */
 
@@ -1091,9 +1136,9 @@ function move(e){
 
     if(is_down){
 
-        let touches = e.touches;
+        let touches = scale_touches(e.touches);
 
-        if(touches && (touches = touches[0])){
+        if(touches){
 
             e = touches;
         }
@@ -1221,6 +1266,61 @@ export function autofit(init){
 }
 
 /**
+ * @param {number} relative
+ * @param {number=} cx
+ * @param {number=} cy
+ * @param {boolean=} animated
+ */
+
+function centered_zoom(relative, cx, cy, animated){
+
+    let value = scale * relative;
+
+    disable_autoresizer();
+    toggleAnimation(panel, animated);
+    toggleAnimation(media, animated);
+
+    if(value <= 1){
+
+        x = y = 0;
+        update_panel(x, y);
+        zoom(1);
+
+        // if(options_fit){
+        //
+        //     addClass(media, options_fit);
+        // }
+
+        return;
+    }
+
+    if(value > 50){
+
+        // if(options_fit){
+        //
+        //     removeClass(media, options_fit);
+        // }
+
+        return;
+    }
+
+    if(cy){
+
+        const half_w = viewport_w / 2, half_h = viewport_h / 2;
+        x = cx - (cx - x - half_w) * relative - half_w;
+        y = cy - (cy - y - half_h) * relative - half_h;
+    }
+    else{
+
+        x *= relative;
+        y *= relative;
+    }
+
+    update_panel(x, y);
+    zoom(value);
+}
+
+/**
  * @param {Event=} e
  */
 
@@ -1228,37 +1328,8 @@ function zoom_in(e, cx, cy){
 
     //console.log("zoom_in");
 
-    let value = scale / 0.65;
+    centered_zoom(1 / 0.65, cx, cy, true);
 
-    if(value <= 50){
-
-        //console.log(toggle_autofit);
-
-        disable_autoresizer();
-
-        // if(options_fit){
-        //
-        //     removeClass(media, options_fit);
-        // }
-
-        if(cy){
-
-            const half_w = window.innerWidth / 2, half_h = window.innerHeight / 2;
-            x = cx - (cx - x - half_w) / 0.65 - half_w;
-            y = cy - (cy - y - half_h) / 0.65 - half_h;
-        }
-        else{
-
-            x /= 0.65;
-            y /= 0.65;
-        }
-
-        toggleAnimation(panel, true);
-        update_panel(x, y);
-        zoom(value);
-    }
-
-    //e && autohide();
 }
 
 /**
@@ -1271,42 +1342,8 @@ function zoom_out(e, cx, cy){
 
     //console.log("zoom_out");
 
-    let value = scale * 0.65;
+    centered_zoom(0.65, cx, cy, true);
 
-    disable_autoresizer();
-
-    if(value >= 1){
-
-        if(value === 1){
-
-            x = y = 0;
-
-            // if(options_fit){
-            //
-            //     addClass(media, options_fit);
-            // }
-        }
-        else{
-
-            if(cy){
-
-                const half_w = window.innerWidth / 2, half_h = window.innerHeight / 2;
-                x = cx - (cx - x - half_w) * 0.65 - half_w;
-                y = cy - (cy - y - half_h) * 0.65 - half_h;
-            }
-            else{
-
-                x *= 0.65;
-                y *= 0.65;
-            }
-        }
-
-        toggleAnimation(panel, true);
-        update_panel(x, y);
-        zoom(value);
-    }
-
-    //e && autohide();
 }
 
 /**
