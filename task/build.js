@@ -91,7 +91,7 @@ exec((/^win/.test(process.platform) ?
 
         "\"node_modules/google-closure-compiler-windows/compiler.exe\""
     :
-        "java -jar node_modules/google-closure-compiler-java/compiler.jar"
+        "npx google-closure-compiler"
 
 ) + parameter + (bundle ? " --js='tmp/**.js'" : "") + " --js='src/js/**.js' --js_output_file='" + (bundle ? "dist/spotlight.bundle.js" : "dist/js/spotlight.min.js") + "' && exit 0", function(){
 
