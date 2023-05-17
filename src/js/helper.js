@@ -1,42 +1,63 @@
 /**
- * @param node
- * @param class_name
+ * @param {HTMLElement} node
+ * @param {string} class_name
  */
 
 export function addClass(node, class_name){
 
-    toggleClass(node, class_name, true);
+    node.classList.add(class_name);
 }
 
 /**
- * @param node
- * @param class_name
+ * @param {HTMLElement} node
+ * @param {string} class_name
  */
 
 export function removeClass(node, class_name){
 
-    toggleClass(node, class_name);
+    node.classList.remove(class_name);
 }
 
 /**
- * @param node
- * @param class_name
- * @param {?=} state
+ * @param {HTMLElement} node
+ * @param {string} class_name
+ * @param state
  */
 
 export function toggleClass(node, class_name, state){
 
-    node.classList[state ? "add" : "remove"](class_name);
+    if(state){
+
+        addClass(node, class_name);
+    }
+    else{
+
+        removeClass(node, class_name);
+    }
 }
 
 /**
- * @param node
- * @param class_name
+ * @param {HTMLElement} node
+ * @param {string} class_name
  */
 
 export function hasClass(node, class_name){
 
     return node.classList.contains(class_name);
+}
+
+/**
+ * @param {HTMLElement} node
+ */
+
+export function restoreStyle(node){
+    for(var key in node){
+
+        if(key.startsWith("_s_")){
+
+            node.style.setProperty(key.substring(3), node[key]);
+        }
+    }
 }
 
 /**
@@ -59,7 +80,7 @@ export function setStyle(node, style, value){
 let tmp = 0;
 
 /**
- * @param node
+ * @param {HTMLElement} node
  * @param {Function=} fn
  */
 
@@ -76,6 +97,11 @@ export function prepareStyle(node, fn){
 
     fn && setStyle(node, "transition", "");
 }
+
+/**
+ * @param {HTMLElement} node
+ * @param {string} text
+ */
 
 export function setText(node, text){
 
@@ -142,7 +168,7 @@ export function toggleListener(state, node, event, fn, mode){
 }
 
 /**
- * @param event
+ * @param {Event} event
  * @param {boolean=} prevent
  */
 
@@ -152,6 +178,11 @@ export function cancelEvent(event, prevent){
     //event.stopImmediatePropagation();
     prevent && event.preventDefault();
 }
+
+/**
+ * @param {HTMLBodyElement} body
+ * @param {HTMLElement} image
+ */
 
 export function downloadImage(body, image){
 
@@ -166,16 +197,16 @@ export function downloadImage(body, image){
 
 /**
  * @param {!string} element
- * @return {Element}
+ * @return {HTMLElement}
  */
 
 export function createElement(element){
 
-    return document.createElement(element);
+    return /** @type {HTMLElement} */ (document.createElement(element));
 }
 
 /**
- * @param node
+ * @param {HTMLElement} node
  * @param {boolean=} state
  */
 
@@ -185,7 +216,7 @@ export function toggleDisplay(node, state){
 }
 
 /**
- * @param node
+ * @param {HTMLElement} node
  * @param {boolean=} state
  */
 
@@ -195,7 +226,7 @@ export function toggleVisibility(node, state){
 }
 
 /**
- * @param node
+ * @param {HTMLElement} node
  * @param {boolean=} state
  */
 

@@ -13,6 +13,7 @@ import {
     toggleClass,
     setStyle,
     prepareStyle,
+    restoreStyle,
     getByClass,
     setText,
     addListener,
@@ -34,20 +35,38 @@ const controls_dom = {};
 const connection = navigator["connection"];
 const dpr = window["devicePixelRatio"] || 1;
 
+/** @type {number} */
 let x;
+/** @type {number} */
 let y;
+/** @type {number} */
 let startX;
+/** @type {number} */
 let startY;
+/** @type {number} */
 let viewport_w;
+/** @type {number} */
 let viewport_h;
+/** @type {number} */
 let media_w;
+/** @type {number} */
 let media_h;
+/** @type {number} */
 let scale;
+/** @type {TouchList|undefined} */
+let prev_touches;
 
+/** @type {boolean} */
 let is_down;
+/** @type {boolean} */
 let dragged;
+/** @type {boolean} */
 let slidable;
+/** @type {boolean} */
+let is_sliding_up;
+/** @type {boolean} */
 let toggle_autofit;
+/** @type {string} */
 let toggle_theme;
 
 let current_slide;
@@ -76,24 +95,42 @@ let animation_fade;
 let animation_slide;
 let animation_custom;
 
+/** @type {HTMLBodyElement} */
 let body;
+/** @type {HTMLDivElement?} */
 let panel;
+/** @type {Array<HTMLDivElement>} */
 let panes;
+/** @type {Image|HTMLVideoElement|HTMLElement} */
 let media;
-let media_next = createElement("img");
+let media_next = /** @type {HTMLImageElement} */ (createElement("img"));
+/** @type {HTMLDivElement} */
 let slider;
+/** @type {HTMLDivElement} */
 let header;
+/** @type {HTMLDivElement} */
 let footer;
-let footer_visible = 0;
+/** @type {boolean} */
+let footer_visible = false;
+/** @type {HTMLDivElement} */
 let title;
+/** @type {HTMLDivElement} */
 let description;
+/** @type {HTMLDivElement} */
 let button;
+/** @type {HTMLDivElement} */
 let page_prev;
+/** @type {HTMLDivElement} */
 let page_next;
+/** @type {HTMLDivElement?} */
 let maximize;
+/** @type {HTMLDivElement} */
 let page;
+/** @type {HTMLDivElement} */
 let player;
+/** @type {HTMLDivElement} */
 let progress;
+/** @type {HTMLDivElement} */
 let spinner;
 
 let gallery;
@@ -199,22 +236,28 @@ export function init(){
 
     /**
      * @param {string} classname
-     * @returns {HTMLElement}
+     * @returns {HTMLDivElement}
      */
 
     function getOneByClass(classname){
 
         //console.log("getOneByClass", classname);
 
-        return controls_dom[classname] = getByClass("spl-" + classname, widget)[0];
+        return controls_dom[classname] = /** @type {HTMLDivElement} */ (getByClass("spl-" + classname, widget)[0]);
     }
 }
+
+/**
+ * @param {string} classname
+ * @param {Function} fn
+ * @returns {HTMLDivElement}
+ */
 
 export function addControl(classname, fn){
 
     //console.log("addControl", classname, fn);
 
-    const div = createElement("div");
+    const div = /** @type {HTMLDivElement} */ (createElement("div"));
 
     div.className = "spl-" + classname;
     addListener(div, "click", fn);
@@ -222,6 +265,10 @@ export function addControl(classname, fn){
 
     return controls_dom[classname] = div;
 }
+
+/**
+ * @param {string} classname
+ */
 
 export function removeControl(classname){
 
@@ -236,11 +283,20 @@ export function removeControl(classname){
     }
 }
 
+/**
+ * @param {Event} event
+ */
+
 function dispatch(event){
 
     //console.log("dispatch");
 
-    const target = event.target.closest(".spotlight");
+    if(is_sliding_up){
+
+        return;
+    }
+
+    const target = /** @type {HTMLDivElement?} */ (event.target.closest(".spotlight"));
 
     if(target){
 
@@ -287,6 +343,10 @@ export function show(gallery, group, index){
 
     init_gallery(index);
 }
+
+/**
+ * @param {number} index
+ */
 
 function init_gallery(index){
 
@@ -485,6 +545,10 @@ function prepare_animation(prepare){
     }
 }
 
+/**
+ * @param {number} index
+ */
+
 function init_slide(index){
 
     //console.log("init_slide", index);
@@ -556,12 +620,14 @@ function init_slide(index){
 
             if(typeof media === "string"){
 
-                media = document.querySelector(media);
+                media = /** @type {HTMLElement} */ (document.querySelector(media));
             }
 
             if(media){
 
                 media._root || (media._root = media.parentNode);
+                media._style || (media._style = media.getAttribute("style"));
+                restoreStyle(media);
                 update_media_viewport();
 
                 panel.appendChild(media);
@@ -620,6 +686,10 @@ function toggle_spinner(options_spinner, is_on){
 
     options_spinner && toggleClass(spinner, "spin", is_on);
 }
+
+/**
+ * @returns {boolean}
+ */
 
 function has_fullscreen(){
 
@@ -744,6 +814,10 @@ function toggle_listener(install){
     toggleListener(install, window, "popstate", history_listener);
 }
 
+/**
+ * @param {PopStateEvent} event
+ */
+
 function history_listener(event) {
 
     //console.log("history_listener");
@@ -753,6 +827,10 @@ function history_listener(event) {
         close(true);
     }
 }
+
+/**
+ * @param {KeyboardEvent} event
+ */
 
 function key_listener(event){
 
@@ -804,6 +882,10 @@ function key_listener(event){
     }
 }
 
+/**
+ * @param {WheelEvent} event
+ */
+
 function wheel_listener(event){
 
     //console.log("wheel_listener");
@@ -815,11 +897,11 @@ function wheel_listener(event){
 
         if(delta < 0){
 
-            zoom_out();
+            zoom_out(event, event.clientX, event.clientY);
         }
-        else{
+        else if(delta > 0){
 
-            zoom_in();
+            zoom_in(event, event.clientX, event.clientY);
         }
     }
 }
@@ -888,6 +970,10 @@ function autohide(){
     }
 }
 
+/**
+ * @param {number} cooldown
+ */
+
 function schedule(cooldown){
 
     //console.log("schedule", cooldown);
@@ -933,6 +1019,10 @@ export function menu(state){
     }
 }
 
+/**
+ * @param {TouchEvent|MouseEvent} e
+ */
+
 function start(e){
 
     //console.log("start");
@@ -941,26 +1031,36 @@ function start(e){
 
     is_down = true;
     dragged = false;
+    is_sliding_up = false;
 
+    /** @type {TouchEvent|MouseEvent|Touch}  */
+    let touch = e;
     let touches = e.touches;
+    prev_touches = touches;
 
     if(touches && (touches = touches[0])){
 
-        e = touches;
+        touch = touches;
     }
 
     slidable = /* !toggle_autofit && */ (media_w * scale) <= viewport_w;
-    startX = e.pageX;
-    startY = e.pageY;
+    startX = touch.pageX;
+    startY = touch.pageY;
 
     toggleAnimation(panel);
 }
+
+/**
+ * @param {TouchEvent|MouseEvent} e
+ */
 
 function end(e){
 
     //console.log("end");
 
     cancelEvent(e);
+
+    prev_touches = null;
 
     if(is_down){
 
@@ -983,7 +1083,15 @@ function end(e){
                     (has_prev && prev());
                 }
 
-                x = 0;
+                if(is_sliding_up && y < -(viewport_h / 4)){
+
+                    close();
+                }
+                else{
+
+                    x = 0;
+                    y = 0;
+                }
 
                 update_panel();
             }
@@ -995,6 +1103,50 @@ function end(e){
     }
 }
 
+/**
+ * @param {TouchList} touches
+ * @returns {number}
+ */
+
+function distance(touches){
+
+    return Math.sqrt(
+        Math.pow(touches[0].clientX - touches[1].clientX, 2)
+        + Math.pow(touches[0].clientY - touches[1].clientY, 2)
+    );
+}
+
+/**
+ * @param {TouchList} touches
+ */
+function center_of(touches){
+
+    return [
+        (touches[0].clientX + touches[1].clientX) * 0.5,
+        (touches[0].clientY + touches[1].clientY) * 0.5,
+    ]
+}
+
+/**
+ * @param {TouchList=} touches
+ */
+
+function scale_touches(touches){
+    if(options["zoom-in"] !== false && touches && touches.length === 2 && prev_touches && prev_touches.length === 2){
+
+        const relative_scale = distance(touches) / distance(prev_touches);
+        const center = center_of(touches);
+        centered_zoom(relative_scale, center[0], center[1], false);
+    }
+
+    prev_touches = touches;
+    return touches && touches[0];
+}
+
+/**
+ * @param {TouchEvent|MouseEvent} e
+ */
+
 function move(e){
 
     //console.log("move");
@@ -1003,20 +1155,34 @@ function move(e){
 
     if(is_down){
 
-        let touches = e.touches;
+        let touches = scale_touches(e.touches);
 
-        if(touches && (touches = touches[0])){
+        if(touches){
 
             e = touches;
         }
 
-        // handle x-axis in slide mode and in drag mode
+        if(!dragged){
 
-        let diff = (media_w * scale - viewport_w) / 2;
-        x -= startX - (startX = e.pageX);
+            const dx = startX - e.pageX;
+            const dy = startY - e.pageY;
+            is_sliding_up = slidable && dy > Math.abs(dx) * 1.15;
+        }
+
+        if(is_sliding_up){
+
+            // handle y-axis in y-slide mode
+            y -= startY - (startY = e.pageY);
+        }
+        else{
+
+            // handle x-axis in x-slide mode and in drag mode
+            x -= startX - (startX = e.pageX);
+        }
 
         if(!slidable){
 
+            let diff = (media_w * scale - viewport_w) / 2;
             if(x > diff){
 
                 x = diff;
@@ -1133,70 +1299,86 @@ export function autofit(init){
 }
 
 /**
- * @param {Event=} e
+ * @param {number} relative
+ * @param {number=} cx
+ * @param {number=} cy
+ * @param {boolean=} animated
  */
 
-function zoom_in(e){
+function centered_zoom(relative, cx, cy, animated){
 
-    //console.log("zoom_in");
+    let value = scale * relative;
 
-    let value = scale / 0.65;
+    toggleAnimation(panel, animated);
+    toggleAnimation(media, animated);
+    disable_autoresizer();
 
-    if(value <= 50){
+    if(value <= 1){
 
-        //console.log(toggle_autofit);
+        x = y = 0;
+        update_panel(x, y);
+        zoom(1);
 
-        disable_autoresizer();
+        // if(options_fit){
+        //
+        //     addClass(media, options_fit);
+        // }
+
+        return;
+    }
+
+    if(value > 50){
 
         // if(options_fit){
         //
         //     removeClass(media, options_fit);
         // }
 
-        x /= 0.65;
-        y /= 0.65;
-
-        update_panel(x, y);
-        zoom(value);
+        return;
     }
 
-    //e && autohide();
+    if(cy){
+
+        const half_w = viewport_w / 2, half_h = viewport_h / 2;
+        x = cx - (cx - x - half_w) * relative - half_w;
+        y = cy - (cy - y - half_h) * relative - half_h;
+    }
+    else{
+
+        x *= relative;
+        y *= relative;
+    }
+
+    update_panel(x, y);
+    zoom(value);
 }
 
 /**
  * @param {Event=} e
+ * @param {number=} cx
+ * @param {number=} cy
  */
 
-function zoom_out(e){
+function zoom_in(e, cx, cy){
+
+    //console.log("zoom_in");
+
+    centered_zoom(1 / 0.65, cx, cy, true);
+
+}
+
+/**
+ * @param {Event=} e
+ * @param {number=} cx
+ * @param {number=} cy
+ */
+
+function zoom_out(e, cx, cy){
 
     //console.log("zoom_out");
 
-    let value = scale * 0.65;
+    centered_zoom(0.65, cx, cy, true);
 
-    disable_autoresizer();
-
-    if(value >= 1){
-
-        if(value === 1){
-
-            x = y = 0;
-
-            // if(options_fit){
-            //
-            //     addClass(media, options_fit);
-            // }
-        }
-        else{
-
-            x *= 0.65;
-            y *= 0.65;
-        }
-
-        update_panel(x, y);
-        zoom(value);
-    }
-
-    //e && autohide();
 }
 
 /**
@@ -1274,6 +1456,7 @@ export function close(hashchange){
 
         body.removeChild(widget);
         panel = media = gallery = options = options_group = anchors = options_onshow = options_onchange = options_onclose = options_click = null;
+        is_sliding_up = false;
 
     }, 200);
 
@@ -1296,20 +1479,26 @@ export function close(hashchange){
     options_onclose && options_onclose();
 }
 
+/**
+ * @param {Image|HTMLVideoElement|HTMLElement} media
+ */
+
 function checkout(media){
 
     //console.log("checkout");
 
     if(media._root){
 
+        media.setAttribute("style", media._style || "");
         media._root.appendChild(media);
-        media._root = null;
+        media._root = media._style = null;
     }
     else{
 
         const parent = media.parentNode;
         parent && parent.removeChild(media);
-        media = media.src = media.onerror = "";
+        media.onerror = null;
+        media.src = "";
     }
 }
 
@@ -1367,6 +1556,11 @@ export function next(e){
     }
 }
 
+/**
+ * @param {number} slide
+ * @returns {boolean|undefined}
+ */
+
 export function goto(slide){
 
     //console.log("goto", slide);
@@ -1394,6 +1588,10 @@ export function goto(slide){
         return true;
     }
 }
+
+/**
+ * @param {boolean} direction
+ */
 
 function prepare(direction){
 
@@ -1452,6 +1650,10 @@ function prepare(direction){
     }
 }
 
+/**
+ * @param {boolean} direction
+ */
+
 function setup_page(direction){
 
     //console.log("setup_page", direction);
@@ -1489,7 +1691,7 @@ function setup_page(direction){
         }
     }
 
-    footer && toggleVisibility(footer, 0);
+    footer && toggleVisibility(footer, false);
 
     prepare(direction);
     update_slider(current_slide - 1);

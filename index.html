@@ -34,6 +34,10 @@
         /* custom animation "visible state" (css context by custom classname "only-this-gallery" to apply these animation just on a specific gallery) */
         .only-this-gallery.show .spl-pane > *{
             clip-path: circle(100% at center);
+        }
+        .only-this-gallery.show .spl-pane, .only-this-gallery.show .spl-pane > *{
+            /* setting custom transition duration might mess up zoom animations */
+            /* one should set an identical transition duration for ".spl-pane" and ".spl-pane > *" */
             transition: transform 0.35s ease,
                         opacity 0.65s ease,
                         clip-path 0.8s ease;
@@ -104,6 +108,7 @@
             <img src="demo/gallery/montana-1829251-thumb.jpg">
         </a>
         <div class="spotlight" data-src="demo/gallery/brooklyn-bridge-1791001.jpg"></div>
+        <div class="spotlight" data-media="node" data-src="#long"></div>
     </div>
     <!-- Hidden Backstore -->
     <div style="display: none">
@@ -112,6 +117,10 @@
             <img class="image" src="demo/gallery/brooklyn-bridge-1791001-thumb.jpg" width="500" height="334">
             <img class="image" src="demo/gallery/california-1751455-thumb.jpg" width="500" height="333">
             <img class="image" src="demo/gallery/montana-1829251-thumb.jpg" width="500" height="331">
+        </div>
+        <div id="long" style="width: 5em; height: 5em; overflow: scroll; background-color: pink; color: black">
+            L<br>O<br>N<br>G<br><br>C<br>O<br>N<br>T<br>E<br>N<br>T<br>
+            <pre style="word-wrap: no-wrap">-----W-----I-----D-----E-----</div>
         </div>
     </div>
     <br>

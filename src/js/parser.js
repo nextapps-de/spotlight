@@ -3,6 +3,15 @@ import { createElement } from "./helper.js";
 const video_support = {};
 const tpl_video = /** @type {HTMLVideoElement} */ (createElement("video"));
 
+/**
+ *
+ * @param {HTMLAnchorElement} anchor
+ * @param {number} size
+ * @param options
+ * @param {string} media
+ * @returns {string}
+ */
+
 export default function(anchor, size, options, media){
 
     let src, diff;
