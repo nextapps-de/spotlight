@@ -228,14 +228,6 @@ The ES6 modules are located in `src/js/`. You need to load the stylesheet file e
 </script>
 ```
 
-You can also load modules via CDN, e.g.:
-
-```html
-<script type="module">
-  import Spotlight from "https://unpkg.com/spotlight@0.7.8/src/js/spotlight.js";
-</script>
-```
-
 The ES6 modules are not minified. Please use your favored bundler or build tool for this purpose.
 
 ## Basic Usage (Markup)
